@@ -15,19 +15,24 @@ export class AuthController {
 
   @Public()
   @Post('sign-in')
-  login(@Body() loginUserDto: LoginUserDto): Promise<ILogin>  {
+  login(@Body() loginUserDto: LoginUserDto): Promise<ILogin> {
     return this.authService.login(loginUserDto.email, loginUserDto.password);
   }
 
   @Public()
   @Post('sign-up')
-  registration(@Body() createUserDto: CreateUserDto): Promise<IRegistration>  {
-    return this.authService.registration(createUserDto);
+  registration(@Body() createUserDto: CreateUserDto): Promise<IRegistration> {
+    return this.authService.registration(
+      createUserDto.email,
+      createUserDto.password,
+    );
   }
 
   @Public()
   @Post('refresh-token')
-  refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<IRefreshToken> {
+  refreshToken(
+    @Body() refreshTokenDto: RefreshTokenDto,
+  ): Promise<IRefreshToken> {
     return this.authService.refreshToken(refreshTokenDto.refresh_token);
   }
 }

@@ -23,7 +23,7 @@ export class AuthService {
     private createTokensUtil: CreateTokensUtil,
   ) {}
 
-  async login(email: string, password: string){
+  async login(email: string, password: string) {
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) {
       throw new HttpException(
@@ -39,7 +39,7 @@ export class AuthService {
       throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
     }
 
-    const payload = { sub: user.id, username: user.fullName };
+    const payload = { sub: user.id, username: user.email };
 
     const correctFormOfUser = visibleParamsOfUser(user);
     const { access_token, refresh_token } =
@@ -51,9 +51,14 @@ export class AuthService {
     };
   }
 
-  async registration(user: CreateUserDto){
-    const hashPass = generatePassword(user.password);
-    user.password = hashPass.salt + '//' + hashPass.hash;
+  async registration(email: string, password: string) {
+    const hashPass = generatePassword(password);
+    password = hashPass.salt + '//' + hashPass.hash;
+    const user = {
+      email: email,
+      password: password,
+    };
+    console.log(user);
     const addedUserInDb = await this.userRepository.createUser(user);
     if (!addedUserInDb) {
       throw new HttpException(
@@ -61,7 +66,7 @@ export class AuthService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    const payload = { sub: addedUserInDb.id, username: addedUserInDb.fullName };
+    const payload = { sub: addedUserInDb.id, username: addedUserInDb.email };
     const { access_token, refresh_token } =
       await this.createTokensUtil.createTokens(payload);
     return {
@@ -71,7 +76,7 @@ export class AuthService {
     };
   }
 
-  async refreshToken(rt: string){
+  async refreshToken(rt: string) {
     if (!rt) {
       throw new UnauthorizedException();
     }
@@ -80,7 +85,7 @@ export class AuthService {
         secret: process.env.REFRESH_TOKEN_SECRET,
       });
       const user = await this.userRepository.getUserById(payload.sub);
-      const data = { sub: user.id, username: user.fullName };
+      const data = { sub: user.id, username: user.email };
       const { access_token, refresh_token } =
         await this.createTokensUtil.createTokens(data);
       return {
