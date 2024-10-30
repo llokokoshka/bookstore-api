@@ -19,6 +19,7 @@ export class UsersService {
       );
     }
     const visibleParamsOfUser = {
+      fullName: user.fullName,
       email: user.email,
     };
 
@@ -36,6 +37,7 @@ export class UsersService {
     }
 
     const visibleParamsOfUsers = users.map((user) => ({
+      fullName: user.fullName,
       email: user.email,
     }));
 

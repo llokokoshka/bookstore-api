@@ -7,18 +7,26 @@ import {
   Body,
   ParseIntPipe,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './lib/updateUser.dto';
 import { IVisibleUserParams } from './lib/visibleUserParams.interface';
 import { ReqGetUserDto } from './lib/reqGetUser.dto';
+import { UserRepository } from './users.repository';
+import { User } from './entity/users.entity';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private userRepository: UserRepository,
+  ) {}
 
   @Get('me')
-  getUser(@Req() req: ReqGetUserDto): IVisibleUserParams {
+  async getUser(@Req() req: ReqGetUserDto): Promise<User> {
     return req.user;
   }
 

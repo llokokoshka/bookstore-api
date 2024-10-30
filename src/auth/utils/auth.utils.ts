@@ -21,6 +21,7 @@ export function validPassword(password: string, hash: string, salt: string) {
 
 export function visibleParamsOfUser(user: User) {
   const visibleParamsOfUser = {
+    fullName: '',
     email: user.email,
   };
   return visibleParamsOfUser;

@@ -20,7 +20,7 @@ export class CreateTokensUtil {
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('token.refreshToken'),
-        expiresIn: '6d',
+        expiresIn: '11s',
       }),
     ]);
     return {

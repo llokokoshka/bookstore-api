@@ -14,6 +14,7 @@ import {
 } from './utils/auth.utils';
 import { CreateUserDto } from 'src/users/lib/createUsers.dto';
 import { CreateTokensUtil } from './utils/token.utils';
+import { LoginUserDto } from 'src/users/lib/loginUser.dto';
 
 @Injectable()
 export class AuthService {
@@ -23,8 +24,8 @@ export class AuthService {
     private createTokensUtil: CreateTokensUtil,
   ) {}
 
-  async login(email: string, password: string) {
-    const user = await this.userRepository.getUserByEmail(email);
+  async login(User: LoginUserDto) {
+    const user = await this.userRepository.getUserByEmail(User.email);
     if (!user) {
       throw new HttpException(
         'user not found',
@@ -33,7 +34,11 @@ export class AuthService {
     }
 
     const [salt, userHashPassword] = user.password.split('//');
-    const isPasswordValid = validPassword(password, userHashPassword, salt);
+    const isPasswordValid = validPassword(
+      User.password,
+      userHashPassword,
+      salt,
+    );
 
     if (isPasswordValid == false) {
       throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
@@ -55,10 +60,10 @@ export class AuthService {
     const hashPass = generatePassword(password);
     password = hashPass.salt + '//' + hashPass.hash;
     const user = {
+      fullName: '',
       email: email,
       password: password,
     };
-    console.log(user);
     const addedUserInDb = await this.userRepository.createUser(user);
     if (!addedUserInDb) {
       throw new HttpException(
@@ -77,6 +82,7 @@ export class AuthService {
   }
 
   async refreshToken(rt: string) {
+    // console.log(rt);
     if (!rt) {
       throw new UnauthorizedException();
     }
@@ -85,6 +91,7 @@ export class AuthService {
         secret: process.env.REFRESH_TOKEN_SECRET,
       });
       const user = await this.userRepository.getUserById(payload.sub);
+      // console.log(user);
       const data = { sub: user.id, username: user.email };
       const { access_token, refresh_token } =
         await this.createTokensUtil.createTokens(data);
