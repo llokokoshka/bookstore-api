@@ -12,6 +12,8 @@ import { dbConfig } from './db/dataSource';
 import { UserRepository } from './users/users.repository';
 import { AuthGuard } from './auth/auth.guard';
 import { loadConfig } from './config/configuration';
+import { FilesModule } from './files/files.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -19,6 +21,10 @@ import { loadConfig } from './config/configuration';
     AuthModule,
     UsersModule,
     ConfigModule.forRoot({ isGlobal: true, load: [loadConfig] }),
+    FilesModule,
+    MulterModule.register({
+      dest: './uploads',
+    }),
   ],
   controllers: [AppController, UsersController],
   providers: [

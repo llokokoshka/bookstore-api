@@ -33,6 +33,11 @@ export class UserRepository {
     return this.usersRepository.save({ ...user, ...params });
   }
 
+  async updateUserPassword(params: UpdateUserDto, id: number): Promise<User> {
+    const user = await this.getUserById(id);
+    return this.usersRepository.save({ ...user, ...params });
+  }
+
   async createUser(user: CreateUserDto): Promise<User> {
     return this.usersRepository.save(user);
   }

@@ -16,11 +16,11 @@ export class CreateTokensUtil {
     const [access_token, refresh_token]: [string, string] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('token.accessToken'),
-        expiresIn: '10s',
+        expiresIn: '1h',
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('token.refreshToken'),
-        expiresIn: '11s',
+        expiresIn: '6d',
       }),
     ]);
     return {

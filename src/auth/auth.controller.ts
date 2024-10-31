@@ -16,7 +16,6 @@ export class AuthController {
   @Public()
   @Post('sign-in')
   login(@Body() loginUserDto: LoginUserDto): Promise<ILogin> {
-    console.log(loginUserDto);
     return this.authService.login(loginUserDto);
   }
 
@@ -34,7 +33,6 @@ export class AuthController {
   refreshToken(
     @Body() refreshTokenDto: RefreshTokenDto,
   ): Promise<IRefreshToken> {
-    console.log(refreshTokenDto.refresh_token);
     return this.authService.refreshToken(refreshTokenDto.refresh_token);
   }
 }

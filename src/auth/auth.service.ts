@@ -82,7 +82,6 @@ export class AuthService {
   }
 
   async refreshToken(rt: string) {
-    // console.log(rt);
     if (!rt) {
       throw new UnauthorizedException();
     }
@@ -91,7 +90,6 @@ export class AuthService {
         secret: process.env.REFRESH_TOKEN_SECRET,
       });
       const user = await this.userRepository.getUserById(payload.sub);
-      // console.log(user);
       const data = { sub: user.id, username: user.email };
       const { access_token, refresh_token } =
         await this.createTokensUtil.createTokens(data);

@@ -1,4 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { open } from 'node:fs/promises';
 
 import { User } from './entity/users.entity';
 import { UserRepository } from './users.repository';
@@ -60,4 +61,6 @@ export class UsersService {
 
     return newUser;
   }
+
+  // async saveAvatar(avatar: string): Promise<string> {}
 }
