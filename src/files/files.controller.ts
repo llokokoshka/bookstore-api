@@ -36,16 +36,22 @@ export class FilesController {
     }),
   )
   async uploadedFile(@UploadedFiles() files, @Req() req) {
-    console.log(files.filename);
-    await this.userService.updateUser({ avatar: files.filename }, req.user.id);
-    const response = {
-      originalname: files.originalname,
-      filename: files.filename,
-    };
+    if (!files || files.length === 0) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        message: 'No file uploaded',
+      };
+    }
+   const file = files[0];
+    console.log(file.filename);
+    await this.userService.updateUser({ avatar: file.filename }, req.user.id);
     return {
       status: HttpStatus.OK,
       message: 'Image uploaded successfully!',
-      data: response,
+      data: {
+        originalname: file.originalname,
+        filename: file.filename,
+      }
     };
   }
 
@@ -54,6 +60,12 @@ export class FilesController {
   async getImage(@Req() req: ReqGetUserDto, @Res() res) {
     const userId = req.user.id;
     const user = await this.userService.getUser(userId);
+    if (!user || !user.avatar) {
+      return res.status(HttpStatus.NOT_FOUND).json({
+        status: HttpStatus.NOT_FOUND,
+        message: 'User or avatar not found',
+      });
+    }
     const image = user.avatar;
     const response = res.sendFile(image, { root: './uploads' });
     return {
