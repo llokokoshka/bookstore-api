@@ -9,10 +9,6 @@ import {
   ParseIntPipe,
   Req,
   UseGuards,
-  UseInterceptors,
-  UploadedFile,
-  ParseFilePipeBuilder,
-  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './lib/updateUser.dto';
@@ -21,7 +17,6 @@ import { ReqGetUserDto } from './lib/reqGetUser.dto';
 import { UserRepository } from './users.repository';
 import { User } from './entity/users.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(AuthGuard)
 @Controller('user')
@@ -54,24 +49,24 @@ export class UsersController {
     return this.usersService.updateUser(updateUserDto, req.user.id);
   }
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  uploadFile(
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: 'jpeg',
-        })
-        .addMaxSizeValidator({
-          maxSize: 1000,
-        })
-        .build({
-          fileIsRequired: false,
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-    )
-    file: Express.Multer.File,
-  ) {
-    console.log(file);
-  }
+  // @Post('upload')
+  // @UseInterceptors(FileInterceptor('file'))
+  // uploadFile(
+  //   @UploadedFile(
+  //     new ParseFilePipeBuilder()
+  //       .addFileTypeValidator({
+  //         fileType: 'jpeg',
+  //       })
+  //       .addMaxSizeValidator({
+  //         maxSize: 1000,
+  //       })
+  //       .build({
+  //         fileIsRequired: false,
+  //         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+  //       }),
+  //   )
+  //   file: Express.Multer.File,
+  // ) {
+  //   console.log(file);
+  // }
 }

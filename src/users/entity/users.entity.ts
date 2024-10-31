@@ -14,6 +14,6 @@ export class User {
   @Column()
   password: string;
 
-  // @Column()
-  // Dob: Date;
+  @Column({ default: '' })
+  avatar: string;
 }

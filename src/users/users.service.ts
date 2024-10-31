@@ -5,6 +5,7 @@ import { User } from './entity/users.entity';
 import { UserRepository } from './users.repository';
 import { UpdateUserDto } from './lib/updateUser.dto';
 import { IVisibleUserParams } from './lib/visibleUserParams.interface';
+import { IUser } from './lib/userI';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +23,7 @@ export class UsersService {
     const visibleParamsOfUser = {
       fullName: user.fullName,
       email: user.email,
+      avatar: user.avatar,
     };
 
     return visibleParamsOfUser;
@@ -40,6 +42,7 @@ export class UsersService {
     const visibleParamsOfUsers = users.map((user) => ({
       fullName: user.fullName,
       email: user.email,
+      avatar: user.avatar,
     }));
 
     return visibleParamsOfUsers;
@@ -56,11 +59,9 @@ export class UsersService {
     await this.userRepository.deleteUser(user);
   }
 
-  async updateUser(updUser: UpdateUserDto, id: number): Promise<User> {
+  async updateUser(updUser: IUser, id: number): Promise<User> {
     const newUser = await this.userRepository.updateUser(updUser, id);
 
     return newUser;
   }
-
-  // async saveAvatar(avatar: string): Promise<string> {}
 }

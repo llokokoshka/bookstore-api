@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './lib/updateUser.dto';
 import { CreateUserDto } from './lib/createUsers.dto';
+import { IUser } from './lib/userI';
 
 @Injectable()
 export class UserRepository {
@@ -28,7 +29,7 @@ export class UserRepository {
     await this.usersRepository.remove(user);
   }
 
-  async updateUser(params: UpdateUserDto, id: number): Promise<User> {
+  async updateUser(params: Partial<User>, id: number): Promise<User> {
     const user = await this.getUserById(id);
     return this.usersRepository.save({ ...user, ...params });
   }

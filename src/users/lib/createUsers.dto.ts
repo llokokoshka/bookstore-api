@@ -12,6 +12,9 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
+  @IsOptional()
+  avatar: string;
+
   // @IsOptional()
   // Dob: Date;
 }

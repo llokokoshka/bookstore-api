@@ -12,6 +12,6 @@ export class UpdateUserDto {
   @Length(6, 24)
   password: string;
 
-  // @IsOptional()
-  // Dob: Date;
+  @IsOptional()
+  avatar: string;
 }

@@ -63,6 +63,7 @@ export class AuthService {
       fullName: '',
       email: email,
       password: password,
+      avatar: '',
     };
     const addedUserInDb = await this.userRepository.createUser(user);
     if (!addedUserInDb) {
