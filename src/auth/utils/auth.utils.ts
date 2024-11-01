@@ -24,6 +24,7 @@ export function visibleParamsOfUser(user: User) {
     id: user.id,
     fullName: '',
     email: user.email,
+    avatar: user.avatar,
   };
   return visibleParamsOfUser;
 }

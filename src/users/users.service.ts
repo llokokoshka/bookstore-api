@@ -1,9 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { open } from 'node:fs/promises';
 
 import { User } from './entity/users.entity';
 import { UserRepository } from './users.repository';
-import { UpdateUserDto } from './lib/updateUser.dto';
 import { IVisibleUserParams } from './lib/visibleUserParams.interface';
 import { IUser } from './lib/userI';
 

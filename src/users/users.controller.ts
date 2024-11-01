@@ -48,25 +48,4 @@ export class UsersController {
   ): Promise<IVisibleUserParams> {
     return this.usersService.updateUser(updateUserDto, req.user.id);
   }
-
-  // @Post('upload')
-  // @UseInterceptors(FileInterceptor('file'))
-  // uploadFile(
-  //   @UploadedFile(
-  //     new ParseFilePipeBuilder()
-  //       .addFileTypeValidator({
-  //         fileType: 'jpeg',
-  //       })
-  //       .addMaxSizeValidator({
-  //         maxSize: 1000,
-  //       })
-  //       .build({
-  //         fileIsRequired: false,
-  //         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-  //       }),
-  //   )
-  //   file: Express.Multer.File,
-  // ) {
-  //   console.log(file);
-  // }
 }
