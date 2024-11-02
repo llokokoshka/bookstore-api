@@ -7,5 +7,5 @@ export class UpdatePassDto {
 
   @IsOptional()
   @Length(6, 24)
-  oldPassword: string;
+  passwordNew: string;
 }

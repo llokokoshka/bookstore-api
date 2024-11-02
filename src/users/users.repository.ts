@@ -40,7 +40,7 @@ export class UserRepository {
     const user = await this.getUserById(id);
     const [salt, userHashPassword] = user.password.split('//');
     const isPasswordValid = validPassword(
-      params.oldPassword,
+      params.password,
       userHashPassword,
       salt,
     );
@@ -48,13 +48,12 @@ export class UserRepository {
     if (isPasswordValid == false) {
       throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
     }
+    const hashPass = generatePassword(params.passwordNew);
 
-    const hashPass = generatePassword(params.password);
-
-    const newPassword = hashPass.salt + '//' + hashPass.hash;
+    const newPassword = `${hashPass.salt}//${hashPass.hash}`;
     user.password = newPassword;
 
-    return this.usersRepository.save({ ...user });
+    return this.usersRepository.save(user);
   }
 
   async createUser(user: CreateUserDto): Promise<User> {

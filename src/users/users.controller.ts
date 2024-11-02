@@ -29,7 +29,6 @@ export class UsersController {
 
   @Get('me')
   async getUser(@Req() req: ReqGetUserDto): Promise<User> {
-    console.log(req.user);
     return req.user;
   }
 
@@ -45,7 +44,7 @@ export class UsersController {
 
   @Patch('me')
   updateUser(
-    @Req() req: ReqGetUserDto,
+    @Req() req: Partial<ReqGetUserDto>,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<IVisibleUserParams> {
     return this.usersService.updateUser(updateUserDto, req.user.id);
