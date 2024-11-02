@@ -4,6 +4,7 @@ import { User } from './entity/users.entity';
 import { UserRepository } from './users.repository';
 import { IVisibleUserParams } from './lib/visibleUserParams.interface';
 import { IUser } from './lib/userI';
+import { UpdatePassDto } from './lib/updatePass.dto';
 
 @Injectable()
 export class UsersService {
@@ -57,8 +58,13 @@ export class UsersService {
     await this.userRepository.deleteUser(user);
   }
 
-  async updateUser(updUser: IUser, id: number): Promise<User> {
+  async updateUser(updUser: Partial<User>, id: number): Promise<User> {
     const newUser = await this.userRepository.updateUser(updUser, id);
+
+    return newUser;
+  }
+  async updateUserPass(updUser: UpdatePassDto, id: number): Promise<User> {
+    const newUser = await this.userRepository.updateUserPass(updUser, id);
 
     return newUser;
   }

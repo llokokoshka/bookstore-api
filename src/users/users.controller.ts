@@ -17,6 +17,7 @@ import { ReqGetUserDto } from './lib/reqGetUser.dto';
 import { UserRepository } from './users.repository';
 import { User } from './entity/users.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { UpdatePassDto } from './lib/updatePass.dto';
 
 @UseGuards(AuthGuard)
 @Controller('user')
@@ -28,6 +29,7 @@ export class UsersController {
 
   @Get('me')
   async getUser(@Req() req: ReqGetUserDto): Promise<User> {
+    console.log(req.user);
     return req.user;
   }
 
@@ -47,5 +49,13 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<IVisibleUserParams> {
     return this.usersService.updateUser(updateUserDto, req.user.id);
+  }
+
+  @Patch('pass')
+  updateUserPass(
+    @Req() req: ReqGetUserDto,
+    @Body() updatePassDto: UpdatePassDto,
+  ): Promise<IVisibleUserParams> {
+    return this.usersService.updateUserPass(updatePassDto, req.user.id);
   }
 }
