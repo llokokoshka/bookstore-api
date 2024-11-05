@@ -14,6 +14,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { loadConfig } from './config/configuration';
 import { FilesModule } from './files/files.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { BooksModule } from './books/books.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { MulterModule } from '@nestjs/platform-express';
     MulterModule.register({
       dest: './uploads',
     }),
+    BooksModule,
   ],
   controllers: [AppController, UsersController],
   providers: [
