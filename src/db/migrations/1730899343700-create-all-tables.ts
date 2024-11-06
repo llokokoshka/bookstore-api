@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddAllTables1730898556614 implements MigrationInterface {
-  name = 'AddAllTables1730898556614';
+export class CreateAllTables1730899343700 implements MigrationInterface {
+  name = 'CreateAllTables1730899343700';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -54,9 +54,15 @@ export class AddAllTables1730898556614 implements MigrationInterface {
             )
         `);
     await queryRunner.query(`
-            ALTER TABLE "user"
-            ALTER COLUMN "avatar"
-            SET NOT NULL
+            CREATE TABLE "user" (
+                "id" SERIAL NOT NULL,
+                "fullName" character varying NOT NULL,
+                "email" character varying NOT NULL,
+                "password" character varying NOT NULL,
+                "avatar" character varying NOT NULL,
+                CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"),
+                CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
             ALTER TABLE "rate"
@@ -111,8 +117,7 @@ export class AddAllTables1730898556614 implements MigrationInterface {
             ALTER TABLE "rate" DROP CONSTRAINT "FK_7440b44c5acbec8b2ebfc3af7d2"
         `);
     await queryRunner.query(`
-            ALTER TABLE "user"
-            ALTER COLUMN "avatar" DROP NOT NULL
+            DROP TABLE "user"
         `);
     await queryRunner.query(`
             DROP TABLE "comments"

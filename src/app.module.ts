@@ -15,20 +15,21 @@ import { loadConfig } from './config/configuration';
 import { FilesModule } from './files/files.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { BooksModule } from './books/books.module';
+import { BooksController } from './books/books.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(dbConfig),
-    AuthModule,
-    UsersModule,
     ConfigModule.forRoot({ isGlobal: true, load: [loadConfig] }),
-    FilesModule,
     MulterModule.register({
       dest: './uploads',
     }),
+    AuthModule,
+    UsersModule,
+    FilesModule,
     BooksModule,
   ],
-  controllers: [AppController, UsersController],
+  controllers: [AppController, UsersController, BooksController],
   providers: [
     AppService,
     UserRepository,
