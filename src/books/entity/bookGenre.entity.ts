@@ -5,7 +5,7 @@ import {
   OneToMany,
   ManyToOne,
 } from 'typeorm';
-import { Book } from 'src/books/entity/books.entity';
+import { Book } from '../../books/entity/books.entity';
 import { Genre } from './genre.entity';
 
 @Entity()

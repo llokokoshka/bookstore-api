@@ -1,6 +1,5 @@
-import { Comments } from 'src/users/entity/comments.entity';
-import { Favorite } from 'src/users/entity/favorite.entity';
-import { Rate } from 'src/users/entity/rate.entity';
+import { Comments } from '../../users/entity/comments.entity';
+import { Rate } from '../../users/entity/rate.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -33,9 +32,6 @@ export class Book {
 
   @OneToMany(() => Comments, (comment) => comment.book)
   comments: Comments[];
-
-  // @OneToMany(() => Favorite, (favorite) => favorite.book)
-  // favorites: Favorite[];
 
   @OneToMany(() => Rate, (rate) => rate.book)
   rates: Rate[];
