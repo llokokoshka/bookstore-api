@@ -1,13 +1,21 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { BookEntity } from './entity/books.entity';
 import { BooksService } from './books.service';
+import { CreateBookDto } from './lib/createBook.dto';
+import { GenreEntity } from './entity/genre.entity';
+import { CreateGenreDto } from './lib/createGenre.dto';
 
 @Controller('books')
 export class BooksController {
   constructor(private booksService: BooksService) {}
 
   @Post('create')
-  create(@Body() book: BookEntity): Promise<BookEntity> {
-    return this.booksService.create(book);
+  async createBook(@Body() book: CreateBookDto): Promise<BookEntity> {
+    return this.booksService.createBookService(book);
+  }
+
+  @Post('createGenre')
+  async createGenre(@Body() genre: CreateGenreDto): Promise<GenreEntity> {
+    return this.booksService.createGenreService(genre);
   }
 }

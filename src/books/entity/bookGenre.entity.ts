@@ -1,13 +1,10 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+
 import { BookEntity } from '../../books/entity/books.entity';
 import { GenreEntity } from './genre.entity';
 
 @Entity()
-export class BookGenreEntity {
+export class BookToGenreEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

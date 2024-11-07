@@ -1,5 +1,3 @@
-import { CommentsEntity } from '../../users/entity/comments.entity';
-import { RateEntity } from '../../users/entity/rate.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,8 +5,11 @@ import {
   OneToMany,
   ManyToOne,
 } from 'typeorm';
+
+import { CommentsEntity } from '../../users/entity/comments.entity';
+import { RateEntity } from '../../users/entity/rate.entity';
 import { AuthorEntity } from './author.entity';
-import { BookGenreEntity } from './bookGenre.entity';
+import { BookToGenreEntity } from './bookGenre.entity';
 
 @Entity()
 export class BookEntity {
@@ -27,8 +28,8 @@ export class BookEntity {
   @ManyToOne(() => AuthorEntity, (author) => author.books)
   author: AuthorEntity;
 
-  @OneToMany(() => BookGenreEntity, (bookGenre) => bookGenre.book)
-  bookGenres: BookGenreEntity[];
+  @OneToMany(() => BookToGenreEntity, (bookGenre) => bookGenre.book)
+  bookGenres: BookToGenreEntity[];
 
   @OneToMany(() => CommentsEntity, (comment) => comment.book)
   comments: CommentsEntity[];
