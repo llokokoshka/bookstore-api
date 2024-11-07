@@ -16,20 +16,27 @@ import { FilesModule } from './files/files.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { BooksModule } from './books/books.module';
 import { BooksController } from './books/books.controller';
+import { FilesController } from './files/files.controller';
+import { CreateTokensUtil } from './auth/utils/token.utils';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(dbConfig),
+    AuthModule,
     ConfigModule.forRoot({ isGlobal: true, load: [loadConfig] }),
+    UsersModule,
     MulterModule.register({
       dest: './uploads',
     }),
-    AuthModule,
-    UsersModule,
-    FilesModule,
     BooksModule,
+    FilesModule,
   ],
-  controllers: [AppController, UsersController, BooksController],
+  controllers: [
+    AppController,
+    UsersController,
+    // BooksController,
+    // FilesController,
+  ],
   providers: [
     AppService,
     UserRepository,
@@ -37,6 +44,7 @@ import { BooksController } from './books/books.controller';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    CreateTokensUtil,
   ],
 })
 export class AppModule {}

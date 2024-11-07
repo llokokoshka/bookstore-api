@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import { User } from 'src/users/entity/users.entity';
+import { UserEntity } from 'src/users/entity/users.entity';
 
 export function generatePassword(password: string) {
   const salt = crypto.randomBytes(32).toString('hex');
@@ -19,7 +19,7 @@ export function validPassword(password: string, hash: string, salt: string) {
   return hash === checkHash;
 }
 
-export function visibleParamsOfUser(user: User) {
+export function visibleParamsOfUser(user: UserEntity) {
   const visibleParamsOfUser = {
     id: user.id,
     fullName: user.fullName,

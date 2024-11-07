@@ -1,4 +1,4 @@
-import { User } from './entity/users.entity';
+import { UserEntity } from './entity/users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -11,32 +11,35 @@ import { generatePassword, validPassword } from 'src/auth/utils/auth.utils';
 @Injectable()
 export class UserRepository {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
   ) {}
 
-  async getUserById(searchValue: number): Promise<User> {
+  async getUserById(searchValue: number): Promise<UserEntity> {
     return this.usersRepository.findOneBy({ id: searchValue });
   }
 
-  async getUserByEmail(searchValue: string): Promise<User> {
+  async getUserByEmail(searchValue: string): Promise<UserEntity> {
     return this.usersRepository.findOneBy({ email: searchValue });
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserEntity[]> {
     return this.usersRepository.find();
   }
 
-  async deleteUser(user: User): Promise<void> {
+  async deleteUser(user: UserEntity): Promise<void> {
     await this.usersRepository.remove(user);
   }
 
-  async updateUser(params: Partial<User>, id: number): Promise<User> {
+  async updateUser(
+    params: Partial<UserEntity>,
+    id: number,
+  ): Promise<UserEntity> {
     const user = await this.getUserById(id);
     return this.usersRepository.save({ ...user, ...params });
   }
 
-  async updateUserPass(params: UpdatePassDto, id: number): Promise<User> {
+  async updateUserPass(params: UpdatePassDto, id: number): Promise<UserEntity> {
     const user = await this.getUserById(id);
     const [salt, userHashPassword] = user.password.split('//');
     const isPasswordValid = validPassword(
@@ -56,7 +59,7 @@ export class UserRepository {
     return this.usersRepository.save(user);
   }
 
-  async createUser(user: CreateUserDto): Promise<User> {
+  async createUser(user: CreateUserDto): Promise<UserEntity> {
     return this.usersRepository.save(user);
   }
 }

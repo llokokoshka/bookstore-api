@@ -17,7 +17,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  await app.listen(process.env.PORT ?? 3000, function () {
+  await app.listen(process.env.PORT ?? 4000, function () {
     console.log('Сервер ожидает подключения...');
   });
 }

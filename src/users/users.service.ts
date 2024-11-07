@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
-import { User } from './entity/users.entity';
+import { UserEntity } from './entity/users.entity';
 import { UserRepository } from './users.repository';
 import { IVisibleUserParams } from './lib/visibleUserParams.interface';
 import { IUser } from './lib/userI';
@@ -58,13 +58,19 @@ export class UsersService {
     await this.userRepository.deleteUser(user);
   }
 
-  async updateUser(updUser: Partial<User>, id: number): Promise<User> {
+  async updateUser(
+    updUser: Partial<UserEntity>,
+    id: number,
+  ): Promise<UserEntity> {
     const newUser = await this.userRepository.updateUser(updUser, id);
 
     return newUser;
   }
 
-  async updateUserPass(updUser: UpdatePassDto, id: number): Promise<User> {
+  async updateUserPass(
+    updUser: UpdatePassDto,
+    id: number,
+  ): Promise<UserEntity> {
     const newUser = await this.userRepository.updateUserPass(updUser, id);
     return newUser;
   }

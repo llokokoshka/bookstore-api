@@ -1,5 +1,5 @@
-import { Comments } from '../../users/entity/comments.entity';
-import { Rate } from '../../users/entity/rate.entity';
+import { CommentsEntity } from '../../users/entity/comments.entity';
+import { RateEntity } from '../../users/entity/rate.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,11 +7,11 @@ import {
   OneToMany,
   ManyToOne,
 } from 'typeorm';
-import { Author } from './author.entity';
-import { BookGenre } from './bookGenre.entity';
+import { AuthorEntity } from './author.entity';
+import { BookGenreEntity } from './bookGenre.entity';
 
 @Entity()
-export class Book {
+export class BookEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,15 +24,15 @@ export class Book {
   @Column()
   quantity: number;
 
-  @ManyToOne(() => Author, (author) => author.books)
-  author: Author;
+  @ManyToOne(() => AuthorEntity, (author) => author.books)
+  author: AuthorEntity;
 
-  @OneToMany(() => BookGenre, (bookGenre) => bookGenre.book)
-  bookGenres: BookGenre[];
+  @OneToMany(() => BookGenreEntity, (bookGenre) => bookGenre.book)
+  bookGenres: BookGenreEntity[];
 
-  @OneToMany(() => Comments, (comment) => comment.book)
-  comments: Comments[];
+  @OneToMany(() => CommentsEntity, (comment) => comment.book)
+  comments: CommentsEntity[];
 
-  @OneToMany(() => Rate, (rate) => rate.book)
-  rates: Rate[];
+  @OneToMany(() => RateEntity, (rate) => rate.book)
+  rates: RateEntity[];
 }

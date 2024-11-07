@@ -12,7 +12,6 @@ import {
   validPassword,
   visibleParamsOfUser,
 } from './utils/auth.utils';
-import { CreateUserDto } from 'src/users/lib/createUsers.dto';
 import { CreateTokensUtil } from './utils/token.utils';
 import { LoginUserDto } from 'src/users/lib/loginUser.dto';
 

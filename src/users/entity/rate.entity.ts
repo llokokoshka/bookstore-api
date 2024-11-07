@@ -1,15 +1,15 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { User } from './users.entity';
-import { Book } from '../../books/entity/books.entity';
+import { UserEntity } from './users.entity';
+import { BookEntity } from '../../books/entity/books.entity';
 
 @Entity()
-export class Rate {
+export class RateEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.rates)
-  user: User;
+  @ManyToOne(() => UserEntity, (user) => user.rates)
+  user: UserEntity;
 
-  @ManyToOne(() => Book, (book) => book.rates)
-  book: Book;
+  @ManyToOne(() => BookEntity, (book) => book.rates)
+  book: BookEntity;
 }

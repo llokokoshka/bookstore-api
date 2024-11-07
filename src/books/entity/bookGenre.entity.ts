@@ -1,21 +1,19 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
   ManyToOne,
 } from 'typeorm';
-import { Book } from '../../books/entity/books.entity';
-import { Genre } from './genre.entity';
+import { BookEntity } from '../../books/entity/books.entity';
+import { GenreEntity } from './genre.entity';
 
 @Entity()
-export class BookGenre {
+export class BookGenreEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Book, (book) => book.bookGenres)
-  book: Book;
+  @ManyToOne(() => BookEntity, (book) => book.bookGenres)
+  book: BookEntity;
 
-  @ManyToOne(() => Genre, (genre) => genre.bookGenres)
-  genre: Genre;
+  @ManyToOne(() => GenreEntity, (genre) => genre.bookGenres)
+  genre: GenreEntity;
 }
