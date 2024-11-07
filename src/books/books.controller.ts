@@ -4,6 +4,8 @@ import { BooksService } from './books.service';
 import { CreateBookDto } from './lib/createBook.dto';
 import { GenreEntity } from './entity/genre.entity';
 import { CreateGenreDto } from './lib/createGenre.dto';
+import { CreateAuthorDto } from './lib/createAuthor.dto';
+import { AuthorEntity } from './entity/author.entity';
 
 @Controller('books')
 export class BooksController {
@@ -17,5 +19,10 @@ export class BooksController {
   @Post('createGenre')
   async createGenre(@Body() genre: CreateGenreDto): Promise<GenreEntity> {
     return this.booksService.createGenreService(genre);
+  }
+
+  @Post('createAuthor')
+  async createAuthor(@Body() author: CreateAuthorDto): Promise<AuthorEntity> {
+    return this.booksService.createAuthorService(author);
   }
 }

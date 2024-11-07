@@ -7,6 +7,8 @@ import { CreateBookDto } from './lib/createBook.dto';
 import { CreateGenreDto } from './lib/createGenre.dto';
 import { GenreEntity } from './entity/genre.entity';
 import { BookToGenreEntity } from './entity/bookGenre.entity';
+import { CreateAuthorDto } from './lib/createAuthor.dto';
+import { AuthorEntity } from './entity/author.entity';
 
 @Injectable()
 export class BooksRepository {
@@ -19,6 +21,9 @@ export class BooksRepository {
 
     @InjectRepository(BookToGenreEntity)
     private bookGenreRepository: Repository<BookToGenreEntity>,
+
+    @InjectRepository(AuthorEntity)
+    private authorRepository: Repository<AuthorEntity>,
   ) {}
 
   async createBookRepository(book: CreateBookDto): Promise<BookEntity> {
@@ -46,5 +51,10 @@ export class BooksRepository {
   async createGenreRepository(genre: CreateGenreDto): Promise<GenreEntity> {
     const newGenre = this.genreRepository.create(genre);
     return this.genreRepository.save(newGenre);
+  }
+
+  async createAuthorRepository(author: CreateAuthorDto): Promise<AuthorEntity> {
+    const newAuthor = this.authorRepository.create(author);
+    return this.authorRepository.save(newAuthor);
   }
 }
