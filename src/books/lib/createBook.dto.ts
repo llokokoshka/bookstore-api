@@ -1,10 +1,17 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 import { AuthorEntity } from '../entity/author.entity';
 import { BookToGenreEntity } from '../entity/bookGenre.entity';
 import { CommentsEntity } from 'src/users/entity/comments.entity';
 import { RateEntity } from 'src/users/entity/rate.entity';
+import { CoverEntity } from '../entity/covers.entity';
 
 export class CreateBookDto {
   @IsNotEmpty()
@@ -16,8 +23,20 @@ export class CreateBookDto {
   img: string;
 
   @IsNotEmpty()
+  @IsString()
+  description: string;
+
+  @IsNotEmpty()
   @IsInt()
   quantity: number;
+
+  @IsBoolean()
+  @IsOptional()
+  isBestseller: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  isNew: boolean;
 
   @IsOptional()
   @Type(() => AuthorEntity)
@@ -34,4 +53,8 @@ export class CreateBookDto {
   @IsNotEmpty()
   @Type(() => RateEntity)
   rates: RateEntity[];
+
+  @IsNotEmpty()
+  @Type(() => CoverEntity)
+  covers: CoverEntity[];
 }

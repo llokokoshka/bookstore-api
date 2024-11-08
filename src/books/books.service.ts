@@ -7,6 +7,8 @@ import { CreateGenreDto } from './lib/createGenre.dto';
 import { GenreEntity } from './entity/genre.entity';
 import { CreateAuthorDto } from './lib/createAuthor.dto';
 import { AuthorEntity } from './entity/author.entity';
+import { CommentsEntity } from 'src/users/entity/comments.entity';
+import { CreateCommentDto } from 'src/users/lib/createComment.dto';
 
 @Injectable()
 export class BooksService {
@@ -24,5 +26,12 @@ export class BooksService {
   async createAuthorService(Author: CreateAuthorDto): Promise<AuthorEntity> {
     const author = await this.booksRepository.createAuthorRepository(Author);
     return author;
+  }
+
+  async createCommentService(
+    Comment: CreateCommentDto,
+  ): Promise<CommentsEntity> {
+    const comment = await this.booksRepository.createCommentRepository(Comment);
+    return comment;
   }
 }

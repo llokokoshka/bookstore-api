@@ -10,6 +10,9 @@ export class CommentsEntity {
   @Column()
   text: string;
 
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  dateOfCreate: Date;
+
   @ManyToOne(() => UserEntity, (user) => user.comments)
   user: UserEntity;
 

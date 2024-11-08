@@ -7,7 +7,7 @@ export class GenreEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @OneToMany(() => BookToGenreEntity, (bookGenre) => bookGenre.genre)

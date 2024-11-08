@@ -8,6 +8,9 @@ import { BookEntity } from './entity/books.entity';
 import { AuthorEntity } from './entity/author.entity';
 import { BookToGenreEntity } from './entity/bookGenre.entity';
 import { GenreEntity } from './entity/genre.entity';
+import { CoverEntity } from './entity/covers.entity';
+import { CoverTypeEntity } from './entity/coverType.entity';
+import { CommentsEntity } from 'src/users/entity/comments.entity';
 
 @Module({
   imports: [
@@ -16,6 +19,9 @@ import { GenreEntity } from './entity/genre.entity';
       AuthorEntity,
       BookToGenreEntity,
       GenreEntity,
+      CoverEntity,
+      CoverTypeEntity,
+      CommentsEntity,
     ]),
   ],
   controllers: [BooksController],

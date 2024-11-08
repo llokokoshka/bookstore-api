@@ -7,7 +7,7 @@ export class AuthorEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   text: string;
 
   @OneToMany(() => BookEntity, (book) => book.author)
