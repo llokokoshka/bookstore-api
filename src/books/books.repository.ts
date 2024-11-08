@@ -69,4 +69,8 @@ export class BooksRepository {
     const newComment = this.commentsRepository.create(comment);
     return this.commentsRepository.save(newComment);
   }
+
+  async getBookRepository(id: number): Promise<BookEntity> {
+    return this.booksRepository.findOneBy({ id: id });
+  }
 }

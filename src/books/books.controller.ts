@@ -1,4 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { BookEntity } from './entity/books.entity';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './lib/createBook.dto';
@@ -28,10 +35,15 @@ export class BooksController {
     return this.booksService.createAuthorService(author);
   }
 
-  @Post('/:id')
+  @Post(':id')
   async createComment(
     @Body() comment: CreateCommentDto,
   ): Promise<CommentsEntity> {
     return this.booksService.createCommentService(comment);
+  }
+
+  @Get(':id')
+  async getBook(@Param('id', ParseIntPipe) id: number): Promise<BookEntity> {
+    return this.booksService.getBookService(id);
   }
 }
