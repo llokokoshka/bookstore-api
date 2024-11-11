@@ -39,4 +39,9 @@ export class BooksService {
     const Book = await this.booksRepository.getBookRepository(id);
     return Book;
   }
+
+  async getAllBooksService(): Promise<BookEntity[]> {
+    const Book = await this.booksRepository.getAllBooksRepository();
+    return Book;
+  }
 }

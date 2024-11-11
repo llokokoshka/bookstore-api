@@ -16,11 +16,10 @@ export const imageFileFilter = (req, file, callback) => {
 };
 
 export const editFileName = (req, file, callback) => {
-  const name = 'Hash';
   const fileExtName = extname(file.originalname);
-  const randomName = Array(4)
+  const randomName = Array(10)
     .fill(null)
     .map(() => Math.round(Math.random() * 10).toString(10))
     .join('');
-  callback(null, `${name}${randomName}${fileExtName}`);
+  callback(null, `${randomName}${fileExtName}`);
 };

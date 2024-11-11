@@ -11,8 +11,8 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
 import { editFileName, imageFileFilter } from './utils/file.utils';
-import { UsersService } from 'src/users/users.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { UsersService } from '../users/users.service';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('files')
 export class FilesController {

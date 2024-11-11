@@ -73,4 +73,15 @@ export class BooksRepository {
   async getBookRepository(id: number): Promise<BookEntity> {
     return this.booksRepository.findOneBy({ id: id });
   }
+
+  async getAllBooksRepository(): Promise<BookEntity[]> {
+    const aa = await this.booksRepository.findAndCount({
+      take: 2,
+      relations: ['author', 'bookGenres', 'comments', 'rates', 'covers'],
+    });
+    console.log('aa >>> ', aa);
+    return this.booksRepository.find({
+      relations: ['author', 'bookGenres', 'comments', 'rates', 'covers'],
+    });
+  }
 }

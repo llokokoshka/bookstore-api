@@ -20,7 +20,7 @@ export class CreateBookDto {
 
   @IsNotEmpty()
   @IsString()
-  img: string;
+  img: any;
 
   @IsNotEmpty()
   @IsString()
