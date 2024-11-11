@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 
 import { BookEntity } from './entity/books.entity';
 import { CreateBookDto } from './lib/createBook.dto';
@@ -11,9 +11,12 @@ import { CreateAuthorDto } from './lib/createAuthor.dto';
 import { AuthorEntity } from './entity/author.entity';
 import { CommentsEntity } from 'src/users/entity/comments.entity';
 import { CreateCommentDto } from 'src/users/lib/createComment.dto';
+import { BooksFilterDTO } from './lib/booksFolter.dto';
+import { PageService } from './page.service';
 
 @Injectable()
-export class BooksRepository {
+export class BooksRepository extends PageService {
+  repository: Repository<unknown>;
   constructor(
     @InjectRepository(BookEntity)
     private booksRepository: Repository<BookEntity>,
@@ -29,7 +32,9 @@ export class BooksRepository {
 
     @InjectRepository(CommentsEntity)
     private commentsRepository: Repository<CommentsEntity>,
-  ) {}
+  ) {
+    super();
+  }
 
   async createBookRepository(book: CreateBookDto): Promise<BookEntity> {
     const newBook = this.booksRepository.create(book);
@@ -83,5 +88,29 @@ export class BooksRepository {
     return this.booksRepository.find({
       relations: ['author', 'bookGenres', 'comments', 'rates', 'covers'],
     });
+  }
+
+  async findAllPaginated(filter: BooksFilterDTO) {
+    const { ...params } = filter;
+
+    return await this.paginate(
+      this.repository,
+      filter,
+      this.createWhereQuery(params),
+    );
+  }
+
+  private createWhereQuery(params: BookEntity) {
+    const where: any = {};
+
+    if (params.name) {
+      where.name = ILike(`%${params.name}%`);
+    }
+
+    if (params.id) {
+      where.id = params.id;
+    }
+
+    return where;
   }
 }

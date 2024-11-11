@@ -9,6 +9,8 @@ import { CreateAuthorDto } from './lib/createAuthor.dto';
 import { AuthorEntity } from './entity/author.entity';
 import { CommentsEntity } from 'src/users/entity/comments.entity';
 import { CreateCommentDto } from 'src/users/lib/createComment.dto';
+import { PageService } from './page.service';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class BooksService {
@@ -42,6 +44,11 @@ export class BooksService {
 
   async getAllBooksService(): Promise<BookEntity[]> {
     const Book = await this.booksRepository.getAllBooksRepository();
+    return Book;
+  }
+
+  async findAllBooksService(): Promise<BookEntity[]> {
+    const Book = await this.booksRepository.findAllBooksRepository();
     return Book;
   }
 }

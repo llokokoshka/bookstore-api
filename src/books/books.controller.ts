@@ -5,21 +5,24 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  UploadedFiles,
-  UseInterceptors,
+  Query,
 } from '@nestjs/common';
-import { AnyFilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 
-import { BookEntity } from './entity/books.entity';
 import { BooksService } from './books.service';
-import { CreateBookDto } from './lib/createBook.dto';
+import { BookEntity } from './entity/books.entity';
 import { GenreEntity } from './entity/genre.entity';
-import { CreateGenreDto } from './lib/createGenre.dto';
-import { CreateAuthorDto } from './lib/createAuthor.dto';
 import { AuthorEntity } from './entity/author.entity';
 import { CommentsEntity } from '../users/entity/comments.entity';
+import { CreateBookDto } from './lib/createBook.dto';
+import { CreateGenreDto } from './lib/createGenre.dto';
+import { CreateAuthorDto } from './lib/createAuthor.dto';
 import { CreateCommentDto } from '../users/lib/createComment.dto';
+import { BooksFilterDTO } from './lib/booksFolter.dto';
+
+interface Books {
+  id: number;
+  name: number;
+}
 
 @Controller('books')
 export class BooksController {
@@ -55,5 +58,12 @@ export class BooksController {
   @Get()
   async getAllBooks(): Promise<BookEntity[]> {
     return this.booksService.getAllBooksService();
+  }
+
+  @Get()
+  async list(
+    @Query() filter: BooksFilterDTO & BookEntity,
+  ): Promise<BookEntity[]> {
+    return this.booksService.findAllBooksService();
   }
 }
