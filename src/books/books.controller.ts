@@ -51,7 +51,6 @@ export class BooksController {
   async paginateBooks(
     @Query() pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<CreateBookDto>> {
-    console.log(pageOptionsDto)
     return this.booksService.findAllBooksService(pageOptionsDto);
   }
 
@@ -61,8 +60,6 @@ export class BooksController {
   ): Promise<CommentsEntity> {
     return this.booksService.createCommentService(comment);
   }
-
-
 
   @Get(':id')
   async getBook(@Param('id', ParseIntPipe) id: number): Promise<BookEntity> {
