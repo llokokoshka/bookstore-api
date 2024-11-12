@@ -120,4 +120,13 @@ export class BooksRepository {
     return new PageDto(entities, pageMetaDto);
 
   }
+
+  async updateBookCoverRepository(filename: string, bookId: number): Promise<BookEntity> {
+    const book = await this.booksRepository.findOneBy({ id: bookId });
+    if (!book) {
+      throw new Error('Book not found');
+    }
+    book.img = filename;
+    return await this.booksRepository.save(book);
+  }
 }

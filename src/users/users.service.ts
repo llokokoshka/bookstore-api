@@ -8,6 +8,9 @@ import { UpdatePassDto } from './lib/updatePass.dto';
 
 @Injectable()
 export class UsersService {
+  updateBookCover(filename: any, bookId: any) {
+    throw new Error('Method not implemented.');
+  }
   constructor(private userRepository: UserRepository) {}
 
   async getUser(id: number): Promise<IVisibleUserParams> {

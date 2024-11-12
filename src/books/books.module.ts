@@ -26,5 +26,6 @@ import { BookEntity } from './entity/books.entity';
   ],
   controllers: [BooksController],
   providers: [BooksService, BooksRepository],
+  exports: [BooksService, TypeOrmModule, BooksRepository],
 })
 export class BooksModule { }

@@ -52,4 +52,9 @@ export class BooksService {
     const Book = await this.booksRepository.findAllPaginatedRepository(pageOptionsDto);
     return Book;
   }
+
+  async updateBookCover(filename: string, bookId: number): Promise<BookEntity> {
+    const book = await this.booksRepository.updateBookCoverRepository(filename, bookId);
+    return book;
+  }
 }
