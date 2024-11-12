@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { BookEntity } from '../../books/entity/books.entity';
 import { GenreEntity } from './genre.entity';
 
-@Entity()
+@Entity('book_to_genre_entity')
 export class BookToGenreEntity {
   @PrimaryGeneratedColumn()
   id: number;

@@ -46,13 +46,6 @@ export class BooksController {
     return this.booksService.createAuthorService(author);
   }
 
-  @Post(':id')
-  async createComment(
-    @Body() comment: CreateCommentDto,
-  ): Promise<CommentsEntity> {
-    return this.booksService.createCommentService(comment);
-  }
-
   @Get('paginate')
   @HttpCode(HttpStatus.OK)
   async paginateBooks(
@@ -61,6 +54,15 @@ export class BooksController {
     console.log(pageOptionsDto)
     return this.booksService.findAllBooksService(pageOptionsDto);
   }
+
+  @Post(':id')
+  async createComment(
+    @Body() comment: CreateCommentDto,
+  ): Promise<CommentsEntity> {
+    return this.booksService.createCommentService(comment);
+  }
+
+
 
   @Get(':id')
   async getBook(@Param('id', ParseIntPipe) id: number): Promise<BookEntity> {

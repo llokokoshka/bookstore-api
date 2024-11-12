@@ -81,10 +81,10 @@ export class BooksRepository {
   async getAllBooksRepository(): Promise<BookEntity[]> {
     const aa = await this.booksRepository.findAndCount({
       take: 2,
-      relations: ['author', 'bookGenres', 'comments', 'rates', 'covers'],
+      relations: ['author', 'bookGenres', 'bookGenres.genre', 'comments', 'rates', 'covers'],
     });
     return this.booksRepository.find({
-      relations: ['author', 'bookGenres', 'comments', 'rates', 'covers'],
+      relations: ['author', 'bookGenres', 'bookGenres.genre', 'comments', 'rates', 'covers'],
     });
   }
 
@@ -92,11 +92,19 @@ export class BooksRepository {
 
     const queryBuilder = this.booksRepository.createQueryBuilder("book");
 
+    queryBuilder
+      .leftJoinAndSelect("book.author", "author")
+      .leftJoinAndSelect("book.bookGenres", "bookGenre")
+      .leftJoinAndSelect("bookGenre.genre", "genre")
+      .leftJoinAndSelect("book.comments", "comments")
+      .leftJoinAndSelect("book.rates", "rates")
+      .leftJoinAndSelect("book.covers", "covers");
+
     if (pageOptionsDto.author) {
       queryBuilder.andWhere("book.author LIKE : author", { author: `%${pageOptionsDto.author}%` });
     }
     if (pageOptionsDto.genres && pageOptionsDto.genres.length > 0) {
-      queryBuilder.andWhere("book.id IN (SELECT book.id FROM book_genre bookGenre WHERE bookGenre.genreId IN (:...genres))", { genres: pageOptionsDto.genres, });
+      queryBuilder.andWhere("book.id IN (SELECT book.id FROM book_to_genre_entity bookGenre WHERE bookGenre.genreId IN (:...genres))", { genres: pageOptionsDto.genres, });
     }
 
     if (pageOptionsDto.minPrice !== undefined) {
