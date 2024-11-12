@@ -1,23 +1,20 @@
 import { Injectable } from '@nestjs/common';
 
 import { BooksRepository } from './books.repository';
-import { BookEntity } from './entity/books.entity';
-import { CreateBookDto } from './lib/createBook.dto';
-import { CreateGenreDto } from './lib/createGenre.dto';
-import { GenreEntity } from './entity/genre.entity';
-import { CreateAuthorDto } from './lib/createAuthor.dto';
-import { AuthorEntity } from './entity/author.entity';
 import { CommentsEntity } from 'src/users/entity/comments.entity';
+import { AuthorEntity } from './entity/author.entity';
+import { GenreEntity } from './entity/genre.entity';
+import { BookEntity } from './entity/books.entity';
 import { CreateCommentDto } from 'src/users/lib/createComment.dto';
-// import { PageService } from './page.service';
-import { InjectRepository } from '@nestjs/typeorm';
-import { PageOptionsDto } from './lib/dtos';
-import { PageDto } from './lib/page.dto';
-// import { BooksFilterDTO } from './lib/booksFilter.dto';
+import { CreateAuthorDto } from './lib/create/createAuthor.dto';
+import { PageOptionsDto } from './lib/paginate/pageOptions.dto';
+import { CreateGenreDto } from './lib/create/createGenre.dto';
+import { CreateBookDto } from './lib/create/createBook.dto';
+import { PageDto } from './lib/paginate/page.dto';
 
 @Injectable()
 export class BooksService {
-  constructor(private booksRepository: BooksRepository) {}
+  constructor(private booksRepository: BooksRepository) { }
 
   async createBookService(Book: CreateBookDto): Promise<BookEntity> {
     const book = await this.booksRepository.createBookRepository(Book);
@@ -50,8 +47,8 @@ export class BooksService {
     return Book;
   }
 
-  async findAllBooksService( pageOptionsDto: PageOptionsDto,
-): Promise<PageDto<CreateBookDto>> {
+  async findAllBooksService(pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<CreateBookDto>> {
     const Book = await this.booksRepository.findAllPaginatedRepository(pageOptionsDto);
     return Book;
   }

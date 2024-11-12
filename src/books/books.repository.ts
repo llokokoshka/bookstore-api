@@ -1,24 +1,22 @@
-import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, In, Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
 
-import { BookEntity } from './entity/books.entity';
-import { CreateBookDto } from './lib/createBook.dto';
-import { CreateGenreDto } from './lib/createGenre.dto';
-import { GenreEntity } from './entity/genre.entity';
-import { BookToGenreEntity } from './entity/bookGenre.entity';
-import { CreateAuthorDto } from './lib/createAuthor.dto';
-import { AuthorEntity } from './entity/author.entity';
 import { CommentsEntity } from 'src/users/entity/comments.entity';
+import { BookToGenreEntity } from './entity/bookGenre.entity';
+import { AuthorEntity } from './entity/author.entity';
+import { GenreEntity } from './entity/genre.entity';
+import { BookEntity } from './entity/books.entity';
 import { CreateCommentDto } from 'src/users/lib/createComment.dto';
-// import { BooksFilterDTO } from './lib/booksFilter.dto';
-// import { PageService } from './page.service';
-import { PageMetaDto } from './lib/page-meta.dto';
-import { PageDto } from './lib/page.dto';
-import { PageOptionsDto } from './lib/dtos';
+import { PageOptionsDto } from './lib/paginate/pageOptions.dto';
+import { CreateAuthorDto } from './lib/create/createAuthor.dto';
+import { CreateGenreDto } from './lib/create/createGenre.dto';
+import { CreateBookDto } from './lib/create/createBook.dto';
+import { PageMetaDto } from './lib/paginate/pageMeta.dto';
+import { PageDto } from './lib/paginate/page.dto';
 
 @Injectable()
-export class BooksRepository{
+export class BooksRepository {
   repository: Repository<unknown>;
   constructor(
     @InjectRepository(BookEntity)
@@ -35,7 +33,7 @@ export class BooksRepository{
 
     @InjectRepository(CommentsEntity)
     private commentsRepository: Repository<CommentsEntity>,
-  ) {}
+  ) { }
 
   async createBookRepository(book: CreateBookDto): Promise<BookEntity> {
     const newBook = this.booksRepository.create(book);
@@ -90,25 +88,24 @@ export class BooksRepository{
     });
   }
 
-  async findAllPaginatedRepository(pageOptionsDto: PageOptionsDto){
-    // const where: any = {};
+  async findAllPaginatedRepository(pageOptionsDto: PageOptionsDto) {
 
-    // if (filter.author) {
-    //   where.author = ILike(`%${filter.author}%`);
-    // }
-    
-    // if (filter.genres && filter.genres.length > 0) {
-    //   where.genres = { id: In(filter.genres) };
-    // }
-    
-    // if (filter.minPrice || filter.maxPrice) {
-    //   where.price = {};
-    //   if (filter.minPrice) where.price['$gte'] = filter.minPrice;
-    //   if (filter.maxPrice) where.price['$lte'] = filter.maxPrice;
-    // }
-  
-    // return await this.paginate(this.booksRepository, filter, where);
     const queryBuilder = this.booksRepository.createQueryBuilder("book");
+
+    if (pageOptionsDto.author) {
+      queryBuilder.andWhere("book.author LIKE : author", { author: `%${pageOptionsDto.author}%` });
+    }
+    if (pageOptionsDto.genres && pageOptionsDto.genres.length > 0) {
+      queryBuilder.andWhere("book.id IN (SELECT book.id FROM book_genre bookGenre WHERE bookGenre.genreId IN (:...genres))", { genres: pageOptionsDto.genres, });
+    }
+
+    if (pageOptionsDto.minPrice !== undefined) {
+      queryBuilder.andWhere("book.price >= :minPrice", { minPrice: pageOptionsDto.minPrice });
+    }
+
+    if (pageOptionsDto.maxPrice !== undefined) {
+      queryBuilder.andWhere("book.price <= :maxPrice", { maxPrice: pageOptionsDto.maxPrice });
+    }
 
     queryBuilder
       .orderBy("book.name", pageOptionsDto.order)
@@ -121,6 +118,6 @@ export class BooksRepository{
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
 
     return new PageDto(entities, pageMetaDto);
-  
+
   }
 }

@@ -7,11 +7,11 @@ import {
   IsString,
 } from 'class-validator';
 
-import { AuthorEntity } from '../entity/author.entity';
-import { BookToGenreEntity } from '../entity/bookGenre.entity';
+import { AuthorEntity } from '../../entity/author.entity';
+import { BookToGenreEntity } from '../../entity/bookGenre.entity';
 import { CommentsEntity } from 'src/users/entity/comments.entity';
 import { RateEntity } from 'src/users/entity/rate.entity';
-import { CoverEntity } from '../entity/covers.entity';
+import { CoverEntity } from '../../entity/covers.entity';
 
 export class CreateBookDto {
   @IsNotEmpty()

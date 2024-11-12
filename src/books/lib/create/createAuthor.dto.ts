@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-import { BookEntity } from '../entity/books.entity';
+import { BookEntity } from '../../entity/books.entity';
 
 export class CreateAuthorDto {
   @IsNotEmpty()

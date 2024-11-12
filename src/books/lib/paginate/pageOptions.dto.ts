@@ -1,13 +1,13 @@
 import { Type } from "class-transformer";
-import { IsEnum, IsInt, IsOptional, Max, Min } from "class-validator";
+import { IsArray, IsEnum, IsInt, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
 
 export enum Order {
-    ASC = "ASC",
-    DESC = "DESC",
-  }
+  ASC = "ASC",
+  DESC = "DESC",
+}
 
 export class PageOptionsDto {
-    @IsOptional()
+  @IsOptional()
   @IsEnum(Order)
   readonly order?: Order = Order.ASC;
 
@@ -23,6 +23,24 @@ export class PageOptionsDto {
   @Min(1)
   @Max(12)
   readonly take?: number = 12;
+
+  @IsOptional()
+  @IsString()
+  author?: string;
+
+  @IsOptional()
+  @IsArray()
+  genres?: number[];
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  minPrice?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Max(10000)
+  maxPrice?: number;
 
   get skip(): number {
     return (this.page - 1) * this.take;

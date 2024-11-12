@@ -10,18 +10,17 @@ import {
   Query,
 } from '@nestjs/common';
 
-import { BooksService } from './books.service';
-import { BookEntity } from './entity/books.entity';
-import { GenreEntity } from './entity/genre.entity';
-import { AuthorEntity } from './entity/author.entity';
 import { CommentsEntity } from '../users/entity/comments.entity';
-import { CreateBookDto } from './lib/createBook.dto';
-import { CreateGenreDto } from './lib/createGenre.dto';
-import { CreateAuthorDto } from './lib/createAuthor.dto';
+import { AuthorEntity } from './entity/author.entity';
+import { GenreEntity } from './entity/genre.entity';
+import { BookEntity } from './entity/books.entity';
+import { BooksService } from './books.service';
 import { CreateCommentDto } from '../users/lib/createComment.dto';
-// import { BooksFilterDTO } from './lib/booksFilter.dto';
-import { PageOptionsDto } from './lib/dtos';
-import { PageDto } from './lib/page.dto';
+import { CreateAuthorDto } from './lib/create/createAuthor.dto';
+import { PageOptionsDto } from './lib/paginate/pageOptions.dto';
+import { CreateGenreDto } from './lib/create/createGenre.dto';
+import { CreateBookDto } from './lib/create/createBook.dto';
+import { PageDto } from './lib/paginate/page.dto';
 
 interface Books {
   id: number;
@@ -30,7 +29,7 @@ interface Books {
 
 @Controller('books')
 export class BooksController {
-  constructor(private booksService: BooksService) {}
+  constructor(private booksService: BooksService) { }
 
   @Post('create')
   async createBook(@Body() book: CreateBookDto): Promise<BookEntity> {
@@ -53,15 +52,15 @@ export class BooksController {
   ): Promise<CommentsEntity> {
     return this.booksService.createCommentService(comment);
   }
-  
-    @Get('paginate')
-    @HttpCode(HttpStatus.OK)
-    async paginateBooks(
-      @Query() pageOptionsDto: PageOptionsDto,
-    ): Promise<PageDto<CreateBookDto>> {
-      console.log(pageOptionsDto)
-      return this.booksService.findAllBooksService(pageOptionsDto);
-    }
+
+  @Get('paginate')
+  @HttpCode(HttpStatus.OK)
+  async paginateBooks(
+    @Query() pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<CreateBookDto>> {
+    console.log(pageOptionsDto)
+    return this.booksService.findAllBooksService(pageOptionsDto);
+  }
 
   @Get(':id')
   async getBook(@Param('id', ParseIntPipe) id: number): Promise<BookEntity> {
@@ -73,14 +72,3 @@ export class BooksController {
     return this.booksService.getAllBooksService();
   }
 }
-  // async list(
-  //   @Query('pageNum', ParseIntPipe) filter: BooksFilterDTO,
-  // ) {
-  //   console.log('Pagination Filter:', filter);
-  //   return {
-  //     pageNum: filter.pageNum,
-  //     pageSize: filter.pageSize,
-  //   };
-  //   // return this.booksService.findAllBooksService(filter);
-  // }
-// }
