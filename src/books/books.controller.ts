@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
@@ -17,7 +19,9 @@ import { CreateBookDto } from './lib/createBook.dto';
 import { CreateGenreDto } from './lib/createGenre.dto';
 import { CreateAuthorDto } from './lib/createAuthor.dto';
 import { CreateCommentDto } from '../users/lib/createComment.dto';
-import { BooksFilterDTO } from './lib/booksFolter.dto';
+// import { BooksFilterDTO } from './lib/booksFilter.dto';
+import { PageOptionsDto } from './lib/dtos';
+import { PageDto } from './lib/page.dto';
 
 interface Books {
   id: number;
@@ -49,6 +53,15 @@ export class BooksController {
   ): Promise<CommentsEntity> {
     return this.booksService.createCommentService(comment);
   }
+  
+    @Get('paginate')
+    @HttpCode(HttpStatus.OK)
+    async paginateBooks(
+      @Query() pageOptionsDto: PageOptionsDto,
+    ): Promise<PageDto<CreateBookDto>> {
+      console.log(pageOptionsDto)
+      return this.booksService.findAllBooksService(pageOptionsDto);
+    }
 
   @Get(':id')
   async getBook(@Param('id', ParseIntPipe) id: number): Promise<BookEntity> {
@@ -59,11 +72,15 @@ export class BooksController {
   async getAllBooks(): Promise<BookEntity[]> {
     return this.booksService.getAllBooksService();
   }
-
-  @Get()
-  async list(
-    @Query() filter: BooksFilterDTO & BookEntity,
-  ): Promise<BookEntity[]> {
-    return this.booksService.findAllBooksService();
-  }
 }
+  // async list(
+  //   @Query('pageNum', ParseIntPipe) filter: BooksFilterDTO,
+  // ) {
+  //   console.log('Pagination Filter:', filter);
+  //   return {
+  //     pageNum: filter.pageNum,
+  //     pageSize: filter.pageSize,
+  //   };
+  //   // return this.booksService.findAllBooksService(filter);
+  // }
+// }

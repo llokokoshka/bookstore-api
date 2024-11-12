@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 
 import { BookEntity } from './entity/books.entity';
 import { CreateBookDto } from './lib/createBook.dto';
@@ -11,11 +11,14 @@ import { CreateAuthorDto } from './lib/createAuthor.dto';
 import { AuthorEntity } from './entity/author.entity';
 import { CommentsEntity } from 'src/users/entity/comments.entity';
 import { CreateCommentDto } from 'src/users/lib/createComment.dto';
-import { BooksFilterDTO } from './lib/booksFolter.dto';
-import { PageService } from './page.service';
+// import { BooksFilterDTO } from './lib/booksFilter.dto';
+// import { PageService } from './page.service';
+import { PageMetaDto } from './lib/page-meta.dto';
+import { PageDto } from './lib/page.dto';
+import { PageOptionsDto } from './lib/dtos';
 
 @Injectable()
-export class BooksRepository extends PageService {
+export class BooksRepository{
   repository: Repository<unknown>;
   constructor(
     @InjectRepository(BookEntity)
@@ -32,9 +35,7 @@ export class BooksRepository extends PageService {
 
     @InjectRepository(CommentsEntity)
     private commentsRepository: Repository<CommentsEntity>,
-  ) {
-    super();
-  }
+  ) {}
 
   async createBookRepository(book: CreateBookDto): Promise<BookEntity> {
     const newBook = this.booksRepository.create(book);
@@ -84,33 +85,42 @@ export class BooksRepository extends PageService {
       take: 2,
       relations: ['author', 'bookGenres', 'comments', 'rates', 'covers'],
     });
-    console.log('aa >>> ', aa);
     return this.booksRepository.find({
       relations: ['author', 'bookGenres', 'comments', 'rates', 'covers'],
     });
   }
 
-  async findAllPaginated(filter: BooksFilterDTO) {
-    const { ...params } = filter;
+  async findAllPaginatedRepository(pageOptionsDto: PageOptionsDto){
+    // const where: any = {};
 
-    return await this.paginate(
-      this.repository,
-      filter,
-      this.createWhereQuery(params),
-    );
-  }
+    // if (filter.author) {
+    //   where.author = ILike(`%${filter.author}%`);
+    // }
+    
+    // if (filter.genres && filter.genres.length > 0) {
+    //   where.genres = { id: In(filter.genres) };
+    // }
+    
+    // if (filter.minPrice || filter.maxPrice) {
+    //   where.price = {};
+    //   if (filter.minPrice) where.price['$gte'] = filter.minPrice;
+    //   if (filter.maxPrice) where.price['$lte'] = filter.maxPrice;
+    // }
+  
+    // return await this.paginate(this.booksRepository, filter, where);
+    const queryBuilder = this.booksRepository.createQueryBuilder("book");
 
-  private createWhereQuery(params: BookEntity) {
-    const where: any = {};
+    queryBuilder
+      .orderBy("book.name", pageOptionsDto.order)
+      .skip(pageOptionsDto.skip)
+      .take(pageOptionsDto.take);
 
-    if (params.name) {
-      where.name = ILike(`%${params.name}%`);
-    }
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
 
-    if (params.id) {
-      where.id = params.id;
-    }
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
 
-    return where;
+    return new PageDto(entities, pageMetaDto);
+  
   }
 }
