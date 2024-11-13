@@ -16,6 +16,7 @@ import { UserRepository } from './users/users.repository';
 import { dbConfig } from './db/dataSource';
 import { FilesModule } from './files/files.module';
 import { BooksModule } from './books/books.module';
+import { GenresModule } from './genres/genres.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { BooksModule } from './books/books.module';
     UsersModule,
     BooksModule,
     FilesModule,
+    GenresModule
   ],
   controllers: [AppController, UsersController],
   providers: [
