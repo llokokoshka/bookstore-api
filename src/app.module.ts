@@ -20,12 +20,12 @@ import { BooksModule } from './books/books.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(dbConfig),
-    AuthModule,
     ConfigModule.forRoot({ isGlobal: true, load: [loadConfig] }),
-    UsersModule,
     MulterModule.register({
       dest: './uploads',
     }),
+    AuthModule,
+    UsersModule,
     BooksModule,
     FilesModule,
   ],
@@ -33,11 +33,11 @@ import { BooksModule } from './books/books.module';
   providers: [
     AppService,
     UserRepository,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
     CreateTokensUtil,
   ],
 })
-export class AppModule {}
+export class AppModule { }
