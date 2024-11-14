@@ -137,14 +137,17 @@ export class BooksRepository {
       });
     }
 
+    if (!pageOptionsDto.sortBy) {
+      pageOptionsDto.sortBy = 'name';
+    }
+
     queryBuilder
-      .orderBy('book.name', pageOptionsDto.order)
+      .orderBy(`book.${pageOptionsDto.sortBy}`, pageOptionsDto.order)
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take);
 
     const itemCount = await queryBuilder.getCount();
     const { entities } = await queryBuilder.getRawAndEntities();
-
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
 
     return new PageDto(entities, pageMetaDto);

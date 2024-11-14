@@ -56,6 +56,10 @@ export class PageOptionsDto {
   @Max(10000)
   maxPrice?: number;
 
+  @IsOptional()
+  @IsString()
+  sortBy?: string;
+
   get skip(): number {
     return (this.page - 1) * this.take;
   }
