@@ -33,7 +33,7 @@ export class BooksRepository {
 
     @InjectRepository(CommentsEntity)
     private commentsRepository: Repository<CommentsEntity>,
-  ) { }
+  ) {}
 
   async createBookRepository(book: CreateBookDto): Promise<BookEntity> {
     const newBook = this.booksRepository.create(book);
@@ -81,42 +81,64 @@ export class BooksRepository {
   async getAllBooksRepository(): Promise<BookEntity[]> {
     const aa = await this.booksRepository.findAndCount({
       take: 2,
-      relations: ['author', 'bookGenres', 'bookGenres.genre', 'comments', 'rates', 'covers'],
+      relations: [
+        'author',
+        'bookGenres',
+        'bookGenres.genre',
+        'comments',
+        'rates',
+        'covers',
+      ],
     });
     return this.booksRepository.find({
-      relations: ['author', 'bookGenres', 'bookGenres.genre', 'comments', 'rates', 'covers'],
+      relations: [
+        'author',
+        'bookGenres',
+        'bookGenres.genre',
+        'comments',
+        'rates',
+        'covers',
+      ],
     });
   }
 
   async findAllPaginatedRepository(pageOptionsDto: PageOptionsDto) {
-
-    const queryBuilder = this.booksRepository.createQueryBuilder("book");
+    const queryBuilder = this.booksRepository.createQueryBuilder('book');
 
     queryBuilder
-      .leftJoinAndSelect("book.author", "author")
-      .leftJoinAndSelect("book.bookGenres", "bookGenre")
-      .leftJoinAndSelect("bookGenre.genre", "genre")
-      .leftJoinAndSelect("book.comments", "comments")
-      .leftJoinAndSelect("book.rates", "rates")
-      .leftJoinAndSelect("book.covers", "covers");
+      .leftJoinAndSelect('book.author', 'author')
+      .leftJoinAndSelect('book.bookGenres', 'bookGenre')
+      .leftJoinAndSelect('bookGenre.genre', 'genre')
+      .leftJoinAndSelect('book.comments', 'comments')
+      .leftJoinAndSelect('book.rates', 'rates')
+      .leftJoinAndSelect('book.covers', 'covers');
 
     if (pageOptionsDto.author) {
-      queryBuilder.andWhere("book.author LIKE : author", { author: `%${pageOptionsDto.author}%` });
+      queryBuilder.andWhere('book.author LIKE : author', {
+        author: `%${pageOptionsDto.author}%`,
+      });
     }
     if (pageOptionsDto.genres && pageOptionsDto.genres.length > 0) {
-      queryBuilder.andWhere("book.id IN (SELECT book.id FROM book_to_genre_entity bookGenre WHERE bookGenre.genreId IN (:...genres))", { genres: pageOptionsDto.genres, });
+      queryBuilder.andWhere(
+        'book.id IN (SELECT book.id FROM book_to_genre_entity bookGenre WHERE bookGenre.genreId IN (:...genres))',
+        { genres: pageOptionsDto.genres },
+      );
     }
 
     if (pageOptionsDto.minPrice !== undefined) {
-      queryBuilder.andWhere("book.price >= :minPrice", { minPrice: pageOptionsDto.minPrice });
+      queryBuilder.andWhere('book.price >= :minPrice', {
+        minPrice: pageOptionsDto.minPrice,
+      });
     }
 
     if (pageOptionsDto.maxPrice !== undefined) {
-      queryBuilder.andWhere("book.price <= :maxPrice", { maxPrice: pageOptionsDto.maxPrice });
+      queryBuilder.andWhere('book.price <= :maxPrice', {
+        maxPrice: pageOptionsDto.maxPrice,
+      });
     }
 
     queryBuilder
-      .orderBy("book.name", pageOptionsDto.order)
+      .orderBy('book.name', pageOptionsDto.order)
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take);
 
@@ -126,10 +148,12 @@ export class BooksRepository {
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
 
     return new PageDto(entities, pageMetaDto);
-
   }
 
-  async updateBookCoverRepository(filename: string, bookId: number): Promise<BookEntity> {
+  async updateBookCoverRepository(
+    filename: string,
+    bookId: number,
+  ): Promise<BookEntity> {
     const book = await this.booksRepository.findOneBy({ id: bookId });
     if (!book) {
       throw new Error('Book not found');

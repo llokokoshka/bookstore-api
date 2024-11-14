@@ -28,4 +28,4 @@ import { BookEntity } from './entity/books.entity';
   providers: [BooksService, BooksRepository],
   exports: [BooksService, TypeOrmModule, BooksRepository],
 })
-export class BooksModule { }
+export class BooksModule {}

@@ -16,12 +16,12 @@ import { UsersService } from '../users/users.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { BooksService } from 'src/books/books.service';
 
-
 @Controller('files')
 export class FilesController {
-  constructor(private userService: UsersService,
-    private booksService: BooksService
-  ) { }
+  constructor(
+    private userService: UsersService,
+    private booksService: BooksService,
+  ) {}
 
   @UseGuards(AuthGuard)
   @Post()
@@ -29,7 +29,7 @@ export class FilesController {
     AnyFilesInterceptor({
       storage: diskStorage({
         destination: (req, file, cb) => {
-          const fileType = req.headers['x-file-type'];;
+          const fileType = req.headers['x-file-type'];
           let uploadPath = './public/uploads/';
 
           if (fileType === 'avatar') {
@@ -38,7 +38,6 @@ export class FilesController {
             uploadPath += 'books';
           } else {
             uploadPath += 'others';
-
           }
           cb(null, uploadPath);
         },
@@ -56,7 +55,7 @@ export class FilesController {
       };
     }
     const file = files[0];
-    const fileType = req.headers['x-file-type'];;
+    const fileType = req.headers['x-file-type'];
 
     if (fileType === 'avatar') {
       await this.userService.updateUser({ avatar: file.filename }, req.user.id);
@@ -85,7 +84,4 @@ export class FilesController {
       message: 'Invalid file type',
     };
   }
-
 }
-
-

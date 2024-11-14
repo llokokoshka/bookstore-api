@@ -2,9 +2,8 @@ import { UserEntity } from './entity/users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { UpdateUserDto } from './lib/updateUser.dto';
+
 import { CreateUserDto } from './lib/createUsers.dto';
-import { IUser } from './lib/userI';
 import { UpdatePassDto } from './lib/updatePass.dto';
 import { generatePassword, validPassword } from 'src/auth/utils/auth.utils';
 

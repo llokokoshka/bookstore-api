@@ -1,4 +1,4 @@
-import { PageMetaDtoParameters } from "../types";
+import { PageMetaDtoParameters } from '../types';
 
 export class PageMetaDto {
   readonly page: number;

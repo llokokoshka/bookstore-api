@@ -29,7 +29,7 @@ interface Books {
 
 @Controller('books')
 export class BooksController {
-  constructor(private booksService: BooksService) { }
+  constructor(private booksService: BooksService) {}
 
   @Post('create')
   async createBook(@Body() book: CreateBookDto): Promise<BookEntity> {

@@ -14,7 +14,7 @@ import { PageDto } from './lib/paginate/page.dto';
 
 @Injectable()
 export class BooksService {
-  constructor(private booksRepository: BooksRepository) { }
+  constructor(private booksRepository: BooksRepository) {}
 
   async createBookService(Book: CreateBookDto): Promise<BookEntity> {
     const book = await this.booksRepository.createBookRepository(Book);
@@ -47,14 +47,19 @@ export class BooksService {
     return Book;
   }
 
-  async findAllBooksService(pageOptionsDto: PageOptionsDto,
+  async findAllBooksService(
+    pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<CreateBookDto>> {
-    const Book = await this.booksRepository.findAllPaginatedRepository(pageOptionsDto);
+    const Book =
+      await this.booksRepository.findAllPaginatedRepository(pageOptionsDto);
     return Book;
   }
 
   async updateBookCover(filename: string, bookId: number): Promise<BookEntity> {
-    const book = await this.booksRepository.updateBookCoverRepository(filename, bookId);
+    const book = await this.booksRepository.updateBookCoverRepository(
+      filename,
+      bookId,
+    );
     return book;
   }
 }

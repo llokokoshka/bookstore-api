@@ -1,9 +1,18 @@
-import { Transform, Type } from "class-transformer";
-import { IsArray, IsEnum, IsInt, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
+import { Transform, Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEnum,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 
 export enum Order {
-  ASC = "ASC",
-  DESC = "DESC",
+  ASC = 'ASC',
+  DESC = 'DESC',
 }
 
 export class PageOptionsDto {
@@ -29,7 +38,11 @@ export class PageOptionsDto {
   author?: string;
 
   @IsOptional()
-  @Transform(({ value }) => (typeof value === 'string' ? value.split(',').map(Number) : value), { toClassOnly: true })
+  @Transform(
+    ({ value }) =>
+      typeof value === 'string' ? value.split(',').map(Number) : value,
+    { toClassOnly: true },
+  )
   @IsArray()
   genres?: number[];
 

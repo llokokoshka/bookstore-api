@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Patch,
-  Post,
   Delete,
   Param,
   Body,
@@ -10,6 +9,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './lib/updateUser.dto';
 import { IVisibleUserParams } from './lib/visibleUserParams.interface';

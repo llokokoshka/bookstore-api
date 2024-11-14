@@ -6,12 +6,12 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { UserRepository } from 'src/users/users.repository';
 import {
   generatePassword,
   validPassword,
   visibleParamsOfUser,
 } from './utils/auth.utils';
+import { UserRepository } from 'src/users/users.repository';
 import { CreateTokensUtil } from './utils/token.utils';
 import { LoginUserDto } from 'src/users/lib/loginUser.dto';
 

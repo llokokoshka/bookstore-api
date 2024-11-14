@@ -3,7 +3,6 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UserEntity } from './entity/users.entity';
 import { UserRepository } from './users.repository';
 import { IVisibleUserParams } from './lib/visibleUserParams.interface';
-import { IUser } from './lib/userI';
 import { UpdatePassDto } from './lib/updatePass.dto';
 
 @Injectable()
