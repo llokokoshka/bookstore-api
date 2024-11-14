@@ -1,4 +1,3 @@
-// genres/genres.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GenresService } from './genres.service';
@@ -7,9 +6,8 @@ import { GenreEntity } from 'src/books/entity/genre.entity';
 import { GenreRepository } from './genres.repository';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([GenreEntity])],
-    controllers: [GenresController],
-    providers: [GenresService, GenreRepository],
-    //   exports: [GenresService], 
+  imports: [TypeOrmModule.forFeature([GenreEntity])],
+  controllers: [GenresController],
+  providers: [GenresService, GenreRepository],
 })
-export class GenresModule { }
+export class GenresModule {}
