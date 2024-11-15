@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
+  IsDate,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -26,10 +27,6 @@ export class CreateBookDto {
   @IsString()
   description: string;
 
-  @IsNotEmpty()
-  @IsInt()
-  quantity: number;
-
   @IsBoolean()
   @IsOptional()
   isBestseller: boolean;
@@ -37,6 +34,11 @@ export class CreateBookDto {
   @IsBoolean()
   @IsOptional()
   isNew: boolean;
+
+  @IsNotEmpty()
+  @Type(() => Date)
+  @IsDate()
+  dateOfIssue: Date;
 
   @IsOptional()
   @Type(() => AuthorEntity)

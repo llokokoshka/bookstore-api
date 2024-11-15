@@ -11,6 +11,7 @@ import { PageOptionsDto } from './lib/paginate/pageOptions.dto';
 import { CreateGenreDto } from './lib/create/createGenre.dto';
 import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageDto } from './lib/paginate/page.dto';
+import { CreateCoverTypeDto } from './lib/create/createCoverType.dto';
 
 @Injectable()
 export class BooksService {

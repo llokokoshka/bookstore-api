@@ -26,9 +26,6 @@ export class BookEntity {
   @Column()
   description: string;
 
-  @Column()
-  quantity: number;
-
   @Column({ default: false })
   isBestseller: boolean;
 

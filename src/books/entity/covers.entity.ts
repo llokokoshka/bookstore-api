@@ -1,14 +1,11 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
-import { BookToGenreEntity } from './bookGenre.entity';
 import { BookEntity } from './books.entity';
-import { CoverTypeEntity } from './coverType.entity';
+
+export enum CoverType {
+  PAPERBACK = 'Paperback',
+  HARDCOVER = 'Hardcover',
+}
 
 @Entity()
 export class CoverEntity {
@@ -18,9 +15,12 @@ export class CoverEntity {
   @Column({ default: null })
   price: number;
 
+  @Column()
+  quantity: number;
+
+  @Column({ type: 'enum', enum: CoverType })
+  coverTypes: CoverType;
+
   @ManyToOne(() => BookEntity, (book) => book.covers)
   book: BookEntity;
-
-  @OneToMany(() => CoverTypeEntity, (coverType) => coverType.cover)
-  coverTypes: CoverTypeEntity[];
 }
