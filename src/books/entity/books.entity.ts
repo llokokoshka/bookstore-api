@@ -35,6 +35,9 @@ export class BookEntity {
   @Column({ default: false })
   isNew: boolean;
 
+  @Column({ type: 'date', default: '1800-01-01' })
+  dateOfIssue: Date;
+
   @ManyToOne(() => AuthorEntity, (author) => author.books)
   author: AuthorEntity;
 
