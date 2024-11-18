@@ -105,7 +105,7 @@ export class BooksRepository {
     // .leftJoinAndSelect('book.rates', 'rates')
 
     if (pageOptionsDto.author) {
-      queryBuilder.andWhere('book.author LIKE :author', {
+      queryBuilder.andWhere('author.text LIKE :author)', {
         author: `%${pageOptionsDto.author}%`,
       });
     }
@@ -117,26 +117,41 @@ export class BooksRepository {
     }
 
     if (pageOptionsDto.minPrice !== undefined) {
-      queryBuilder.andWhere(
-        'book.cover IN (SELECT book.cover FROM cover_entity cover WHERE cover.paperback_price >= :minPrice)',
-        {
-          minPrice: pageOptionsDto.minPrice,
-        },
-      );
+      queryBuilder.andWhere('cover.paperback_price >= :minPrice', {
+        minPrice: pageOptionsDto.minPrice,
+      });
     }
 
     if (pageOptionsDto.maxPrice !== undefined) {
-      queryBuilder.andWhere('book.price <= :maxPrice', {
+      queryBuilder.andWhere('cover.paperback_price  <= :maxPrice', {
         maxPrice: pageOptionsDto.maxPrice,
       });
     }
 
-    if (!pageOptionsDto.sortBy) {
-      pageOptionsDto.sortBy = 'name';
+    let sortField: string;
+
+    switch (pageOptionsDto.sortBy) {
+      case 'Price':
+        sortField = 'cover.paperback_price';
+        break;
+      case 'Name':
+        sortField = 'book.name';
+        break;
+      case 'Author name':
+        sortField = 'author.text';
+        break;
+      case 'Rating':
+        sortField = 'book.name';
+        break;
+      case 'Date of issue':
+        sortField = 'book.dateOfIssue';
+        break;
+      default:
+        sortField = 'book.name';
     }
 
     queryBuilder
-      .orderBy(`book.${pageOptionsDto.sortBy}`, pageOptionsDto.order)
+      .orderBy(sortField, pageOptionsDto.order)
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take);
 
