@@ -104,11 +104,6 @@ export class BooksRepository {
     // .leftJoinAndSelect('book.comments', 'comments')
     // .leftJoinAndSelect('book.rates', 'rates')
 
-    if (pageOptionsDto.author) {
-      queryBuilder.andWhere('author.text LIKE :author)', {
-        author: `%${pageOptionsDto.author}%`,
-      });
-    }
     if (pageOptionsDto.genres && pageOptionsDto.genres.length > 0) {
       queryBuilder.andWhere(
         'book.id IN (SELECT book.id FROM book_to_genre_entity bookGenre WHERE bookGenre.genreId IN (:...genres))',
@@ -117,22 +112,33 @@ export class BooksRepository {
     }
 
     if (pageOptionsDto.minPrice !== undefined) {
-      queryBuilder.andWhere('cover.paperback_price >= :minPrice', {
-        minPrice: pageOptionsDto.minPrice,
-      });
+      queryBuilder.andWhere(
+        '(CASE WHEN cover.hardcover_amount > 0 THEN cover.hardcover_price ELSE cover.paperback_price END) >= :minPrice',
+        {
+          minPrice: pageOptionsDto.minPrice,
+        },
+      );
     }
 
     if (pageOptionsDto.maxPrice !== undefined) {
-      queryBuilder.andWhere('cover.paperback_price  <= :maxPrice', {
-        maxPrice: pageOptionsDto.maxPrice,
-      });
+      queryBuilder.andWhere(
+        '(CASE WHEN cover.hardcover_amount > 0 THEN cover.hardcover_price ELSE cover.paperback_price END)  <= :maxPrice',
+        {
+          maxPrice: pageOptionsDto.maxPrice,
+        },
+      );
     }
+
+    queryBuilder.addSelect(
+      'CASE WHEN cover.hardcover_amount > 0 THEN cover.hardcover_price ELSE cover.paperback_price END',
+      'sort_field_price',
+    );
 
     let sortField: string;
 
     switch (pageOptionsDto.sortBy) {
       case 'Price':
-        sortField = 'cover.paperback_price';
+        sortField = 'sort_field_price';
         break;
       case 'Name':
         sortField = 'book.name';
