@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { BooksRepository } from './books.repository';
-import { CommentsEntity } from 'src/users/entity/comments.entity';
+// import { CommentsEntity } from 'src/users/entity/comments.entity';
 import { AuthorEntity } from './entity/author.entity';
 import { GenreEntity } from './entity/genre.entity';
 import { BookEntity } from './entity/books.entity';
@@ -11,7 +11,6 @@ import { PageOptionsDto } from './lib/paginate/pageOptions.dto';
 import { CreateGenreDto } from './lib/create/createGenre.dto';
 import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageDto } from './lib/paginate/page.dto';
-import { CreateCoverTypeDto } from './lib/create/createCoverType.dto';
 
 @Injectable()
 export class BooksService {
@@ -29,13 +28,6 @@ export class BooksService {
   async createAuthorService(Author: CreateAuthorDto): Promise<AuthorEntity> {
     const author = await this.booksRepository.createAuthorRepository(Author);
     return author;
-  }
-
-  async createCommentService(
-    Comment: CreateCommentDto,
-  ): Promise<CommentsEntity> {
-    const comment = await this.booksRepository.createCommentRepository(Comment);
-    return comment;
   }
 
   async getBookService(id: number): Promise<BookEntity> {
@@ -63,4 +55,11 @@ export class BooksService {
     );
     return book;
   }
+
+  // async createCommentService(
+  //   Comment: CreateCommentDto,
+  // ): Promise<CommentsEntity> {
+  //   const comment = await this.booksRepository.createCommentRepository(Comment);
+  //   return comment;
+  // }
 }

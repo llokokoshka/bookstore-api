@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 
-import { CommentsEntity } from '../users/entity/comments.entity';
+// import { CommentsEntity } from '../users/entity/comments.entity';
 import { AuthorEntity } from './entity/author.entity';
 import { GenreEntity } from './entity/genre.entity';
 import { BookEntity } from './entity/books.entity';
@@ -21,12 +21,6 @@ import { PageOptionsDto } from './lib/paginate/pageOptions.dto';
 import { CreateGenreDto } from './lib/create/createGenre.dto';
 import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageDto } from './lib/paginate/page.dto';
-import { CreateCoverTypeDto } from './lib/create/createCoverType.dto';
-
-interface Books {
-  id: number;
-  name: number;
-}
 
 @Controller('books')
 export class BooksController {
@@ -54,14 +48,6 @@ export class BooksController {
   ): Promise<PageDto<CreateBookDto>> {
     return this.booksService.findAllBooksService(pageOptionsDto);
   }
-
-  @Post(':id')
-  async createComment(
-    @Body() comment: CreateCommentDto,
-  ): Promise<CommentsEntity> {
-    return this.booksService.createCommentService(comment);
-  }
-
   @Get(':id')
   async getBook(@Param('id', ParseIntPipe) id: number): Promise<BookEntity> {
     return this.booksService.getBookService(id);
@@ -71,4 +57,11 @@ export class BooksController {
   async getAllBooks(): Promise<BookEntity[]> {
     return this.booksService.getAllBooksService();
   }
+
+  // @Post(':id')
+  // async createComment(
+  //   @Body() comment: CreateCommentDto,
+  // ): Promise<CommentsEntity> {
+  //   return this.booksService.createCommentService(comment);
+  // }
 }

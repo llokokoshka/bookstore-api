@@ -4,13 +4,15 @@ import {
   Column,
   OneToMany,
   ManyToOne,
+  JoinColumn,
+  OneToOne,
 } from 'typeorm';
 
-import { CommentsEntity } from '../../users/entity/comments.entity';
-import { RateEntity } from '../../users/entity/rate.entity';
 import { AuthorEntity } from './author.entity';
 import { BookToGenreEntity } from './bookGenre.entity';
 import { CoverEntity } from './covers.entity';
+// import { CommentsEntity } from '../../users/entity/comments.entity';
+// import { RateEntity } from '../../users/entity/rate.entity';
 
 @Entity()
 export class BookEntity {
@@ -41,12 +43,13 @@ export class BookEntity {
   @OneToMany(() => BookToGenreEntity, (bookGenre) => bookGenre.book)
   bookGenres: BookToGenreEntity[];
 
-  @OneToMany(() => CommentsEntity, (comment) => comment.book)
-  comments: CommentsEntity[];
+  @OneToOne(() => CoverEntity)
+  @JoinColumn()
+  cover: CoverEntity;
 
-  @OneToMany(() => RateEntity, (rate) => rate.book)
-  rates: RateEntity[];
+  // @OneToMany(() => CommentsEntity, (comment) => comment.book)
+  // comments: CommentsEntity[];
 
-  @OneToMany(() => CoverEntity, (cover) => cover.book)
-  covers: CoverEntity[];
+  // @OneToMany(() => RateEntity, (rate) => rate.book)
+  // rates: RateEntity[];
 }

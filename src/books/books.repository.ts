@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { CommentsEntity } from 'src/users/entity/comments.entity';
+// import { CommentsEntity } from 'src/users/entity/comments.entity';
 import { BookToGenreEntity } from './entity/bookGenre.entity';
 import { AuthorEntity } from './entity/author.entity';
 import { GenreEntity } from './entity/genre.entity';
@@ -14,7 +14,7 @@ import { CreateGenreDto } from './lib/create/createGenre.dto';
 import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageMetaDto } from './lib/paginate/pageMeta.dto';
 import { PageDto } from './lib/paginate/page.dto';
-import { CreateCoverTypeDto } from './lib/create/createCoverType.dto';
+import { CoverEntity } from './entity/covers.entity';
 
 @Injectable()
 export class BooksRepository {
@@ -32,11 +32,18 @@ export class BooksRepository {
     @InjectRepository(AuthorEntity)
     private authorRepository: Repository<AuthorEntity>,
 
-    @InjectRepository(CommentsEntity)
-    private commentsRepository: Repository<CommentsEntity>,
+    @InjectRepository(CoverEntity)
+    private coverRepository: Repository<CoverEntity>,
+
+    // @InjectRepository(CommentsEntity)
+    // private commentsRepository: Repository<CommentsEntity>,
   ) {}
 
   async createBookRepository(book: CreateBookDto): Promise<BookEntity> {
+    let newCoverInfo = new CoverEntity();
+    newCoverInfo = book.cover;
+    const savedNewCoverInfo = await this.coverRepository.save(newCoverInfo);
+    book.cover = savedNewCoverInfo;
     const newBook = this.booksRepository.create(book);
     const saveBook = await this.booksRepository.save(newBook);
 
@@ -68,12 +75,12 @@ export class BooksRepository {
     return this.authorRepository.save(newAuthor);
   }
 
-  async createCommentRepository(
-    comment: CreateCommentDto,
-  ): Promise<CommentsEntity> {
-    const newComment = this.commentsRepository.create(comment);
-    return this.commentsRepository.save(newComment);
-  }
+  // async createCommentRepository(
+  //   comment: CreateCommentDto,
+  // ): Promise<CommentsEntity> {
+  //   const newComment = this.commentsRepository.create(comment);
+  //   return this.commentsRepository.save(newComment);
+  // }
 
   async getBookRepository(id: number): Promise<BookEntity> {
     return this.booksRepository.findOneBy({ id: id });
@@ -86,9 +93,9 @@ export class BooksRepository {
         'author',
         'bookGenres',
         'bookGenres.genre',
-        'comments',
-        'rates',
-        'covers',
+        'cover',
+        // 'comments',
+        // 'rates',
       ],
     });
     return this.booksRepository.find({
@@ -96,9 +103,9 @@ export class BooksRepository {
         'author',
         'bookGenres',
         'bookGenres.genre',
-        'comments',
-        'rates',
-        'covers',
+        'cover',
+        // 'comments',
+        // 'rates',
       ],
     });
   }
@@ -110,9 +117,9 @@ export class BooksRepository {
       .leftJoinAndSelect('book.author', 'author')
       .leftJoinAndSelect('book.bookGenres', 'bookGenre')
       .leftJoinAndSelect('bookGenre.genre', 'genre')
-      .leftJoinAndSelect('book.comments', 'comments')
-      .leftJoinAndSelect('book.rates', 'rates')
-      .leftJoinAndSelect('book.covers', 'covers');
+      .leftJoinAndSelect('book.cover', 'cover');
+    // .leftJoinAndSelect('book.comments', 'comments')
+    // .leftJoinAndSelect('book.rates', 'rates')
 
     if (pageOptionsDto.author) {
       queryBuilder.andWhere('book.author LIKE : author', {

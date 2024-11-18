@@ -2,7 +2,6 @@ import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDate,
-  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -10,9 +9,9 @@ import {
 
 import { AuthorEntity } from '../../entity/author.entity';
 import { BookToGenreEntity } from '../../entity/bookGenre.entity';
-import { CommentsEntity } from 'src/users/entity/comments.entity';
-import { RateEntity } from 'src/users/entity/rate.entity';
 import { CoverEntity } from '../../entity/covers.entity';
+// import { CommentsEntity } from 'src/users/entity/comments.entity';
+// import { RateEntity } from 'src/users/entity/rate.entity';
 
 export class CreateBookDto {
   @IsNotEmpty()
@@ -49,14 +48,14 @@ export class CreateBookDto {
   bookGenres: BookToGenreEntity[];
 
   @IsNotEmpty()
-  @Type(() => CommentsEntity)
-  comments: CommentsEntity[];
-
-  @IsNotEmpty()
-  @Type(() => RateEntity)
-  rates: RateEntity[];
-
-  @IsNotEmpty()
   @Type(() => CoverEntity)
-  covers: CoverEntity[];
+  cover: CoverEntity;
+
+  // @IsNotEmpty()
+  // @Type(() => CommentsEntity)
+  // comments: CommentsEntity[];
+
+  // @IsNotEmpty()
+  // @Type(() => RateEntity)
+  // rates: RateEntity[];
 }
