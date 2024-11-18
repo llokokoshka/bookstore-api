@@ -47,11 +47,13 @@ export class PageOptionsDto {
   genres?: number[];
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   minPrice?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Max(10000)
   maxPrice?: number;

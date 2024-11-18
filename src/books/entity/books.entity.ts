@@ -43,7 +43,7 @@ export class BookEntity {
   @OneToMany(() => BookToGenreEntity, (bookGenre) => bookGenre.book)
   bookGenres: BookToGenreEntity[];
 
-  @OneToOne(() => CoverEntity)
+  @OneToOne(() => CoverEntity, { cascade: true, eager: true })
   @JoinColumn()
   cover: CoverEntity;
 

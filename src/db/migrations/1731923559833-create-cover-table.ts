@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateCoversTable1731920662168 implements MigrationInterface {
-  name = 'CreateCoversTable1731920662168';
+export class CreateCoversTable1731923559833 implements MigrationInterface {
+  name = 'CreateCoversTable1731923559833';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
