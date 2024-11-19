@@ -21,7 +21,13 @@ export class CommentsRepository {
     const newComment = this.commentsRepository.create(comment);
     return this.commentsRepository.save(newComment);
   }
-  async findCommentsByBook(bookId: number): Promise<CommentsEntity[]> {
-    return this.commentsRepository.find({ where: { book: { id: bookId } } });
+
+  async findCommentsByBookRepository(
+    bookId: number,
+  ): Promise<CommentsEntity[]> {
+    return this.commentsRepository.find({
+      where: { book: { id: bookId } },
+      relations: ['user'],
+    });
   }
 }

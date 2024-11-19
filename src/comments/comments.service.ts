@@ -24,10 +24,21 @@ export class CommentsService {
   }
 
   async getCommentsByBookService(bookId: number) {
-    const comments = await this.commentsRepository.findCommentsByBook(bookId);
+    const comments =
+      await this.commentsRepository.findCommentsByBookRepository(bookId);
     if (!comments) {
       return 'No comments';
     }
-    return comments;
+    const correctComments = comments.map((comment) => ({
+      id: comment.id,
+      text: comment.text,
+      dateOfCreate: comment.dateOfCreate,
+      user: {
+        id: comment.user.id,
+        fullName: comment.user.fullName,
+        avatar: comment.user.avatar,
+      },
+    }));
+    return correctComments;
   }
 }

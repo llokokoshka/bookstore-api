@@ -81,6 +81,7 @@ export class BooksRepository {
         // 'rates',
       ],
     });
+    // console.log(aa);
     return this.booksRepository.find({
       relations: [
         'author',
@@ -100,8 +101,8 @@ export class BooksRepository {
       .leftJoinAndSelect('book.author', 'author')
       .leftJoinAndSelect('book.bookGenres', 'bookGenre')
       .leftJoinAndSelect('bookGenre.genre', 'genre')
-      .leftJoinAndSelect('book.cover', 'cover');
-    // .leftJoinAndSelect('book.comments', 'comments')
+      .leftJoinAndSelect('book.cover', 'cover')
+      .leftJoinAndSelect('book.comments', 'comments');
     // .leftJoinAndSelect('book.rates', 'rates')
 
     if (pageOptionsDto.genres && pageOptionsDto.genres.length > 0) {
