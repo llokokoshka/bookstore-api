@@ -10,21 +10,23 @@ import {
   Query,
 } from '@nestjs/common';
 
-// import { CommentsEntity } from '../users/entity/comments.entity';
 import { AuthorEntity } from './entity/author.entity';
 import { GenreEntity } from './entity/genre.entity';
 import { BookEntity } from './entity/books.entity';
 import { BooksService } from './books.service';
-import { CreateCommentDto } from '../users/lib/createComment.dto';
 import { CreateAuthorDto } from './lib/create/createAuthor.dto';
 import { PageOptionsDto } from './lib/paginate/pageOptions.dto';
 import { CreateGenreDto } from './lib/create/createGenre.dto';
 import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageDto } from './lib/paginate/page.dto';
+import { CommentsService } from 'src/comments/comments.service';
 
 @Controller('books')
 export class BooksController {
-  constructor(private booksService: BooksService) {}
+  constructor(
+    private booksService: BooksService,
+    private commentsService: CommentsService,
+  ) {}
 
   @Post('create')
   async createBook(@Body() book: CreateBookDto): Promise<BookEntity> {
@@ -48,20 +50,15 @@ export class BooksController {
   ): Promise<PageDto<CreateBookDto>> {
     return this.booksService.findAllBooksService(pageOptionsDto);
   }
+
   @Get(':id')
-  async getBook(@Param('id', ParseIntPipe) id: number): Promise<BookEntity> {
-    return this.booksService.getBookService(id);
+  async getBook(@Param('id', ParseIntPipe) id: number) {
+    let book = await this.booksService.getBookService(id);
+    return book;
   }
 
   @Get()
   async getAllBooks(): Promise<BookEntity[]> {
     return this.booksService.getAllBooksService();
   }
-
-  // @Post(':id')
-  // async createComment(
-  //   @Body() comment: CreateCommentDto,
-  // ): Promise<CommentsEntity> {
-  //   return this.booksService.createCommentService(comment);
-  // }
 }

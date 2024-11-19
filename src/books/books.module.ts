@@ -10,6 +10,9 @@ import { AuthorEntity } from './entity/author.entity';
 import { CoverEntity } from './entity/covers.entity';
 import { GenreEntity } from './entity/genre.entity';
 import { BookEntity } from './entity/books.entity';
+import { CommentsService } from 'src/comments/comments.service';
+import { CommentsEntity } from 'src/comments/entity/comments.entity';
+import { CommentsRepository } from 'src/comments/comments.repository';
 
 @Module({
   imports: [
@@ -19,11 +22,17 @@ import { BookEntity } from './entity/books.entity';
       BookToGenreEntity,
       GenreEntity,
       CoverEntity,
-      // CommentsEntity,
+      CommentsEntity,
     ]),
   ],
   controllers: [BooksController],
-  providers: [BooksService, BooksRepository],
+  providers: [
+    BooksService,
+    BooksRepository,
+    BooksService,
+    CommentsService,
+    CommentsRepository,
+  ],
   exports: [BooksService, TypeOrmModule, BooksRepository],
 })
 export class BooksModule {}

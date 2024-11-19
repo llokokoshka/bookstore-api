@@ -26,9 +26,9 @@ export class CommentsService {
   async getCommentsByBookService(bookId: number) {
     const comments =
       await this.commentsRepository.findCommentsByBookRepository(bookId);
-    if (!comments) {
-      return 'No comments';
-    }
+    // if (!comments) {
+    //   return 'No comments';
+    // }
     const correctComments = comments.map((comment) => ({
       id: comment.id,
       text: comment.text,

@@ -28,9 +28,6 @@ export class BooksRepository {
 
     @InjectRepository(AuthorEntity)
     private authorRepository: Repository<AuthorEntity>,
-
-    // @InjectRepository(CommentsEntity)
-    // private commentsRepository: Repository<CommentsEntity>,
   ) {}
 
   async createBookRepository(book: CreateBookDto): Promise<BookEntity> {
@@ -66,7 +63,23 @@ export class BooksRepository {
   }
 
   async getBookRepository(id: number): Promise<BookEntity> {
-    return this.booksRepository.findOneBy({ id: id });
+    const queryBuilder = this.booksRepository.createQueryBuilder('book');
+    const book = await queryBuilder
+      .leftJoinAndSelect('book.user', 'user')
+      .addSelect(['user.id', 'user.fullName', 'user.avatar'])
+      .where('book.id = :id', { id })
+      .getOne();
+    // console.log(
+    //   await this.booksRepository.findOne({
+    //     where: { id: id },
+    //     relations: ['user'],
+    //   }),
+    // );
+    // return this.booksRepository.findOne({
+    //   where: { id: id },
+    //   relations: ['user'],
+    // });
+    return book;
   }
 
   async getAllBooksRepository(): Promise<BookEntity[]> {
@@ -77,7 +90,7 @@ export class BooksRepository {
         'bookGenres',
         'bookGenres.genre',
         'cover',
-        // 'comments',
+        'comments',
         // 'rates',
       ],
     });
@@ -88,7 +101,7 @@ export class BooksRepository {
         'bookGenres',
         'bookGenres.genre',
         'cover',
-        // 'comments',
+        'comments',
         // 'rates',
       ],
     });
@@ -102,8 +115,9 @@ export class BooksRepository {
       .leftJoinAndSelect('book.bookGenres', 'bookGenre')
       .leftJoinAndSelect('bookGenre.genre', 'genre')
       .leftJoinAndSelect('book.cover', 'cover')
-      .leftJoinAndSelect('book.comments', 'comments');
-    // .leftJoinAndSelect('book.rates', 'rates')
+      .leftJoinAndSelect('book.comments', 'comments')
+      .leftJoin('comments.user', 'user')
+      .addSelect(['user.id', 'user.fullName', 'user.avatar']);
 
     if (pageOptionsDto.genres && pageOptionsDto.genres.length > 0) {
       queryBuilder.andWhere(
@@ -180,11 +194,4 @@ export class BooksRepository {
     book.img = filename;
     return await this.booksRepository.save(book);
   }
-
-  // async createCommentRepository(
-  //   comment: CreateCommentDto,
-  // ): Promise<CommentsEntity> {
-  //   const newComment = this.commentsRepository.create(comment);
-  //   return this.commentsRepository.save(newComment);
-  // }
 }

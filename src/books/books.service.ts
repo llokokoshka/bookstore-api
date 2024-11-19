@@ -32,6 +32,7 @@ export class BooksService {
 
   async getBookService(id: number): Promise<BookEntity> {
     const Book = await this.booksRepository.getBookRepository(id);
+
     return Book;
   }
 
@@ -55,11 +56,4 @@ export class BooksService {
     );
     return book;
   }
-
-  // async createCommentService(
-  //   Comment: CreateCommentDto,
-  // ): Promise<CommentsEntity> {
-  //   const comment = await this.booksRepository.createCommentRepository(Comment);
-  //   return comment;
-  // }
 }
