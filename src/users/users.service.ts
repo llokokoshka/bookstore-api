@@ -30,6 +30,19 @@ export class UsersService {
     return visibleParamsOfUser;
   }
 
+  async getUserForServer(id: number): Promise<UserEntity> {
+    const user = await this.userRepository.getUserById(id);
+
+    if (!user) {
+      throw new HttpException(
+        'user not found',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    return user;
+  }
+
   async findAll(): Promise<IVisibleUserParams[]> {
     const users = await this.userRepository.findAll();
 

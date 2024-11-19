@@ -1,18 +1,15 @@
-import { Type } from 'class-transformer';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { BookEntity } from 'src/books/entity/books.entity';
-import { UserEntity } from 'src/users/entity/users.entity';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateCommentDto {
   @IsNotEmpty()
   @IsString()
   text: string;
 
-  @IsOptional()
-  @Type(() => UserEntity)
-  user: UserEntity;
+  @IsNotEmpty()
+  @IsNumber()
+  userId: number;
 
-  @IsOptional()
-  @Type(() => BookEntity)
-  book: BookEntity;
+  @IsNotEmpty()
+  @IsNumber()
+  bookId: number;
 }
