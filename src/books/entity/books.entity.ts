@@ -11,7 +11,7 @@ import {
 import { AuthorEntity } from './author.entity';
 import { BookToGenreEntity } from './bookGenre.entity';
 import { CoverEntity } from './covers.entity';
-// import { CommentsEntity } from '../../users/entity/comments.entity';
+import { CommentsEntity } from '../../comments/entity/comments.entity';
 // import { RateEntity } from '../../users/entity/rate.entity';
 
 @Entity()
@@ -47,8 +47,8 @@ export class BookEntity {
   @JoinColumn()
   cover: CoverEntity;
 
-  // @OneToMany(() => CommentsEntity, (comment) => comment.book)
-  // comments: CommentsEntity[];
+  @OneToMany(() => CommentsEntity, (comment) => comment.book)
+  comments: CommentsEntity[];
 
   // @OneToMany(() => RateEntity, (rate) => rate.book)
   // rates: RateEntity[];

@@ -10,7 +10,7 @@ import {
 import { AuthorEntity } from '../../entity/author.entity';
 import { BookToGenreEntity } from '../../entity/bookGenre.entity';
 import { CoverEntity } from '../../entity/covers.entity';
-// import { CommentsEntity } from 'src/users/entity/comments.entity';
+import { CommentsEntity } from 'src/comments/entity/comments.entity';
 // import { RateEntity } from 'src/users/entity/rate.entity';
 
 export class CreateBookDto {
@@ -51,9 +51,9 @@ export class CreateBookDto {
   @Type(() => CoverEntity)
   cover: CoverEntity;
 
-  // @IsNotEmpty()
-  // @Type(() => CommentsEntity)
-  // comments: CommentsEntity[];
+  @IsNotEmpty()
+  @Type(() => CommentsEntity)
+  comments: CommentsEntity[];
 
   // @IsNotEmpty()
   // @Type(() => RateEntity)
