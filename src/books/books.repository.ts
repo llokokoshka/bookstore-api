@@ -113,7 +113,16 @@ export class BooksRepository {
       .leftJoinAndSelect('book.comments', 'comments')
       .leftJoin('comments.user', 'user')
       .addSelect(['user.id', 'user.fullName', 'user.avatar'])
-      .leftJoinAndSelect('book.rate', 'rate');
+      .leftJoinAndSelect('book.rates', 'rate');
+
+    queryBuilder.groupBy('book.id')
+      .addGroupBy('author.id')
+      .addGroupBy('cover.id')
+      .addGroupBy('bookGenre.id')
+      .addGroupBy('comments.id')
+      .addGroupBy('genre.id')
+      .addGroupBy('user.id')
+      .addGroupBy('rate.id');
 
     if (pageOptionsDto.genres && pageOptionsDto.genres.length > 0) {
       queryBuilder.andWhere(
