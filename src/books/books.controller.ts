@@ -26,7 +26,7 @@ export class BooksController {
   constructor(
     private booksService: BooksService,
     private commentsService: CommentsService,
-  ) {}
+  ) { }
 
   @Post('create')
   async createBook(@Body() book: CreateBookDto): Promise<BookEntity> {
@@ -51,6 +51,20 @@ export class BooksController {
     return this.booksService.findAllBooksService(pageOptionsDto);
   }
 
+  @Post(':id/rate')
+  async addOrUpdateRate(
+    @Param('id') bookId: number,
+    @Body('userId') userId: number,
+    @Body('value') value: number,
+  ) {
+    return this.booksService.addOrUpdateRate(bookId, userId, value);
+  }
+
+  @Get(':id/rating')
+  async getAverageRating(@Param('id') bookId: number) {
+    return this.booksService.getAverageRating(bookId);
+  }
+
   @Get(':id')
   async getBook(@Param('id', ParseIntPipe) id: number) {
     let book = await this.booksService.getBookService(id);
@@ -61,4 +75,6 @@ export class BooksController {
   async getAllBooks(): Promise<BookEntity[]> {
     return this.booksService.getAllBooksService();
   }
+
+
 }

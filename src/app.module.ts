@@ -30,6 +30,7 @@ import { CommentsModule } from './comments/comments.module';
     FilesModule,
     GenresModule,
     CommentsModule,
+    
   ],
   controllers: [AppController, UsersController],
   providers: [

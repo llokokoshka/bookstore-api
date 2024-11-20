@@ -14,7 +14,7 @@ import { PageDto } from './lib/paginate/page.dto';
 
 @Injectable()
 export class BooksService {
-  constructor(private booksRepository: BooksRepository) {}
+  constructor(private booksRepository: BooksRepository) { }
 
   async createBookService(Book: CreateBookDto): Promise<BookEntity> {
     const book = await this.booksRepository.createBookRepository(Book);
@@ -56,4 +56,13 @@ export class BooksService {
     );
     return book;
   }
+
+  async addOrUpdateRate(bookId: number, userId: number, value: number) {
+    return this.booksRepository.addOrUpdateRate(bookId, userId, value);
+  }
+
+  async getAverageRating(bookId: number) {
+    return this.booksRepository.getAverageRating(bookId);
+  }
+
 }

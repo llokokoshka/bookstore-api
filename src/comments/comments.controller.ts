@@ -13,13 +13,12 @@ export class CommentsController {
     private commentsService: CommentsService,
     private bookService: BooksService,
     private userService: UsersService,
-  ) {}
+  ) { }
 
   @Post()
   async createComment(@Body() dto: CreateCommentDto): Promise<CommentsEntity> {
     const user = await this.userService.getUserForServer(dto.userId);
     const book = await this.bookService.getBookService(dto.bookId);
-
     return this.commentsService.createCommentService(dto, book, user);
   }
 

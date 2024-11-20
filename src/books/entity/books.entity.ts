@@ -12,7 +12,7 @@ import { AuthorEntity } from './author.entity';
 import { BookToGenreEntity } from './bookGenre.entity';
 import { CoverEntity } from './covers.entity';
 import { CommentsEntity } from '../../comments/entity/comments.entity';
-// import { RateEntity } from '../../users/entity/rate.entity';
+import { RateEntity } from './rate.entity';
 
 @Entity()
 export class BookEntity {
@@ -50,6 +50,6 @@ export class BookEntity {
   @OneToMany(() => CommentsEntity, (comment) => comment.book)
   comments: CommentsEntity[];
 
-  // @OneToMany(() => RateEntity, (rate) => rate.book)
-  // rates: RateEntity[];
+  @OneToMany(() => RateEntity, (rate) => rate.book)
+  rates: RateEntity[];
 }

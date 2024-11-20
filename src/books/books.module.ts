@@ -13,6 +13,9 @@ import { BookEntity } from './entity/books.entity';
 import { CommentsService } from 'src/comments/comments.service';
 import { CommentsEntity } from 'src/comments/entity/comments.entity';
 import { CommentsRepository } from 'src/comments/comments.repository';
+import { RateEntity } from './entity/rate.entity';
+import { UserRepository } from 'src/users/users.repository';
+import { UserEntity } from 'src/users/entity/users.entity';
 
 @Module({
   imports: [
@@ -23,6 +26,8 @@ import { CommentsRepository } from 'src/comments/comments.repository';
       GenreEntity,
       CoverEntity,
       CommentsEntity,
+      RateEntity,
+      UserEntity
     ]),
   ],
   controllers: [BooksController],
@@ -32,7 +37,8 @@ import { CommentsRepository } from 'src/comments/comments.repository';
     BooksService,
     CommentsService,
     CommentsRepository,
+    UserRepository
   ],
   exports: [BooksService, TypeOrmModule, BooksRepository],
 })
-export class BooksModule {}
+export class BooksModule { }

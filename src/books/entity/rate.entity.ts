@@ -1,15 +1,19 @@
-// import { Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-// import { UserEntity } from './users.entity';
-// import { BookEntity } from '../../books/entity/books.entity';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
 
-// @Entity()
-// export class RateEntity {
-//   @PrimaryGeneratedColumn()
-//   id: number;
+import { BookEntity } from '../../books/entity/books.entity';
+import { UserEntity } from '../../users/entity/users.entity';
 
-//   @ManyToOne(() => UserEntity, (user) => user.rates)
-//   user: UserEntity;
+@Entity()
+export class RateEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
 
-//   @ManyToOne(() => BookEntity, (book) => book.rates)
-//   book: BookEntity;
-// }
+    @Column()
+    value: number;
+
+    @ManyToOne(() => UserEntity, (user) => user.rates)
+    user: UserEntity;
+
+    @ManyToOne(() => BookEntity, (book) => book.rates)
+    book: BookEntity;
+}

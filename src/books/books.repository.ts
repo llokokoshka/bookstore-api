@@ -12,6 +12,8 @@ import { CreateGenreDto } from './lib/create/createGenre.dto';
 import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageMetaDto } from './lib/paginate/pageMeta.dto';
 import { PageDto } from './lib/paginate/page.dto';
+import { RateEntity } from './entity/rate.entity';
+import { UserRepository } from 'src/users/users.repository';
 
 @Injectable()
 export class BooksRepository {
@@ -28,7 +30,12 @@ export class BooksRepository {
 
     @InjectRepository(AuthorEntity)
     private authorRepository: Repository<AuthorEntity>,
-  ) {}
+
+    @InjectRepository(RateEntity)
+    private rateRepository: Repository<RateEntity>,
+
+    private userRepository: UserRepository
+  ) { }
 
   async createBookRepository(book: CreateBookDto): Promise<BookEntity> {
     const newBook = this.booksRepository.create(book);
@@ -63,38 +70,26 @@ export class BooksRepository {
   }
 
   async getBookRepository(id: number): Promise<BookEntity> {
-    const queryBuilder = this.booksRepository.createQueryBuilder('book');
-    const book = await queryBuilder
-      .leftJoinAndSelect('book.user', 'user')
-      .addSelect(['user.id', 'user.fullName', 'user.avatar'])
-      .where('book.id = :id', { id })
-      .getOne();
+    // const queryBuilder = this.booksRepository.createQueryBuilder('book');
+    // const book = await queryBuilder
+    //   .leftJoin('book.user', 'user')
+    //   .addSelect(['user.id', 'user.fullName', 'user.avatar'])
+    //   .where('book.id = :id', { id })
+    //   .getOne();
     // console.log(
     //   await this.booksRepository.findOne({
     //     where: { id: id },
     //     relations: ['user'],
     //   }),
     // );
-    // return this.booksRepository.findOne({
-    //   where: { id: id },
-    //   relations: ['user'],
-    // });
-    return book;
+    return this.booksRepository.findOne({
+      where: { id: id },
+      // relations: ['user'],
+    });
+    // return book;
   }
 
   async getAllBooksRepository(): Promise<BookEntity[]> {
-    const aa = await this.booksRepository.findAndCount({
-      take: 2,
-      relations: [
-        'author',
-        'bookGenres',
-        'bookGenres.genre',
-        'cover',
-        'comments',
-        // 'rates',
-      ],
-    });
-    // console.log(aa);
     return this.booksRepository.find({
       relations: [
         'author',
@@ -102,7 +97,7 @@ export class BooksRepository {
         'bookGenres.genre',
         'cover',
         'comments',
-        // 'rates',
+        'rates',
       ],
     });
   }
@@ -117,7 +112,8 @@ export class BooksRepository {
       .leftJoinAndSelect('book.cover', 'cover')
       .leftJoinAndSelect('book.comments', 'comments')
       .leftJoin('comments.user', 'user')
-      .addSelect(['user.id', 'user.fullName', 'user.avatar']);
+      .addSelect(['user.id', 'user.fullName', 'user.avatar'])
+      .leftJoinAndSelect('book.rate', 'rate');
 
     if (pageOptionsDto.genres && pageOptionsDto.genres.length > 0) {
       queryBuilder.andWhere(
@@ -149,6 +145,11 @@ export class BooksRepository {
       'sort_field_price',
     );
 
+    queryBuilder.addSelect(
+      'AVG(rate.value)',
+      'sort_field_rating',
+    );
+
     let sortField: string;
 
     switch (pageOptionsDto.sortBy) {
@@ -162,7 +163,7 @@ export class BooksRepository {
         sortField = 'author.text';
         break;
       case 'Rating':
-        sortField = 'book.name';
+        sortField = 'sort_field_rating';
         break;
       case 'Date of issue':
         sortField = 'book.dateOfIssue';
@@ -193,5 +194,56 @@ export class BooksRepository {
     }
     book.img = filename;
     return await this.booksRepository.save(book);
+  }
+
+  async addRate(bookId: number, userId: number, value: number): Promise<RateEntity> {
+    const book = await this.booksRepository.findOneBy({ id: bookId });
+    if (!book) {
+      throw new Error('Book not found');
+    }
+
+    const user = await this.userRepository.getUserById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const newRate = this.rateRepository.create({ value, book, user });
+    return this.rateRepository.save(newRate);
+  }
+
+  async updateRate(bookId: number, userId: number, value: number): Promise<RateEntity> {
+    const existingRate = await this.rateRepository.findOne({
+      where: { book: { id: bookId }, user: { id: userId } },
+    });
+
+    if (!existingRate) {
+      throw new Error('Rate not found');
+    }
+
+    existingRate.value = value;
+    return this.rateRepository.save(existingRate);
+  }
+
+  async addOrUpdateRate(bookId: number, userId: number, value: number): Promise<RateEntity> {
+    const existingRate = await this.rateRepository.findOne({
+      where: { book: { id: bookId }, user: { id: userId } },
+    });
+
+    if (existingRate) {
+      return this.updateRate(bookId, userId, value);
+    }
+
+    return this.addRate(bookId, userId, value);
+  }
+
+  async getAverageRating(bookId: number): Promise<number> {
+    const rates = await this.rateRepository.find({
+      where: { book: { id: bookId } },
+    });
+
+    if (rates.length === 0) return 0;
+
+    const total = rates.reduce((sum, rate) => sum + rate.value, 0);
+    return total / rates.length;
   }
 }
