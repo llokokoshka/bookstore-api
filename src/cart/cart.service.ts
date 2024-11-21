@@ -22,4 +22,8 @@ export class CartService {
   async downBookAmountSrvice(ItemId: number) {
     return this.cartRepository.downBookAmountRepository(ItemId);
   }
+
+  async deleteItemFromCartSrvice(ItemId: number) {
+    return this.cartRepository.deleteItemFromCartRepository(ItemId);
+  }
 }

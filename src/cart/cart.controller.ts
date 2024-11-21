@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -47,5 +48,10 @@ export class CartController {
   @Patch(':ItemId/minus')
   async downBookAmount(@Param('ItemId') ItemId: number) {
     return this.cartService.downBookAmountSrvice(ItemId);
+  }
+
+  @Delete(':ItemId')
+  async deleteItemFromCart(@Param('ItemId') ItemId: number) {
+    return this.cartService.deleteItemFromCartSrvice(ItemId);
   }
 }

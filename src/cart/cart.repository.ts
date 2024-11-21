@@ -112,4 +112,9 @@ export class CartRepository {
       return this.cartItemRepository.save(bookInCart);
     }
   }
+
+  async deleteItemFromCartRepository(ItemId: number) {
+    const bookInCart = await this.cartItemRepository.findOneBy({ id: ItemId });
+    await this.cartItemRepository.remove(bookInCart);
+  }
 }
