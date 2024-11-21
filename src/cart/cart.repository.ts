@@ -7,7 +7,6 @@ import { BookEntity } from 'src/books/entity/books.entity';
 import { UserEntity } from 'src/users/entity/users.entity';
 import { CartItemEntity } from './entity/cartItem.entity';
 import { checkBookAmount } from './utils/cart.utils';
-import { BooksRepository } from 'src/books/books.repository';
 
 @Injectable()
 export class CartRepository {
@@ -18,8 +17,6 @@ export class CartRepository {
 
     @InjectRepository(CartItemEntity)
     private cartItemRepository: Repository<CartItemEntity>,
-
-    private bookRepository: BooksRepository,
   ) {}
 
   async getCartRepository(User: UserEntity): Promise<CartEntity> {
