@@ -1,7 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 import { CommentsEntity } from '../../comments/entity/comments.entity';
 import { RateEntity } from '../../books/entity/rate.entity';
+import { CartEntity } from '../../cart/entity/cart.entity';
 
 @Entity()
 export class UserEntity {
@@ -26,8 +33,6 @@ export class UserEntity {
   @OneToMany(() => RateEntity, (rate) => rate.user)
   rates: RateEntity[];
 
-  // @OneToOne(() => Cart)
-  // @JoinColumn()
-  // cart: Cart
-
+  @OneToOne(() => CartEntity, (cart) => cart.user)
+  cart: CartEntity;
 }

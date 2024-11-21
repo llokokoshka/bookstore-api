@@ -13,6 +13,7 @@ import { BookToGenreEntity } from './bookGenre.entity';
 import { CoverEntity } from './covers.entity';
 import { CommentsEntity } from '../../comments/entity/comments.entity';
 import { RateEntity } from './rate.entity';
+import { CartItemEntity } from '../../cart/entity/cartItem.entity';
 
 @Entity()
 export class BookEntity {
@@ -52,4 +53,7 @@ export class BookEntity {
 
   @OneToMany(() => RateEntity, (rate) => rate.book)
   rates: RateEntity[];
+
+  @OneToMany(() => CartItemEntity, (cartItem) => cartItem.book)
+  cartItems: CartItemEntity[];
 }

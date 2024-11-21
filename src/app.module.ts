@@ -16,6 +16,7 @@ import { FilesModule } from './files/files.module';
 import { BooksModule } from './books/books.module';
 import { GenresModule } from './genres/genres.module';
 import { CommentsModule } from './comments/comments.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CommentsModule } from './comments/comments.module';
     FilesModule,
     GenresModule,
     CommentsModule,
+    CartModule,
     
   ],
   controllers: [AppController, UsersController],
