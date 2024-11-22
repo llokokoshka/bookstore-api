@@ -53,7 +53,7 @@ export class CartRepository {
 
     const cart = await this.cartRepository.findOne({
       where: { user: { id: User.id } },
-      relations: ['cartItems'],
+      relations: ['cartItems', 'cartItems.book', 'cartItems.book.author'],
     });
 
     const isHardCover = checkBookAmount(book);
@@ -75,7 +75,7 @@ export class CartRepository {
   async upBookAmountRepository(ItemId: number) {
     const bookInCart = await this.cartItemRepository.findOne({
       where: { id: ItemId },
-      relations: ['book'],
+      relations: ['book', 'book.author'],
     });
     const book = bookInCart.book;
     const isHardCover = checkBookAmount(book);
@@ -100,7 +100,7 @@ export class CartRepository {
   async downBookAmountRepository(ItemId: number) {
     const bookInCart = await this.cartItemRepository.findOne({
       where: { id: ItemId },
-      relations: ['book'],
+      relations: ['book', 'book.author'],
     });
     const book = bookInCart.book;
     const isHardCover = checkBookAmount(book);

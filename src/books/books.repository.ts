@@ -34,8 +34,8 @@ export class BooksRepository {
     @InjectRepository(RateEntity)
     private rateRepository: Repository<RateEntity>,
 
-    private userRepository: UserRepository
-  ) { }
+    private userRepository: UserRepository,
+  ) {}
 
   async createBookRepository(book: CreateBookDto): Promise<BookEntity> {
     const newBook = this.booksRepository.create(book);
@@ -84,7 +84,7 @@ export class BooksRepository {
     // );
     return this.booksRepository.findOne({
       where: { id: id },
-      // relations: ['user'],
+      relations: ['author'],
     });
     // return book;
   }
@@ -115,7 +115,8 @@ export class BooksRepository {
       .addSelect(['user.id', 'user.fullName', 'user.avatar'])
       .leftJoinAndSelect('book.rates', 'rate');
 
-    queryBuilder.groupBy('book.id')
+    queryBuilder
+      .groupBy('book.id')
       .addGroupBy('author.id')
       .addGroupBy('cover.id')
       .addGroupBy('bookGenre.id')
@@ -154,10 +155,7 @@ export class BooksRepository {
       'sort_field_price',
     );
 
-    queryBuilder.addSelect(
-      'AVG(rate.value)',
-      'sort_field_rating',
-    );
+    queryBuilder.addSelect('AVG(rate.value)', 'sort_field_rating');
 
     let sortField: string;
 
@@ -205,7 +203,11 @@ export class BooksRepository {
     return await this.booksRepository.save(book);
   }
 
-  async addRate(bookId: number, userId: number, value: number): Promise<RateEntity> {
+  async addRate(
+    bookId: number,
+    userId: number,
+    value: number,
+  ): Promise<RateEntity> {
     const book = await this.booksRepository.findOneBy({ id: bookId });
     if (!book) {
       throw new Error('Book not found');
@@ -220,7 +222,11 @@ export class BooksRepository {
     return this.rateRepository.save(newRate);
   }
 
-  async updateRate(bookId: number, userId: number, value: number): Promise<RateEntity> {
+  async updateRate(
+    bookId: number,
+    userId: number,
+    value: number,
+  ): Promise<RateEntity> {
     const existingRate = await this.rateRepository.findOne({
       where: { book: { id: bookId }, user: { id: userId } },
     });
@@ -233,7 +239,11 @@ export class BooksRepository {
     return this.rateRepository.save(existingRate);
   }
 
-  async addOrUpdateRate(bookId: number, userId: number, value: number): Promise<RateEntity> {
+  async addOrUpdateRate(
+    bookId: number,
+    userId: number,
+    value: number,
+  ): Promise<RateEntity> {
     const existingRate = await this.rateRepository.findOne({
       where: { book: { id: bookId }, user: { id: userId } },
     });
