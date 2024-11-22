@@ -1,12 +1,16 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
+
 import { FavoritesService } from './favorites.service';
 import { FavoritesController } from './favorites.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { FavoritesEntity } from './entity/favorites.entity';
 import { FavoritesItemEntity } from './entity/favoritesItem.entity';
-import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { BooksModule } from '../books/books.module';
+import { FavoriteRepository } from './favorites.repository';
+import { CreateTokensUtil } from '../auth/utils/token.utils';
+import { UserRepository } from '../users/users.repository';
 
 @Module({
   imports: [
@@ -17,7 +21,12 @@ import { BooksModule } from '../books/books.module';
     UsersModule,
     BooksModule,
   ],
-  providers: [FavoritesService],
+  providers: [
+    FavoritesService,
+    FavoriteRepository,
+    CreateTokensUtil,
+    UserRepository,
+  ],
   controllers: [FavoritesController],
 })
 export class FavoritesModule {}

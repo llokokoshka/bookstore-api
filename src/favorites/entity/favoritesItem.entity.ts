@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { BookEntity } from '../../books/entity/books.entity';
 import { FavoritesEntity } from './favorites.entity';
