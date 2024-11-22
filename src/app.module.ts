@@ -17,6 +17,7 @@ import { BooksModule } from './books/books.module';
 import { GenresModule } from './genres/genres.module';
 import { CommentsModule } from './comments/comments.module';
 import { CartModule } from './cart/cart.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CartModule } from './cart/cart.module';
     GenresModule,
     CommentsModule,
     CartModule,
+    FavoritesModule,
     
   ],
   controllers: [AppController, UsersController],

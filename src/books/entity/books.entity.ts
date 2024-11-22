@@ -14,6 +14,7 @@ import { CoverEntity } from './covers.entity';
 import { CommentsEntity } from '../../comments/entity/comments.entity';
 import { RateEntity } from './rate.entity';
 import { CartItemEntity } from '../../cart/entity/cartItem.entity';
+import { FavoritesItemEntity } from '../../favorites/entity/favoritesItem.entity';
 
 @Entity()
 export class BookEntity {
@@ -56,4 +57,7 @@ export class BookEntity {
 
   @OneToMany(() => CartItemEntity, (cartItem) => cartItem.book)
   cartItems: CartItemEntity[];
+
+  @OneToMany(() => FavoritesItemEntity, (favoritesItems) => favoritesItems.book)
+  favoritesItems: FavoritesItemEntity[];
 }

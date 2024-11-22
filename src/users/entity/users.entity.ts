@@ -9,6 +9,7 @@ import {
 import { CommentsEntity } from '../../comments/entity/comments.entity';
 import { RateEntity } from '../../books/entity/rate.entity';
 import { CartEntity } from '../../cart/entity/cart.entity';
+import { FavoritesEntity } from '../../favorites/entity/favorites.entity';
 
 @Entity()
 export class UserEntity {
@@ -35,4 +36,7 @@ export class UserEntity {
 
   @OneToOne(() => CartEntity, (cart) => cart.user)
   cart: CartEntity;
+
+  @OneToOne(() => FavoritesEntity, (favorite) => favorite.user)
+  favorite: FavoritesEntity;
 }
