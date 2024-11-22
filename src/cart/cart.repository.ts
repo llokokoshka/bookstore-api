@@ -23,7 +23,7 @@ export class CartRepository {
     let totalPrice = 0;
     let cart = await this.cartRepository.findOne({
       where: { user: { id: User.id } },
-      relations: ['cartItems'],
+      relations: ['cartItems', 'cartItems.book', 'cartItems.book.author'],
     });
     if (!cart) {
       const newUserCart = this.cartRepository.create({
@@ -122,5 +122,6 @@ export class CartRepository {
   async deleteItemFromCartRepository(ItemId: number) {
     const bookInCart = await this.cartItemRepository.findOneBy({ id: ItemId });
     await this.cartItemRepository.remove(bookInCart);
+    return ItemId;
   }
 }

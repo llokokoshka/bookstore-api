@@ -10,13 +10,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { CartService } from './cart.service';
 import { ReqGetUserDto } from 'src/users/lib/reqGetUser.dto';
 import { CartEntity } from './entity/cart.entity';
 import { BookIdDTO } from './lib/ItemsCart.dto';
-import { BooksService } from 'src/books/books.service';
-import { UsersService } from 'src/users/users.service';
+import { BooksService } from '../books/books.service';
+import { UsersService } from '../users/users.service';
 
 @UseGuards(AuthGuard)
 @Controller('user/cart')
@@ -40,18 +40,18 @@ export class CartController {
     return this.cartService.addItemInCartService(book, user);
   }
 
-  @Patch(':ItemId/plus')
-  async upBookAmount(@Param('ItemId') ItemId: number) {
-    return this.cartService.upBookAmountSrvice(ItemId);
+  @Patch(':itemId/plus')
+  async upBookAmount(@Param('itemId') itemId: number) {
+    return this.cartService.upBookAmountSrvice(itemId);
   }
 
-  @Patch(':ItemId/minus')
-  async downBookAmount(@Param('ItemId') ItemId: number) {
-    return this.cartService.downBookAmountSrvice(ItemId);
+  @Patch(':itemId/minus')
+  async downBookAmount(@Param('itemId') itemId: number) {
+    return this.cartService.downBookAmountSrvice(itemId);
   }
 
-  @Delete(':ItemId')
-  async deleteItemFromCart(@Param('ItemId') ItemId: number) {
-    return this.cartService.deleteItemFromCartSrvice(ItemId);
+  @Delete(':itemId')
+  async deleteItemFromCart(@Param('itemId') itemId: number) {
+    return this.cartService.deleteItemFromCartSrvice(itemId);
   }
 }
