@@ -11,10 +11,10 @@ import {
 import { AuthorEntity } from './author.entity';
 import { BookToGenreEntity } from './bookGenre.entity';
 import { CoverEntity } from './covers.entity';
-import { CommentsEntity } from '../../comments/entity/comments.entity';
 import { RateEntity } from './rate.entity';
 import { CartItemEntity } from '../../cart/entity/cartItem.entity';
 import { FavoritesItemEntity } from '../../favorites/entity/favoritesItem.entity';
+import { CommentsEntity } from './comments.entity';
 
 @Entity()
 export class BookEntity {

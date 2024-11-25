@@ -14,6 +14,7 @@ import { PageMetaDto } from './lib/paginate/pageMeta.dto';
 import { PageDto } from './lib/paginate/page.dto';
 import { RateEntity } from './entity/rate.entity';
 import { UserRepository } from 'src/modules/users/users.repository';
+import { CommentsEntity } from './entity/comments.entity';
 
 @Injectable()
 export class BooksRepository {
@@ -33,6 +34,9 @@ export class BooksRepository {
 
     @InjectRepository(RateEntity)
     private rateRepository: Repository<RateEntity>,
+
+    @InjectRepository(CommentsEntity)
+    private commentsRepository: Repository<CommentsEntity>,
 
     private userRepository: UserRepository,
   ) {}
@@ -251,5 +255,27 @@ export class BooksRepository {
 
     const total = rates.reduce((sum, rate) => sum + rate.value, 0);
     return total / rates.length;
+  }
+
+  async createCommentRepository(
+    comment: Partial<CommentsEntity>,
+    bookId: number,
+  ): Promise<CommentsEntity> {
+    const book = await this.getBookRepository(bookId);
+    comment.book = book;
+    if (comment.book === null || comment.user === null) {
+      throw new Error('Not full data');
+    }
+    const newComment = this.commentsRepository.create(comment);
+    return this.commentsRepository.save(newComment);
+  }
+
+  async findCommentsByBookRepository(
+    bookId: number,
+  ): Promise<CommentsEntity[]> {
+    return this.commentsRepository.find({
+      where: { book: { id: bookId } },
+      relations: ['user'],
+    });
   }
 }

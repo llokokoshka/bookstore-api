@@ -9,6 +9,9 @@ import { PageOptionsDto } from './lib/paginate/pageOptions.dto';
 import { CreateGenreDto } from './lib/create/createGenre.dto';
 import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageDto } from './lib/paginate/page.dto';
+import { CreateCommentDto } from './lib/createComment.dto';
+import { UserEntity } from '../users/entity/users.entity';
+import { CommentsEntity } from './entity/comments.entity';
 
 @Injectable()
 export class BooksService {
@@ -96,6 +99,44 @@ export class BooksService {
   async getAverageRating(bookId: number) {
     try {
       return this.booksRepository.getAverageRating(bookId);
+    } catch (err) {
+      this.logger.error(err);
+    }
+  }
+
+  async createCommentService(
+    Comment: CreateCommentDto,
+    user: UserEntity,
+  ): Promise<CommentsEntity> {
+    try {
+      const comment = await this.booksRepository.createCommentRepository(
+        {
+          text: Comment.text,
+          user,
+        },
+        Comment.bookId,
+      );
+      return comment;
+    } catch (err) {
+      this.logger.error(err);
+    }
+  }
+
+  async getCommentsByBookService(bookId: number) {
+    try {
+      const comments =
+        await this.booksRepository.findCommentsByBookRepository(bookId);
+      const correctComments = comments.map((comment) => ({
+        id: comment.id,
+        text: comment.text,
+        dateOfCreate: comment.dateOfCreate,
+        user: {
+          id: comment.user.id,
+          fullName: comment.user.fullName,
+          avatar: comment.user.avatar,
+        },
+      }));
+      return correctComments;
     } catch (err) {
       this.logger.error(err);
     }

@@ -10,8 +10,8 @@ import {
 import { AuthorEntity } from '../../entity/author.entity';
 import { BookToGenreEntity } from '../../entity/bookGenre.entity';
 import { CoverEntity } from '../../entity/covers.entity';
-import { CommentsEntity } from 'src/modules/comments/entity/comments.entity';
 import { RateEntity } from '../../entity/rate.entity';
+import { CommentsEntity } from '../../entity/comments.entity';
 
 export class CreateBookDto {
   @IsNotEmpty()

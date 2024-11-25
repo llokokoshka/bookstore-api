@@ -21,10 +21,16 @@ import { CreateGenreDto } from './lib/create/createGenre.dto';
 import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageDto } from './lib/paginate/page.dto';
 import { ReqGetUserDto } from '../users/lib/reqGetUser.dto';
+import { CreateCommentDto } from './lib/createComment.dto';
+import { UsersService } from '../users/users.service';
+import { CommentsEntity } from './entity/comments.entity';
 
 @Controller('books')
 export class BooksController {
-  constructor(private booksService: BooksService) {}
+  constructor(
+    private booksService: BooksService,
+    private userService: UsersService,
+  ) {}
 
   @Post()
   async createBook(@Body() book: CreateBookDto): Promise<BookEntity> {
@@ -49,23 +55,37 @@ export class BooksController {
     return this.booksService.findAllBooksService(pageOptionsDto);
   }
 
-  @Post(':id/rating')
+  @Post(':bookId/comment')
+  async createComment(
+    @Req() req: ReqGetUserDto,
+    @Body() dto: CreateCommentDto,
+  ): Promise<CommentsEntity> {
+    const user = await this.userService.getUserForServer(req.user.id);
+    return this.booksService.createCommentService(dto, user);
+  }
+
+  @Get(':bookId/comment')
+  async getComments(@Param('bookId') bookId: number) {
+    return this.booksService.getCommentsByBookService(bookId);
+  }
+
+  @Post(':bookId/rating')
   async addOrUpdateRate(
     @Req() req: ReqGetUserDto,
-    @Param('id') bookId: number,
+    @Param('bookId') bookId: number,
     @Body('value') value: number,
   ) {
     return this.booksService.addOrUpdateRate(bookId, req.user.id, value);
   }
 
-  @Get(':id/rating')
-  async getAverageRating(@Param('id') bookId: number) {
+  @Get(':bookId/rating')
+  async getAverageRating(@Param('bookId') bookId: number) {
     return this.booksService.getAverageRating(bookId);
   }
 
-  @Get(':id')
-  async getBook(@Param('id', ParseIntPipe) id: number) {
-    let book = await this.booksService.getBookService(id);
+  @Get(':bookId')
+  async getBook(@Param('bookId', ParseIntPipe) bookId: number) {
+    let book = await this.booksService.getBookService(bookId);
     return book;
   }
 }
