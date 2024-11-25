@@ -39,7 +39,7 @@ export class FavoritesController {
     return this.favService.addItemInFavService(book, user);
   }
 
-  @Delete(':itemId')
+  @Delete('item/:itemId')
   async deleteItemFromCart(@Param('itemId') itemId: number) {
     return this.favService.deleteItemFromFavSrvice(itemId);
   }

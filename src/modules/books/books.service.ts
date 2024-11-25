@@ -106,6 +106,7 @@ export class BooksService {
 
   async createCommentService(
     Comment: CreateCommentDto,
+    bookId: number,
     user: UserEntity,
   ): Promise<CommentsEntity> {
     try {
@@ -114,7 +115,7 @@ export class BooksService {
           text: Comment.text,
           user,
         },
-        Comment.bookId,
+        bookId,
       );
       return comment;
     } catch (err) {

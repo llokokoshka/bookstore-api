@@ -9,21 +9,23 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 
+import { AuthGuard } from '../auth/auth.guard';
 import { AuthorEntity } from './entity/author.entity';
 import { GenreEntity } from './entity/genre.entity';
 import { BookEntity } from './entity/books.entity';
+import { CommentsEntity } from './entity/comments.entity';
 import { BooksService } from './books.service';
+import { UsersService } from '../users/users.service';
+import { ReqGetUserDto } from '../users/lib/reqGetUser.dto';
 import { CreateAuthorDto } from './lib/create/createAuthor.dto';
 import { PageOptionsDto } from './lib/paginate/pageOptions.dto';
 import { CreateGenreDto } from './lib/create/createGenre.dto';
 import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageDto } from './lib/paginate/page.dto';
-import { ReqGetUserDto } from '../users/lib/reqGetUser.dto';
 import { CreateCommentDto } from './lib/createComment.dto';
-import { UsersService } from '../users/users.service';
-import { CommentsEntity } from './entity/comments.entity';
 
 @Controller('books')
 export class BooksController {
@@ -55,13 +57,15 @@ export class BooksController {
     return this.booksService.findAllBooksService(pageOptionsDto);
   }
 
+  @UseGuards(AuthGuard)
   @Post(':bookId/comment')
   async createComment(
     @Req() req: ReqGetUserDto,
+    @Param('bookId') bookId: number,
     @Body() dto: CreateCommentDto,
   ): Promise<CommentsEntity> {
     const user = await this.userService.getUserForServer(req.user.id);
-    return this.booksService.createCommentService(dto, user);
+    return this.booksService.createCommentService(dto, bookId, user);
   }
 
   @Get(':bookId/comment')
@@ -69,6 +73,7 @@ export class BooksController {
     return this.booksService.getCommentsByBookService(bookId);
   }
 
+  @UseGuards(AuthGuard)
   @Post(':bookId/rating')
   async addOrUpdateRate(
     @Req() req: ReqGetUserDto,

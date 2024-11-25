@@ -15,7 +15,7 @@ import {
 import { UserRepository } from 'src/modules/users/users.repository';
 import { CreateTokensUtil } from './utils/token.utils';
 import { LoginUserDto } from 'src/modules/users/lib/loginUser.dto';
-import config from 'src/config/configuration';
+import config from '../../config/configuration';
 
 @Injectable()
 export class AuthService {

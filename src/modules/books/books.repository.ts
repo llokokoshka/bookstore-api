@@ -13,7 +13,7 @@ import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageMetaDto } from './lib/paginate/pageMeta.dto';
 import { PageDto } from './lib/paginate/page.dto';
 import { RateEntity } from './entity/rate.entity';
-import { UserRepository } from 'src/modules/users/users.repository';
+import { UserRepository } from '../users/users.repository';
 import { CommentsEntity } from './entity/comments.entity';
 
 @Injectable()

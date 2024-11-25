@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+
 import { UserEntity } from 'src/modules/users/entity/users.entity';
 
 export function generatePassword(password: string) {

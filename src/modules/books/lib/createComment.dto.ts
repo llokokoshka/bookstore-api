@@ -4,8 +4,4 @@ export class CreateCommentDto {
   @IsNotEmpty()
   @IsString()
   text: string;
-
-  @IsNotEmpty()
-  @IsNumber()
-  bookId: number;
 }

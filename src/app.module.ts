@@ -15,7 +15,6 @@ import { dbConfig } from './db/dataSource';
 import { FilesModule } from './modules/files/files.module';
 import { BooksModule } from './modules/books/books.module';
 import { GenresModule } from './modules/genres/genres.module';
-import { CommentsModule } from './modules/comments/comments.module';
 import { CartModule } from './modules/cart/cart.module';
 import { FavoritesModule } from './modules/favorites/favorites.module';
 import { JwtModule } from '@nestjs/jwt';
@@ -35,7 +34,6 @@ import { JwtModule } from '@nestjs/jwt';
     BooksModule,
     FilesModule,
     GenresModule,
-    CommentsModule,
     CartModule,
     FavoritesModule,
   ],

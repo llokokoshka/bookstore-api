@@ -1,14 +1,11 @@
-import { UserEntity } from './entity/users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateUserDto } from './lib/createUsers.dto';
 import { UpdatePassDto } from './lib/updatePass.dto';
-import {
-  generatePassword,
-  validPassword,
-} from 'src/modules/auth/utils/auth.utils';
+import { UserEntity } from './entity/users.entity';
+import { generatePassword, validPassword } from '../auth/utils/auth.utils';
 
 @Injectable()
 export class UserRepository {
