@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
@@ -18,6 +19,7 @@ import config from 'src/config/configuration';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private userRepository: UserRepository,
     private jwtService: JwtService,
@@ -25,61 +27,69 @@ export class AuthService {
   ) {}
 
   async login(User: LoginUserDto) {
-    const user = await this.userRepository.getUserByEmail(User.email);
-    if (!user) {
-      throw new HttpException(
-        'user not found',
-        HttpStatus.UNPROCESSABLE_ENTITY,
+    try {
+      const user = await this.userRepository.getUserByEmail(User.email);
+      if (!user) {
+        throw new HttpException(
+          'user not found',
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+
+      const [salt, userHashPassword] = user.password.split('//');
+      const isPasswordValid = validPassword(
+        User.password,
+        userHashPassword,
+        salt,
       );
+
+      if (isPasswordValid == false) {
+        throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
+      }
+
+      const payload = { sub: user.id, username: user.email };
+
+      const correctFormOfUser = visibleParamsOfUser(user);
+      const { access_token, refresh_token } =
+        await this.createTokensUtil.createTokens(payload);
+      return {
+        user: correctFormOfUser,
+        access_token: access_token,
+        refresh_token: refresh_token,
+      };
+    } catch (err) {
+      this.logger.error(err);
     }
-
-    const [salt, userHashPassword] = user.password.split('//');
-    const isPasswordValid = validPassword(
-      User.password,
-      userHashPassword,
-      salt,
-    );
-
-    if (isPasswordValid == false) {
-      throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
-    }
-
-    const payload = { sub: user.id, username: user.email };
-
-    const correctFormOfUser = visibleParamsOfUser(user);
-    const { access_token, refresh_token } =
-      await this.createTokensUtil.createTokens(payload);
-    return {
-      user: correctFormOfUser,
-      access_token: access_token,
-      refresh_token: refresh_token,
-    };
   }
 
   async registration(email: string, password: string) {
-    const hashPass = generatePassword(password);
-    password = hashPass.salt + '//' + hashPass.hash;
-    const user = {
-      fullName: '',
-      email: email,
-      password: password,
-      avatar: 'defImg.png',
-    };
-    const addedUserInDb = await this.userRepository.createUser(user);
-    if (!addedUserInDb) {
-      throw new HttpException(
-        'user not addited',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    try {
+      const hashPass = generatePassword(password);
+      password = hashPass.salt + '//' + hashPass.hash;
+      const user = {
+        fullName: '',
+        email: email,
+        password: password,
+        avatar: 'defImg.png',
+      };
+      const addedUserInDb = await this.userRepository.createUser(user);
+      if (!addedUserInDb) {
+        throw new HttpException(
+          'user not addited',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      const payload = { sub: addedUserInDb.id, username: addedUserInDb.email };
+      const { access_token, refresh_token } =
+        await this.createTokensUtil.createTokens(payload);
+      return {
+        user: addedUserInDb,
+        access_token: access_token,
+        refresh_token: refresh_token,
+      };
+    } catch (err) {
+      this.logger.error(err);
     }
-    const payload = { sub: addedUserInDb.id, username: addedUserInDb.email };
-    const { access_token, refresh_token } =
-      await this.createTokensUtil.createTokens(payload);
-    return {
-      user: addedUserInDb,
-      access_token: access_token,
-      refresh_token: refresh_token,
-    };
   }
 
   async refreshToken(rt: string) {
@@ -98,7 +108,8 @@ export class AuthService {
         access_token: access_token,
         refresh_token: refresh_token,
       };
-    } catch {
+    } catch (err) {
+      this.logger.error(err);
       throw new UnauthorizedException();
     }
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { CartRepository } from './cart.repository';
 import { CartEntity } from './entity/cart.entity';
@@ -7,23 +7,44 @@ import { UserEntity } from 'src/modules/users/entity/users.entity';
 
 @Injectable()
 export class CartService {
+  private readonly logger = new Logger(CartService.name);
   constructor(private cartRepository: CartRepository) {}
 
   async getCartService(user: UserEntity): Promise<CartEntity> {
-    return this.cartRepository.getCartRepository(user);
+    try {
+      return this.cartRepository.getCartRepository(user);
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async addItemInCartService(book: BookEntity, user: UserEntity) {
-    return this.cartRepository.addItemInCartRepository(book, user);
+    try {
+      return this.cartRepository.addItemInCartRepository(book, user);
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
   async upBookAmountSrvice(ItemId: number) {
-    return this.cartRepository.upBookAmountRepository(ItemId);
+    try {
+      return this.cartRepository.upBookAmountRepository(ItemId);
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
   async downBookAmountSrvice(ItemId: number) {
-    return this.cartRepository.downBookAmountRepository(ItemId);
+    try {
+      return this.cartRepository.downBookAmountRepository(ItemId);
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async deleteItemFromCartSrvice(ItemId: number) {
-    return this.cartRepository.deleteItemFromCartRepository(ItemId);
+    try {
+      return this.cartRepository.deleteItemFromCartRepository(ItemId);
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 }

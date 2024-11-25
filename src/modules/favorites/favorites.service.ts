@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { BookEntity } from '../books/entity/books.entity';
 import { UserEntity } from '../users/entity/users.entity';
@@ -7,17 +7,30 @@ import { FavoritesEntity } from './entity/favorites.entity';
 
 @Injectable()
 export class FavoritesService {
+  private readonly logger = new Logger(FavoritesService.name);
   constructor(private favRepository: FavoriteRepository) {}
 
   async getFavService(user: UserEntity): Promise<FavoritesEntity> {
-    return this.favRepository.getFavRepository(user);
+    try {
+      return this.favRepository.getFavRepository(user);
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async addItemInFavService(book: BookEntity, user: UserEntity) {
-    return this.favRepository.addItemInFavRepository(book, user);
+    try {
+      return this.favRepository.addItemInFavRepository(book, user);
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async deleteItemFromFavSrvice(ItemId: number) {
-    return this.favRepository.deleteItemFromFavRepository(ItemId);
+    try {
+      return this.favRepository.deleteItemFromFavRepository(ItemId);
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 }

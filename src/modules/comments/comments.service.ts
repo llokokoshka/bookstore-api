@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { CommentsRepository } from './comments.repository';
 import { CreateCommentDto } from './lib/createComment.dto';
@@ -8,6 +8,7 @@ import { UserEntity } from 'src/modules/users/entity/users.entity';
 
 @Injectable()
 export class CommentsService {
+  private readonly logger = new Logger(CommentsService.name);
   constructor(private commentsRepository: CommentsRepository) {}
 
   async createCommentService(
@@ -15,27 +16,35 @@ export class CommentsService {
     book: BookEntity,
     user: UserEntity,
   ): Promise<CommentsEntity> {
-    const comment = await this.commentsRepository.createCommentRepository({
-      text: Comment.text,
-      book,
-      user,
-    });
-    return comment;
+    try {
+      const comment = await this.commentsRepository.createCommentRepository({
+        text: Comment.text,
+        book,
+        user,
+      });
+      return comment;
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async getCommentsByBookService(bookId: number) {
-    const comments =
-      await this.commentsRepository.findCommentsByBookRepository(bookId);
-    const correctComments = comments.map((comment) => ({
-      id: comment.id,
-      text: comment.text,
-      dateOfCreate: comment.dateOfCreate,
-      user: {
-        id: comment.user.id,
-        fullName: comment.user.fullName,
-        avatar: comment.user.avatar,
-      },
-    }));
-    return correctComments;
+    try {
+      const comments =
+        await this.commentsRepository.findCommentsByBookRepository(bookId);
+      const correctComments = comments.map((comment) => ({
+        id: comment.id,
+        text: comment.text,
+        dateOfCreate: comment.dateOfCreate,
+        user: {
+          id: comment.user.id,
+          fullName: comment.user.fullName,
+          avatar: comment.user.avatar,
+        },
+      }));
+      return correctComments;
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 }

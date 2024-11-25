@@ -10,6 +10,7 @@ import config from './config/configuration';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true,
+    logger: ['error', 'warn'],
   });
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.useGlobalFilters(new HttpExceptionFilter());

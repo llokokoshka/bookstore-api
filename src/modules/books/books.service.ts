@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { BooksRepository } from './books.repository';
 import { AuthorEntity } from './entity/author.entity';
@@ -12,54 +12,92 @@ import { PageDto } from './lib/paginate/page.dto';
 
 @Injectable()
 export class BooksService {
+  private readonly logger = new Logger(BooksService.name);
   constructor(private booksRepository: BooksRepository) {}
 
   async createBookService(Book: CreateBookDto): Promise<BookEntity> {
-    const book = await this.booksRepository.createBookRepository(Book);
-    return book;
+    try {
+      const book = await this.booksRepository.createBookRepository(Book);
+      return book;
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
+
   async createGenreService(Genre: CreateGenreDto): Promise<GenreEntity> {
-    const genre = await this.booksRepository.createGenreRepository(Genre);
-    return genre;
+    try {
+      const genre = await this.booksRepository.createGenreRepository(Genre);
+      return genre;
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async createAuthorService(Author: CreateAuthorDto): Promise<AuthorEntity> {
-    const author = await this.booksRepository.createAuthorRepository(Author);
-    return author;
+    try {
+      const author = await this.booksRepository.createAuthorRepository(Author);
+      return author;
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async getBookService(id: number): Promise<BookEntity> {
-    const Book = await this.booksRepository.getBookRepository(id);
+    try {
+      const Book = await this.booksRepository.getBookRepository(id);
 
-    return Book;
+      return Book;
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async getAllBooksService(): Promise<BookEntity[]> {
-    const Book = await this.booksRepository.getAllBooksRepository();
-    return Book;
+    try {
+      const Book = await this.booksRepository.getAllBooksRepository();
+      return Book;
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async findAllBooksService(
     pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<CreateBookDto>> {
-    const Book =
-      await this.booksRepository.findAllPaginatedRepository(pageOptionsDto);
-    return Book;
+    try {
+      const Book =
+        await this.booksRepository.findAllPaginatedRepository(pageOptionsDto);
+      return Book;
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async updateBookCover(filename: string, bookId: number): Promise<BookEntity> {
-    const book = await this.booksRepository.updateBookCoverRepository(
-      filename,
-      bookId,
-    );
-    return book;
+    try {
+      const book = await this.booksRepository.updateBookCoverRepository(
+        filename,
+        bookId,
+      );
+      return book;
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async addOrUpdateRate(bookId: number, userId: number, value: number) {
-    return this.booksRepository.addOrUpdateRate(bookId, userId, value);
+    try {
+      return this.booksRepository.addOrUpdateRate(bookId, userId, value);
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async getAverageRating(bookId: number) {
-    return this.booksRepository.getAverageRating(bookId);
+    try {
+      return this.booksRepository.getAverageRating(bookId);
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 }

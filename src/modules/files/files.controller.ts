@@ -7,6 +7,7 @@ import {
   UseGuards,
   UploadedFiles,
   Body,
+  Logger,
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -18,6 +19,7 @@ import { BooksService } from 'src/modules/books/books.service';
 
 @Controller('files')
 export class FilesController {
+  private readonly logger = new Logger(FilesController.name);
   constructor(
     private userService: UsersService,
     private booksService: BooksService,
@@ -48,40 +50,47 @@ export class FilesController {
     }),
   )
   async uploadedFile(@UploadedFiles() files, @Req() req, @Body() body) {
-    if (!files || files.length === 0) {
+    try {
+      if (!files || files.length === 0) {
+        return {
+          status: HttpStatus.BAD_REQUEST,
+          message: 'No file uploaded',
+        };
+      }
+      const file = files[0];
+      const fileType = req.headers['x-file-type'];
+
+      if (fileType === 'avatar') {
+        await this.userService.updateUser(
+          { avatar: file.filename },
+          req.user.id,
+        );
+        return {
+          status: HttpStatus.OK,
+          message: 'Image uploaded successfully!',
+          data: {
+            originalname: file.originalname,
+            filename: file.filename,
+          },
+        };
+      } else if (fileType === 'book') {
+        await this.booksService.updateBookCover(file.filename, body.bookId);
+        return {
+          status: HttpStatus.OK,
+          message: 'Book image uploaded successfully!',
+          data: {
+            originalname: file.originalname,
+            filename: file.filename,
+          },
+        };
+      }
+
       return {
         status: HttpStatus.BAD_REQUEST,
-        message: 'No file uploaded',
+        message: 'Invalid file type',
       };
+    } catch (err) {
+      this.logger.error(err);
     }
-    const file = files[0];
-    const fileType = req.headers['x-file-type'];
-
-    if (fileType === 'avatar') {
-      await this.userService.updateUser({ avatar: file.filename }, req.user.id);
-      return {
-        status: HttpStatus.OK,
-        message: 'Image uploaded successfully!',
-        data: {
-          originalname: file.originalname,
-          filename: file.filename,
-        },
-      };
-    } else if (fileType === 'book') {
-      await this.booksService.updateBookCover(file.filename, body.bookId);
-      return {
-        status: HttpStatus.OK,
-        message: 'Book image uploaded successfully!',
-        data: {
-          originalname: file.originalname,
-          filename: file.filename,
-        },
-      };
-    }
-
-    return {
-      status: HttpStatus.BAD_REQUEST,
-      message: 'Invalid file type',
-    };
   }
 }
