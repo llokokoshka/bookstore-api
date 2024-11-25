@@ -1,0 +1,89 @@
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+
+import { UserEntity } from './entity/users.entity';
+import { UserRepository } from './users.repository';
+import { IVisibleUserParams } from './lib/visibleUserParams.interface';
+import { UpdatePassDto } from './lib/updatePass.dto';
+
+@Injectable()
+export class UsersService {
+  constructor(private userRepository: UserRepository) {}
+
+  async getUser(id: number): Promise<IVisibleUserParams> {
+    const user = await this.userRepository.getUserById(id);
+
+    if (!user) {
+      throw new HttpException(
+        'user not found',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+    const visibleParamsOfUser = {
+      fullName: user.fullName,
+      email: user.email,
+      avatar: user.avatar,
+    };
+
+    return visibleParamsOfUser;
+  }
+
+  async getUserForServer(id: number): Promise<UserEntity> {
+    const user = await this.userRepository.getUserById(id);
+
+    if (!user) {
+      throw new HttpException(
+        'user not found',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    return user;
+  }
+
+  async findAll(): Promise<IVisibleUserParams[]> {
+    const users = await this.userRepository.findAll();
+
+    if (!users || users.length === 0) {
+      throw new HttpException(
+        'users not found',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    const visibleParamsOfUsers = users.map((user) => ({
+      fullName: user.fullName,
+      email: user.email,
+      avatar: user.avatar,
+    }));
+
+    return visibleParamsOfUsers;
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    const user = await this.userRepository.getUserById(id);
+    if (!user) {
+      throw new HttpException(
+        'users not found',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+    await this.userRepository.deleteUser(user);
+  }
+
+  async updateUser(
+    updUser: Partial<UserEntity>,
+    id: number,
+  ): Promise<UserEntity> {
+    const newUser = await this.userRepository.updateUser(updUser, id);
+
+    return newUser;
+  }
+
+  async updateUserPass(
+    updUser: UpdatePassDto,
+    id: number,
+  ): Promise<UserEntity> {
+    const newUser = await this.userRepository.updateUserPass(updUser, id);
+    return newUser;
+  }
+}

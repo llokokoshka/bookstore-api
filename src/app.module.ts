@@ -6,18 +6,19 @@ import { MulterModule } from '@nestjs/platform-express';
 import { loadConfig } from './config/configuration';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import { CreateTokensUtil } from './auth/utils/token.utils';
-import { UsersModule } from './users/users.module';
-import { UsersController } from './users/users.controller';
-import { UserRepository } from './users/users.repository';
+import { AuthModule } from './modules/auth/auth.module';
+import { CreateTokensUtil } from './modules/auth/utils/token.utils';
+import { UsersModule } from './modules/users/users.module';
+import { UsersController } from './modules/users/users.controller';
+import { UserRepository } from './modules/users/users.repository';
 import { dbConfig } from './db/dataSource';
-import { FilesModule } from './files/files.module';
-import { BooksModule } from './books/books.module';
-import { GenresModule } from './genres/genres.module';
-import { CommentsModule } from './comments/comments.module';
-import { CartModule } from './cart/cart.module';
-import { FavoritesModule } from './favorites/favorites.module';
+import { FilesModule } from './modules/files/files.module';
+import { BooksModule } from './modules/books/books.module';
+import { GenresModule } from './modules/genres/genres.module';
+import { CommentsModule } from './modules/comments/comments.module';
+import { CartModule } from './modules/cart/cart.module';
+import { FavoritesModule } from './modules/favorites/favorites.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -25,6 +26,9 @@ import { FavoritesModule } from './favorites/favorites.module';
     ConfigModule.forRoot({ isGlobal: true, load: [loadConfig] }),
     MulterModule.register({
       dest: './uploads',
+    }),
+    JwtModule.register({
+      global: true,
     }),
     AuthModule,
     UsersModule,
@@ -34,17 +38,8 @@ import { FavoritesModule } from './favorites/favorites.module';
     CommentsModule,
     CartModule,
     FavoritesModule,
-    
   ],
   controllers: [AppController, UsersController],
-  providers: [
-    AppService,
-    UserRepository,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard,
-    // },
-    CreateTokensUtil,
-  ],
+  providers: [AppService, UserRepository, CreateTokensUtil],
 })
 export class AppModule {}
