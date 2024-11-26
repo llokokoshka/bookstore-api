@@ -26,6 +26,7 @@ export function visibleParamsOfUser(user: UserEntity) {
     fullName: user.fullName,
     email: user.email,
     avatar: user.avatar,
+    rating: user.rates,
   };
   return visibleParamsOfUser;
 }

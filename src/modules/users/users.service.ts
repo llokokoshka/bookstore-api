@@ -25,6 +25,7 @@ export class UsersService {
         fullName: user.fullName,
         email: user.email,
         avatar: user.avatar,
+        rating: user.rates,
       };
 
       return visibleParamsOfUser;
@@ -65,6 +66,7 @@ export class UsersService {
         fullName: user.fullName,
         email: user.email,
         avatar: user.avatar,
+        rating: user.rates,
       }));
 
       return visibleParamsOfUsers;

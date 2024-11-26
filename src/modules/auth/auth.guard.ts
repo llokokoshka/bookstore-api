@@ -40,6 +40,7 @@ export class AuthGuard implements CanActivate {
       });
       const user = await this.userRepository.getUserById(payload.sub);
       const correctFormOfUser = visibleParamsOfUser(user);
+      console.log(correctFormOfUser);
       request['user'] = correctFormOfUser;
     } catch {
       throw new UnauthorizedException();

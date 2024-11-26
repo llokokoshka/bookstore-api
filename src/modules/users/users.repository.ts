@@ -15,11 +15,17 @@ export class UserRepository {
   ) {}
 
   async getUserById(searchValue: number): Promise<UserEntity> {
-    return this.usersRepository.findOneBy({ id: searchValue });
+    return this.usersRepository.findOne({
+      where: { id: searchValue },
+      relations: ['rates', 'rates.book'],
+    });
   }
 
   async getUserByEmail(searchValue: string): Promise<UserEntity> {
-    return this.usersRepository.findOneBy({ email: searchValue });
+    return this.usersRepository.findOne({
+      where: { email: searchValue },
+      relations: ['rates', 'rates.book'],
+    });
   }
 
   async findAll(): Promise<UserEntity[]> {

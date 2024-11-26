@@ -56,7 +56,7 @@ export class UsersController {
   updateUser(
     @Req() req: Partial<ReqGetUserDto>,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<IVisibleUserParams> {
+  ): Promise<UserEntity> {
     return this.usersService.updateUser(updateUserDto, req.user.id);
   }
 
@@ -64,7 +64,7 @@ export class UsersController {
   updateUserPass(
     @Req() req: ReqGetUserDto,
     @Body() updatePassDto: UpdatePassDto,
-  ): Promise<IVisibleUserParams> {
+  ): Promise<UserEntity> {
     return this.usersService.updateUserPass(updatePassDto, req.user.id);
   }
 }
