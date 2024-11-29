@@ -15,6 +15,7 @@ import { PageDto } from './lib/paginate/page.dto';
 import { RateEntity } from './entity/rate.entity';
 import { UserRepository } from '../users/users.repository';
 import { CommentsEntity } from './entity/comments.entity';
+import { visibleParamsOfUser } from '../auth/utils/auth.utils';
 
 @Injectable()
 export class BooksRepository {
@@ -262,10 +263,16 @@ export class BooksRepository {
     bookId: number,
   ): Promise<CommentsEntity> {
     const book = await this.getBookRepository(bookId);
-    comment.book = book;
-    if (comment.book === null || comment.user === null) {
+    let nweFormOfComment = comment;
+    nweFormOfComment.book = book;
+    if (nweFormOfComment.book === null || nweFormOfComment.user === null) {
       throw new Error('Not full data');
     }
+    const newUserData = {
+      id: comment.user.id,
+      fullName: comment.user.fullName,
+      avatar: comment.user.avatar,
+    };
     const newComment = this.commentsRepository.create(comment);
     return this.commentsRepository.save(newComment);
   }
