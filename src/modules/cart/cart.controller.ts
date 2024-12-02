@@ -41,7 +41,10 @@ export class CartController {
   }
 
   @Patch('item/:itemId')
-  async upBookAmount(@Param('itemId') itemId: number, @Body() ation: boolean) {
+  async changeBookAmount(
+    @Param('itemId') itemId: number,
+    @Body() ation: boolean,
+  ) {
     if (ation) {
       return this.cartService.upBookAmountSrvice(itemId);
     } else {

@@ -23,7 +23,12 @@ export class CartRepository {
     let totalPrice = 0;
     let cart = await this.cartRepository.findOne({
       where: { user: { id: User.id } },
-      relations: ['cartItems', 'cartItems.book', 'cartItems.book.author'],
+      relations: [
+        'cartItems',
+        'cartItems.book',
+        'cartItems.book.author',
+        'cartItems.book.rates',
+      ],
     });
     if (!cart) {
       const newUserCart = this.cartRepository.create({
@@ -48,12 +53,20 @@ export class CartRepository {
     return cart;
   }
 
-  async addItemInCartRepository(book: BookEntity, User: UserEntity) {
+  async addItemInCartRepository(
+    book: BookEntity,
+    User: UserEntity,
+  ): Promise<CartItemEntity> {
     let cartItemRec: CartItemEntity;
 
     const cart = await this.cartRepository.findOne({
       where: { user: { id: User.id } },
-      relations: ['cartItems', 'cartItems.book', 'cartItems.book.author'],
+      relations: [
+        'cartItems',
+        'cartItems.book',
+        'cartItems.book.author',
+        'cartItems.book.rates',
+      ],
     });
 
     const isHardCover = checkBookAmount(book);
@@ -121,11 +134,7 @@ export class CartRepository {
 
   async deleteItemFromCartRepository(userId: number, ItemId: number) {
     const bookInCart = await this.cartItemRepository.findOneBy({ id: ItemId });
-    if (bookInCart.cart.user.id === userId) {
-      await this.cartItemRepository.remove(bookInCart);
-    } else {
-      throw new Error('It`s not user cart');
-    }
+    await this.cartItemRepository.remove(bookInCart);
     return ItemId;
   }
 }

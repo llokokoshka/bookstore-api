@@ -15,7 +15,6 @@ import { PageDto } from './lib/paginate/page.dto';
 import { RateEntity } from './entity/rate.entity';
 import { UserRepository } from '../users/users.repository';
 import { CommentsEntity } from './entity/comments.entity';
-import { visibleParamsOfUser } from '../auth/utils/auth.utils';
 import { UserEntity } from '../users/entity/users.entity';
 
 @Injectable()
@@ -232,22 +231,6 @@ export class BooksRepository {
     return this.rateRepository.save(existingRate);
   }
 
-  async addOrUpdateRate(
-    bookId: number,
-    userId: number,
-    value: number,
-  ): Promise<RateEntity> {
-    const existingRate = await this.rateRepository.findOne({
-      where: { book: { id: bookId }, user: { id: userId } },
-    });
-
-    if (existingRate) {
-      return this.updateRate(bookId, userId, value);
-    }
-
-    return this.addRate(bookId, userId, value);
-  }
-
   async getAverageRating(bookId: number): Promise<number> {
     const rates = await this.rateRepository.find({
       where: { book: { id: bookId } },
@@ -257,6 +240,19 @@ export class BooksRepository {
 
     const total = rates.reduce((sum, rate) => sum + rate.value, 0);
     return total / rates.length;
+  }
+
+  async addOrUpdateRate(bookId: number, userId: number, value: number) {
+    const existingRate = await this.rateRepository.findOne({
+      where: { book: { id: bookId }, user: { id: userId } },
+    });
+    if (existingRate) {
+      const updRate = await this.updateRate(bookId, userId, value);
+      return updRate;
+    } else {
+      const newRate = await this.addRate(bookId, userId, value);
+      return newRate;
+    }
   }
 
   async createCommentRepository(

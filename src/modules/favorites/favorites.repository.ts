@@ -25,6 +25,7 @@ export class FavoriteRepository {
         'favoritesItems',
         'favoritesItems.book',
         'favoritesItems.book.author',
+        'favoritesItems.book.rates',
       ],
     });
     if (!fav) {
@@ -45,6 +46,7 @@ export class FavoriteRepository {
         'favoritesItems',
         'favoritesItems.book',
         'favoritesItems.book.author',
+        'favoritesItems.book.rates',
       ],
     });
     const dataForItem = { book, favorite: fav };
