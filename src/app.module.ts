@@ -1,41 +1,43 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
+import { MulterModule } from '@nestjs/platform-express';
 
+import { loadConfig } from './config/configuration';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { UsersController } from './users/users.controller';
+import { AuthModule } from './modules/auth/auth.module';
+import { CreateTokensUtil } from './modules/auth/utils/token.utils';
+import { UsersModule } from './modules/users/users.module';
+import { UsersController } from './modules/users/users.controller';
+import { UserRepository } from './modules/users/users.repository';
 import { dbConfig } from './db/dataSource';
-import { UserRepository } from './users/users.repository';
-import { AuthGuard } from './auth/auth.guard';
-import { loadConfig } from './config/configuration';
-import { FilesModule } from './files/files.module';
-import { MulterModule } from '@nestjs/platform-express';
-import { BooksModule } from './books/books.module';
+import { FilesModule } from './modules/files/files.module';
+import { BooksModule } from './modules/books/books.module';
+import { GenresModule } from './modules/genres/genres.module';
+import { CartModule } from './modules/cart/cart.module';
+import { FavoritesModule } from './modules/favorites/favorites.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(dbConfig),
-    AuthModule,
-    UsersModule,
     ConfigModule.forRoot({ isGlobal: true, load: [loadConfig] }),
-    FilesModule,
     MulterModule.register({
       dest: './uploads',
     }),
+    JwtModule.register({
+      global: true,
+    }),
+    AuthModule,
+    UsersModule,
     BooksModule,
+    FilesModule,
+    GenresModule,
+    CartModule,
+    FavoritesModule,
   ],
   controllers: [AppController, UsersController],
-  providers: [
-    AppService,
-    UserRepository,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+  providers: [AppService, UserRepository, CreateTokensUtil],
 })
 export class AppModule {}
