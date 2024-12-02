@@ -50,7 +50,10 @@ export class CartController {
   }
 
   @Delete('item/:itemId')
-  async deleteItemFromCart(@Param('itemId') itemId: number) {
-    return this.cartService.deleteItemFromCartSrvice(itemId);
+  async deleteItemFromCart(
+    @Req() req: ReqGetUserDto,
+    @Param('itemId') itemId: number,
+  ) {
+    return this.cartService.deleteItemFromCartSrvice(req.user.id, itemId);
   }
 }

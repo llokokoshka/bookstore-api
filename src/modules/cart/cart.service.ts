@@ -40,9 +40,9 @@ export class CartService {
     }
   }
 
-  async deleteItemFromCartSrvice(ItemId: number) {
+  async deleteItemFromCartSrvice(userId: number, ItemId: number) {
     try {
-      return this.cartRepository.deleteItemFromCartRepository(ItemId);
+      return this.cartRepository.deleteItemFromCartRepository(userId, ItemId);
     } catch (err) {
       this.logger.error(err);
     }

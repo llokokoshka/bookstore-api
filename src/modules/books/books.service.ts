@@ -107,14 +107,12 @@ export class BooksService {
   async createCommentService(
     Comment: CreateCommentDto,
     bookId: number,
-    user: UserEntity,
+    user: Partial<UserEntity>,
   ): Promise<CommentsEntity> {
     try {
       const comment = await this.booksRepository.createCommentRepository(
-        {
-          text: Comment.text,
-          user,
-        },
+        Comment.text,
+        user,
         bookId,
       );
       return comment;

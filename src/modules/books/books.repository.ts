@@ -16,6 +16,7 @@ import { RateEntity } from './entity/rate.entity';
 import { UserRepository } from '../users/users.repository';
 import { CommentsEntity } from './entity/comments.entity';
 import { visibleParamsOfUser } from '../auth/utils/auth.utils';
+import { UserEntity } from '../users/entity/users.entity';
 
 @Injectable()
 export class BooksRepository {
@@ -259,21 +260,21 @@ export class BooksRepository {
   }
 
   async createCommentRepository(
-    comment: Partial<CommentsEntity>,
+    text: string,
+    user: Partial<UserEntity>,
     bookId: number,
   ): Promise<CommentsEntity> {
     const book = await this.getBookRepository(bookId);
-    let nweFormOfComment = comment;
-    nweFormOfComment.book = book;
-    if (nweFormOfComment.book === null || nweFormOfComment.user === null) {
+    const newFormOfComment = {
+      text: text,
+      user: user,
+      book: book,
+    };
+    if (newFormOfComment.book === null || newFormOfComment.user === null) {
       throw new Error('Not full data');
     }
-    const newUserData = {
-      id: comment.user.id,
-      fullName: comment.user.fullName,
-      avatar: comment.user.avatar,
-    };
-    const newComment = this.commentsRepository.create(comment);
+
+    const newComment = this.commentsRepository.create(newFormOfComment);
     return this.commentsRepository.save(newComment);
   }
 

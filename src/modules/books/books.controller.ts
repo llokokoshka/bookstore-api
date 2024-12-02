@@ -26,6 +26,7 @@ import { CreateGenreDto } from './lib/create/createGenre.dto';
 import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageDto } from './lib/paginate/page.dto';
 import { CreateCommentDto } from './lib/createComment.dto';
+import { visibleParamsOfUser } from '../auth/utils/auth.utils';
 
 @Controller('books')
 export class BooksController {
@@ -65,7 +66,12 @@ export class BooksController {
     @Body() dto: CreateCommentDto,
   ): Promise<CommentsEntity> {
     const user = await this.userService.getUserForServer(req.user.id);
-    return this.booksService.createCommentService(dto, bookId, user);
+    const correctFormOfUser = visibleParamsOfUser(user);
+    return this.booksService.createCommentService(
+      dto,
+      bookId,
+      correctFormOfUser,
+    );
   }
 
   @Get(':bookId/comment')

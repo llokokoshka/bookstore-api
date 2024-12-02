@@ -119,9 +119,13 @@ export class CartRepository {
     }
   }
 
-  async deleteItemFromCartRepository(ItemId: number) {
+  async deleteItemFromCartRepository(userId: number, ItemId: number) {
     const bookInCart = await this.cartItemRepository.findOneBy({ id: ItemId });
-    await this.cartItemRepository.remove(bookInCart);
+    if (bookInCart.cart.user.id === userId) {
+      await this.cartItemRepository.remove(bookInCart);
+    } else {
+      throw new Error('It`s not user cart');
+    }
     return ItemId;
   }
 }
