@@ -9,7 +9,7 @@ import {
 import { RateEntity } from '../../books/entity/rate.entity';
 import { CartEntity } from '../../cart/entity/cart.entity';
 import { FavoritesEntity } from '../../favorites/entity/favorites.entity';
-import { CommentsEntity } from 'src/modules/books/entity/comments.entity';
+import { CommentsEntity } from '../../books/entity/comments.entity';
 
 @Entity()
 export class UserEntity {
