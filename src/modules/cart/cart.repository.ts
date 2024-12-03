@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 
 import { CartEntity } from './entity/cart.entity';
 import { BookEntity } from '../books/entity/books.entity';
@@ -56,7 +56,7 @@ export class CartRepository {
   async addItemInCartRepository(
     book: BookEntity,
     User: UserEntity,
-  ): Promise<CartItemEntity> {
+  ): Promise<DeepPartial<CartItemEntity>> {
     let cartItemRec: CartItemEntity;
 
     const cart = await this.cartRepository.findOne({
@@ -80,18 +80,29 @@ export class CartRepository {
     const quantity = 1;
 
     const totalPrice = price;
+    cart.total_price += totalPrice;
+    this.cartRepository.save(cart);
     const dataForItem = { total_price: totalPrice, quantity, book, cart };
     cartItemRec = this.cartItemRepository.create(dataForItem);
     return this.cartItemRepository.save(cartItemRec);
   }
 
-  async upBookAmountRepository(ItemId: number) {
+  async upBookAmountRepository(userId: number, ItemId: number) {
     const bookInCart = await this.cartItemRepository.findOne({
       where: { id: ItemId },
       relations: ['book', 'book.author'],
     });
     const book = bookInCart.book;
     const isHardCover = checkBookAmount(book);
+    const cart = await this.cartRepository.findOne({
+      where: { user: { id: userId } },
+      relations: [
+        'cartItems',
+        'cartItems.book',
+        'cartItems.book.author',
+        'cartItems.book.rates',
+      ],
+    });
 
     if (bookInCart) {
       if (isHardCover && book.cover.hardcover_amount > bookInCart.quantity) {
@@ -110,13 +121,22 @@ export class CartRepository {
     }
   }
 
-  async downBookAmountRepository(ItemId: number) {
+  async downBookAmountRepository(userId: number, ItemId: number) {
     const bookInCart = await this.cartItemRepository.findOne({
       where: { id: ItemId },
       relations: ['book', 'book.author'],
     });
     const book = bookInCart.book;
     const isHardCover = checkBookAmount(book);
+    const cart = await this.cartRepository.findOne({
+      where: { user: { id: userId } },
+      relations: [
+        'cartItems',
+        'cartItems.book',
+        'cartItems.book.author',
+        'cartItems.book.rates',
+      ],
+    });
 
     if (bookInCart) {
       if (isHardCover) {
@@ -134,7 +154,18 @@ export class CartRepository {
 
   async deleteItemFromCartRepository(userId: number, ItemId: number) {
     const bookInCart = await this.cartItemRepository.findOneBy({ id: ItemId });
+    const cart = await this.cartRepository.findOne({
+      where: { user: { id: userId } },
+      relations: [
+        'cartItems',
+        'cartItems.book',
+        'cartItems.book.author',
+        'cartItems.book.rates',
+      ],
+    });
+    cart.total_price -= bookInCart.total_price;
     await this.cartItemRepository.remove(bookInCart);
+    await this.cartRepository.save(cart);
     return ItemId;
   }
 }

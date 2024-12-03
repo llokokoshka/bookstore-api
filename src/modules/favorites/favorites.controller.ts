@@ -36,7 +36,12 @@ export class FavoritesController {
   async addItemInCart(@Req() req: ReqGetUserDto, @Body() dto: BookIdDTO) {
     const user = await this.userService.getUserForServer(req.user.id);
     const book = await this.bookService.getBookService(dto.bookId);
-    return this.favService.addItemInFavService(book, user);
+    const fav = await this.favService.addItemInFavService(book, user);
+    const correctFav = {
+      id: fav.id,
+      book: fav.book,
+    };
+    return correctFav;
   }
 
   @Delete('item/:itemId')

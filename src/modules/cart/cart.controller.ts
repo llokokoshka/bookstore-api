@@ -17,6 +17,8 @@ import { CartEntity } from './entity/cart.entity';
 import { BookIdDTO } from './lib/ItemsCart.dto';
 import { BooksService } from '../books/books.service';
 import { UsersService } from '../users/users.service';
+import { DeepPartial } from 'typeorm';
+import { CartItemEntity } from './entity/cartItem.entity';
 
 @UseGuards(AuthGuard)
 @Controller('user/cart')
@@ -37,18 +39,26 @@ export class CartController {
   async addItemInCart(@Req() req: ReqGetUserDto, @Body() dto: BookIdDTO) {
     const user = await this.userService.getUserForServer(req.user.id);
     const book = await this.bookService.getBookService(dto.bookId);
-    return this.cartService.addItemInCartService(book, user);
+    const cartItem = await this.cartService.addItemInCartService(book, user);
+    const correctFormOfCartData = {
+      id: cartItem.id,
+      total_price: cartItem.total_price,
+      quantity: cartItem.quantity,
+      book: cartItem.book,
+    };
+    return correctFormOfCartData;
   }
 
   @Patch('item/:itemId')
   async changeBookAmount(
+    @Req() req: ReqGetUserDto,
     @Param('itemId') itemId: number,
-    @Body() ation: boolean,
+    @Body() cahngeAction: { action: boolean },
   ) {
-    if (ation) {
-      return this.cartService.upBookAmountSrvice(itemId);
+    if (cahngeAction.action) {
+      return this.cartService.upBookAmountSrvice(req.user.id, itemId);
     } else {
-      return this.cartService.downBookAmountSrvice(itemId);
+      return this.cartService.downBookAmountSrvice(req.user.id, itemId);
     }
   }
 
