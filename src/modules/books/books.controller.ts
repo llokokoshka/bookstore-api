@@ -103,19 +103,20 @@ export class BooksController {
   async addOrUpdateRate(
     @Req() req: ReqGetUserDto,
     @Param('bookId') bookId: number,
-    @Body('value') value: number,
+    @Body('rate') rate: number,
   ) {
     const newUserRate = await this.booksService.addOrUpdateRate(
       bookId,
       req.user.id,
-      value,
+      rate,
     );
     return newUserRate;
   }
 
   @Get(':bookId')
   async getBook(@Param('bookId', ParseIntPipe) bookId: number) {
-    let book = await this.booksService.getBookService(bookId);
-    return book;
+    const book = await this.booksService.getBookService(bookId);
+    const totalRate = await this.booksService.getAverageRating(bookId);
+    return { book, totalRate };
   }
 }
