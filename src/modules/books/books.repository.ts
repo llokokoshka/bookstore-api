@@ -16,6 +16,7 @@ import { RateEntity } from './entity/rate.entity';
 import { UserRepository } from '../users/users.repository';
 import { CommentsEntity } from './entity/comments.entity';
 import { UserEntity } from '../users/entity/users.entity';
+import { IBooksAndArrOfIDBook } from './lib/types';
 
 @Injectable()
 export class BooksRepository {
@@ -75,18 +76,19 @@ export class BooksRepository {
   }
 
   async getBookRepository(id: number): Promise<BookEntity> {
-    let book = await this.booksRepository.findOne({
-      where: { id: id },
-      relations: [
-        'author',
-        'bookGenres',
-        'bookGenres.genre',
-        'cover',
-        'comments',
-        'comments.user',
-        'rates',
-      ],
-    });
+    const book = await this.booksRepository
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.author', 'author')
+      .leftJoinAndSelect('book.bookGenres', 'bookGenre')
+      .leftJoinAndSelect('bookGenre.genre', 'genre')
+      .leftJoinAndSelect('book.cover', 'cover')
+      .leftJoinAndSelect('book.comments', 'comments')
+      .leftJoin('comments.user', 'user')
+      .addSelect(['user.id', 'user.fullName', 'user.avatar', 'user.email'])
+      .leftJoinAndSelect('book.rates', 'rate')
+      .where('book.id = :id', { id })
+      .getOne();
+
     return book;
   }
 
@@ -190,6 +192,52 @@ export class BooksRepository {
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
 
     return new PageDto(entities, pageMetaDto);
+  }
+
+  async getRecommendedBooksRepository(): Promise<IBooksAndArrOfIDBook> {
+    const arrayWithBooks = await this.booksRepository
+      .createQueryBuilder('book')
+      .orderBy('RANDOM()')
+      .limit(4)
+      .getMany();
+    const newArrayWithBookIds = arrayWithBooks.map((book) => book.id);
+
+    let books: BookEntity[];
+
+    for (let id of newArrayWithBookIds) {
+      const book = await this.getBookRepository(id);
+      if (!books) {
+        books = [book];
+      } else {
+        books.push(book);
+      }
+    }
+
+    return { newArrayWithBookIds, books };
+  }
+
+  async getSearchedBooksRepository(query: {
+    query: string;
+  }): Promise<IBooksAndArrOfIDBook> {
+    const searchedBooks = await this.booksRepository
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.author', 'author')
+      .where('book.name ILIKE :query', { query: `%${query.query}%` })
+      .orWhere('author.text ILIKE :query', { query: `%${query.query}%` })
+      .getMany();
+
+    const newArrayWithBookIds = searchedBooks.map((book) => book.id);
+    let books: BookEntity[];
+
+    for (let id of newArrayWithBookIds) {
+      const book = await this.getBookRepository(id);
+      if (!books) {
+        books = [book];
+      } else {
+        books.push(book);
+      }
+    }
+    return { newArrayWithBookIds, books };
   }
 
   async updateBookCoverRepository(

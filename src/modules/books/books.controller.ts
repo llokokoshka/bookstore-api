@@ -16,7 +16,6 @@ import { AuthGuard } from '../auth/auth.guard';
 import { AuthorEntity } from './entity/author.entity';
 import { GenreEntity } from './entity/genre.entity';
 import { BookEntity } from './entity/books.entity';
-import { CommentsEntity } from './entity/comments.entity';
 import { BooksService } from './books.service';
 import { UsersService } from '../users/users.service';
 import { ReqGetUserDto } from '../users/lib/reqGetUser.dto';
@@ -26,8 +25,7 @@ import { CreateGenreDto } from './lib/create/createGenre.dto';
 import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageDto } from './lib/paginate/page.dto';
 import { CreateCommentDto } from './lib/createComment.dto';
-import { visibleParamsOfUser } from '../auth/utils/auth.utils';
-import { IComments } from './lib/types';
+import { IBooksAndArrOfIDBook, IComments } from './lib/types';
 
 @Controller('books')
 export class BooksController {
@@ -57,6 +55,18 @@ export class BooksController {
     @Query() pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<CreateBookDto>> {
     return this.booksService.findAllBooksService(pageOptionsDto);
+  }
+
+  @Get('recommended')
+  async getRecommended(): Promise<IBooksAndArrOfIDBook> {
+    return this.booksService.getRecommendedBooksService();
+  }
+
+  @Get('search')
+  async getSearchItems(
+    @Query() query: { query: string },
+  ): Promise<IBooksAndArrOfIDBook> {
+    return this.booksService.getSearchedBooksService(query);
   }
 
   @UseGuards(AuthGuard)

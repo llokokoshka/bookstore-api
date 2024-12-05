@@ -12,6 +12,7 @@ import { PageDto } from './lib/paginate/page.dto';
 import { CreateCommentDto } from './lib/createComment.dto';
 import { UserEntity } from '../users/entity/users.entity';
 import { CommentsEntity } from './entity/comments.entity';
+import { IBooksAndArrOfIDBook } from './lib/types';
 
 @Injectable()
 export class BooksService {
@@ -71,6 +72,28 @@ export class BooksService {
       const Book =
         await this.booksRepository.findAllPaginatedRepository(pageOptionsDto);
       return Book;
+    } catch (err) {
+      this.logger.error(err);
+    }
+  }
+
+  async getRecommendedBooksService(): Promise<IBooksAndArrOfIDBook> {
+    try {
+      const recommendedBooks =
+        await this.booksRepository.getRecommendedBooksRepository();
+      return recommendedBooks;
+    } catch (err) {
+      this.logger.error(err);
+    }
+  }
+
+  async getSearchedBooksService(query: {
+    query: string;
+  }): Promise<IBooksAndArrOfIDBook> {
+    try {
+      const searchedBooks =
+        await this.booksRepository.getSearchedBooksRepository(query);
+      return searchedBooks;
     } catch (err) {
       this.logger.error(err);
     }
