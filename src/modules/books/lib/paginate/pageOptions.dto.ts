@@ -62,6 +62,10 @@ export class PageOptionsDto {
   @IsString()
   sortBy?: string;
 
+  @IsOptional()
+  @IsString()
+  search?: string;
+
   get skip(): number {
     return (this.page - 1) * this.take;
   }

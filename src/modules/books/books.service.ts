@@ -87,17 +87,17 @@ export class BooksService {
     }
   }
 
-  async getSearchedBooksService(query: {
-    query: string;
-  }): Promise<IBooksAndArrOfIDBook> {
-    try {
-      const searchedBooks =
-        await this.booksRepository.getSearchedBooksRepository(query);
-      return searchedBooks;
-    } catch (err) {
-      this.logger.error(err);
-    }
-  }
+  // async getSearchedBooksService(search: {
+  //   search: string;
+  // }): Promise<IBooksAndArrOfIDBook> {
+  //   try {
+  //     const searchedBooks =
+  //       await this.booksRepository.getSearchedBooksRepository(search);
+  //     return searchedBooks;
+  //   } catch (err) {
+  //     this.logger.error(err);
+  //   }
+  // }
 
   async updateBookCover(filename: string, bookId: number): Promise<BookEntity> {
     try {

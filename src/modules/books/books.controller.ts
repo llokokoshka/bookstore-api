@@ -62,12 +62,12 @@ export class BooksController {
     return this.booksService.getRecommendedBooksService();
   }
 
-  @Get('search')
-  async getSearchItems(
-    @Query() query: { query: string },
-  ): Promise<IBooksAndArrOfIDBook> {
-    return this.booksService.getSearchedBooksService(query);
-  }
+  // @Get('search')
+  // async getSearchItems(
+  //   @Query() search: { search: string },
+  // ): Promise<IBooksAndArrOfIDBook> {
+  //   return this.booksService.getSearchedBooksService(search);
+  // }
 
   @UseGuards(AuthGuard)
   @Post(':bookId/comment')

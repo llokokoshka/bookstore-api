@@ -128,6 +128,17 @@ export class BooksRepository {
       .addGroupBy('user.id')
       .addGroupBy('rate.id');
 
+    if (pageOptionsDto.search !== undefined) {
+      queryBuilder
+        .where('book.name ILIKE :search', {
+          search: `%${pageOptionsDto.search}%`,
+        })
+        .orWhere('author.text ILIKE :search', {
+          search: `%${pageOptionsDto.search}%`,
+        })
+        .getMany();
+    }
+
     if (pageOptionsDto.genres && pageOptionsDto.genres.length > 0) {
       queryBuilder.andWhere(
         'book.id IN (SELECT book.id FROM book_to_genre_entity bookGenre WHERE bookGenre.genreId IN (:...genres))',
@@ -216,29 +227,29 @@ export class BooksRepository {
     return { newArrayWithBookIds, books };
   }
 
-  async getSearchedBooksRepository(query: {
-    query: string;
-  }): Promise<IBooksAndArrOfIDBook> {
-    const searchedBooks = await this.booksRepository
-      .createQueryBuilder('book')
-      .leftJoinAndSelect('book.author', 'author')
-      .where('book.name ILIKE :query', { query: `%${query.query}%` })
-      .orWhere('author.text ILIKE :query', { query: `%${query.query}%` })
-      .getMany();
+  // async getSearchedBooksRepository(search: {
+  //   search: string;
+  // }): Promise<IBooksAndArrOfIDBook> {
+  //   const searchedBooks = await this.booksRepository
+  //     .createQueryBuilder('book')
+  //     .leftJoinAndSelect('book.author', 'author')
+  //     .where('book.name ILIKE :search', { search: `%${search.search}%` })
+  //     .orWhere('author.text ILIKE :search', { search: `%${search.search}%` })
+  //     .getMany();
 
-    const newArrayWithBookIds = searchedBooks.map((book) => book.id);
-    let books: BookEntity[];
+  //   const newArrayWithBookIds = searchedBooks.map((book) => book.id);
+  //   let books: BookEntity[];
 
-    for (let id of newArrayWithBookIds) {
-      const book = await this.getBookRepository(id);
-      if (!books) {
-        books = [book];
-      } else {
-        books.push(book);
-      }
-    }
-    return { newArrayWithBookIds, books };
-  }
+  //   for (let id of newArrayWithBookIds) {
+  //     const book = await this.getBookRepository(id);
+  //     if (!books) {
+  //       books = [book];
+  //     } else {
+  //       books.push(book);
+  //     }
+  //   }
+  //   return { newArrayWithBookIds, books };
+  // }
 
   async updateBookCoverRepository(
     filename: string,
