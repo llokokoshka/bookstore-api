@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 
 import { BookToGenreEntity } from './entity/bookGenre.entity';
 import { AuthorEntity } from './entity/author.entity';
@@ -128,41 +128,51 @@ export class BooksRepository {
       .addGroupBy('user.id')
       .addGroupBy('rate.id');
 
-    if (pageOptionsDto.search !== undefined) {
-      queryBuilder
-        .where('book.name ILIKE :search', {
-          search: `%${pageOptionsDto.search}%`,
-        })
-        .orWhere('author.text ILIKE :search', {
-          search: `%${pageOptionsDto.search}%`,
-        })
-        .getMany();
-    }
+    queryBuilder.andWhere(
+      new Brackets((qb) => {
+        if (pageOptionsDto.search !== undefined) {
+          qb.andWhere(
+            new Brackets((searchQB) => {
+              searchQB
+                .where('book.name ILIKE :search', {
+                  search: `%${pageOptionsDto.search}%`,
+                })
+                .orWhere('author.text ILIKE :search', {
+                  search: `%${pageOptionsDto.search}%`,
+                });
+            }),
+          );
+        }
+        qb.andWhere(
+          new Brackets((otherParamsQB) => {
+            if (pageOptionsDto.genres && pageOptionsDto.genres.length > 0) {
+              otherParamsQB.andWhere(
+                'book.id IN (SELECT book.id FROM book_to_genre_entity bookGenre WHERE bookGenre.genreId IN (:...genres))',
+                { genres: pageOptionsDto.genres },
+              );
+            }
 
-    if (pageOptionsDto.genres && pageOptionsDto.genres.length > 0) {
-      queryBuilder.andWhere(
-        'book.id IN (SELECT book.id FROM book_to_genre_entity bookGenre WHERE bookGenre.genreId IN (:...genres))',
-        { genres: pageOptionsDto.genres },
-      );
-    }
+            if (pageOptionsDto.minPrice !== undefined) {
+              otherParamsQB.andWhere(
+                '(CASE WHEN cover.hardcover_amount > 0 THEN cover.hardcover_price ELSE cover.paperback_price END) >= :minPrice',
+                {
+                  minPrice: pageOptionsDto.minPrice,
+                },
+              );
+            }
 
-    if (pageOptionsDto.minPrice !== undefined) {
-      queryBuilder.andWhere(
-        '(CASE WHEN cover.hardcover_amount > 0 THEN cover.hardcover_price ELSE cover.paperback_price END) >= :minPrice',
-        {
-          minPrice: pageOptionsDto.minPrice,
-        },
-      );
-    }
-
-    if (pageOptionsDto.maxPrice !== undefined) {
-      queryBuilder.andWhere(
-        '(CASE WHEN cover.hardcover_amount > 0 THEN cover.hardcover_price ELSE cover.paperback_price END)  <= :maxPrice',
-        {
-          maxPrice: pageOptionsDto.maxPrice,
-        },
-      );
-    }
+            if (pageOptionsDto.maxPrice !== undefined) {
+              otherParamsQB.andWhere(
+                '(CASE WHEN cover.hardcover_amount > 0 THEN cover.hardcover_price ELSE cover.paperback_price END)  <= :maxPrice',
+                {
+                  maxPrice: pageOptionsDto.maxPrice,
+                },
+              );
+            }
+          }),
+        );
+      }),
+    );
 
     queryBuilder.addSelect(
       'CASE WHEN cover.hardcover_amount > 0 THEN cover.hardcover_price ELSE cover.paperback_price END',
