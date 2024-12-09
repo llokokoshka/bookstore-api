@@ -14,8 +14,8 @@ export const imageFileFilter = (req, file, callback) => {
   callback(null, true);
 };
 
-export const editFileName = (req, file, callback) => {
-  const fileExtName = extname(file.originalname);
+export const editFileName = (file) => {
+  const fileExtName = extname(file.mimetype);
   const randomName = Array(4)
     .fill(null)
     .map(() => Math.round(Math.random() * 10).toString(10))
@@ -23,6 +23,5 @@ export const editFileName = (req, file, callback) => {
 
   const date = new Date();
   const timestamp = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}-${String(date.getHours()).padStart(2, '0')}${String(date.getMinutes()).padStart(2, '0')}${String(date.getSeconds()).padStart(2, '0')}`;
-  callback(null, `${timestamp}-${randomName}${fileExtName}`);
+  return `${timestamp}-${randomName}${fileExtName}`;
 };
-

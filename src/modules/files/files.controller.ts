@@ -1,18 +1,17 @@
 import {
   Controller,
   Post,
-  UseInterceptors,
   HttpStatus,
   Req,
   UseGuards,
-  UploadedFiles,
   Body,
   Logger,
+  HttpException,
 } from '@nestjs/common';
-import { AnyFilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 
-import { editFileName, imageFileFilter } from './utils/file.utils';
+import * as fs from 'fs/promises';
+
+import { editFileName } from './utils/file.utils';
 import { UsersService } from '../users/users.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { BooksService } from 'src/modules/books/books.service';
@@ -27,61 +26,59 @@ export class FilesController {
 
   @UseGuards(AuthGuard)
   @Post()
-  @UseInterceptors(
-    AnyFilesInterceptor({
-      storage: diskStorage({
-        destination: (req, file, cb) => {
-          const fileType = req.headers['x-file-type'];
-          let uploadPath = './public/uploads/';
-
-          if (fileType === 'avatar') {
-            uploadPath += 'avatars';
-          } else if (fileType === 'book') {
-            uploadPath += 'books';
-          } else {
-            uploadPath += 'others';
-          }
-          cb(null, uploadPath);
-        },
-
-        filename: editFileName,
-      }),
-      fileFilter: imageFileFilter,
-    }),
-  )
-  async uploadedFile(@UploadedFiles() files, @Req() req, @Body() body) {
+  async uploadBase64Filee(
+    @Body() body: { base64Data: string; fileType: string; bookId?: number },
+    @Req() req,
+  ) {
     try {
-      if (!files || files.length === 0) {
+      const { base64Data, fileType } = body;
+
+      if (!base64Data || !fileType) {
         return {
           status: HttpStatus.BAD_REQUEST,
-          message: 'No file uploaded',
+          message: 'Missing required fields: base64Data or fileType',
         };
       }
-      const file = files[0];
-      const fileType = req.headers['x-file-type'];
+
+      const matches = base64Data.match(/^data:(.+);base64,(.+)$/);
+      if (!matches || matches.length !== 3) {
+        return {
+          status: HttpStatus.BAD_REQUEST,
+          message: 'Invalid base64 data',
+        };
+      }
+      const mimeType = matches[1];
+      const base64String = matches[2];
+      const buffer = Buffer.from(base64String, 'base64');
+
+      let uploadPath = './public/uploads/';
+      if (fileType === 'avatar') {
+        uploadPath += 'avatars/';
+      } else if (fileType === 'book') {
+        uploadPath += 'books/';
+      } else {
+        uploadPath += 'others/';
+      }
+
+      const filename: string = editFileName({ mimetype: mimeType });
+
+      const filePath = `${uploadPath}${filename}`;
+      await fs.mkdir(uploadPath, { recursive: true });
+      await fs.writeFile(filePath, buffer);
 
       if (fileType === 'avatar') {
-        await this.userService.updateUser(
-          { avatar: file.filename },
-          req.user.id,
-        );
+        await this.userService.updateUser({ avatar: filename }, req.user.id);
         return {
           status: HttpStatus.OK,
           message: 'Image uploaded successfully!',
-          data: {
-            originalname: file.originalname,
-            filename: file.filename,
-          },
+          data: { filename },
         };
       } else if (fileType === 'book') {
-        await this.booksService.updateBookCover(file.filename, body.bookId);
+        await this.booksService.updateBookCover(filename, body.bookId);
         return {
           status: HttpStatus.OK,
           message: 'Book image uploaded successfully!',
-          data: {
-            originalname: file.originalname,
-            filename: file.filename,
-          },
+          data: { filename },
         };
       }
 
@@ -91,6 +88,10 @@ export class FilesController {
       };
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'File upload failed',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
