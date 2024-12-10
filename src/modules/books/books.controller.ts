@@ -32,7 +32,7 @@ export class BooksController {
   constructor(
     private booksService: BooksService,
     private userService: UsersService,
-  ) {}
+  ) { }
 
   @Post()
   async createBook(@Body() book: CreateBookDto): Promise<BookEntity> {
@@ -61,13 +61,6 @@ export class BooksController {
   async getRecommended(): Promise<IBooksAndArrOfIDBook> {
     return this.booksService.getRecommendedBooksService();
   }
-
-  // @Get('search')
-  // async getSearchItems(
-  //   @Query() search: { search: string },
-  // ): Promise<IBooksAndArrOfIDBook> {
-  //   return this.booksService.getSearchedBooksService(search);
-  // }
 
   @UseGuards(AuthGuard)
   @Post(':bookId/comment')

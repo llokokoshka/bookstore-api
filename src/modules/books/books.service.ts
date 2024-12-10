@@ -17,7 +17,7 @@ import { IBooksAndArrOfIDBook } from './lib/types';
 @Injectable()
 export class BooksService {
   private readonly logger = new Logger(BooksService.name);
-  constructor(private booksRepository: BooksRepository) {}
+  constructor(private booksRepository: BooksRepository) { }
 
   async createBookService(Book: CreateBookDto): Promise<BookEntity> {
     try {
@@ -86,18 +86,6 @@ export class BooksService {
       this.logger.error(err);
     }
   }
-
-  // async getSearchedBooksService(search: {
-  //   search: string;
-  // }): Promise<IBooksAndArrOfIDBook> {
-  //   try {
-  //     const searchedBooks =
-  //       await this.booksRepository.getSearchedBooksRepository(search);
-  //     return searchedBooks;
-  //   } catch (err) {
-  //     this.logger.error(err);
-  //   }
-  // }
 
   async updateBookCover(filename: string, bookId: number): Promise<BookEntity> {
     try {
