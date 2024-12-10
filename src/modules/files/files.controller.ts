@@ -22,11 +22,11 @@ export class FilesController {
   constructor(
     private userService: UsersService,
     private booksService: BooksService,
-  ) {}
+  ) { }
 
   @UseGuards(AuthGuard)
   @Post()
-  async uploadBase64Filee(
+  async uploadBase64File(
     @Body() body: { base64Data: string; fileType: string; bookId?: number },
     @Req() req,
   ) {

@@ -9,7 +9,7 @@ import { UpdatePassDto } from './lib/updatePass.dto';
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
-  constructor(private userRepository: UserRepository) {}
+  constructor(private userRepository: UserRepository) { }
 
   async getUser(id: number): Promise<IVisibleUserParams> {
     try {
@@ -93,7 +93,7 @@ export class UsersService {
   async updateUser(
     updUser: Partial<UserEntity>,
     id: number,
-  ): Promise<UserEntity> {
+  ): Promise<Partial<UserEntity>> {
     try {
       const newUser = await this.userRepository.updateUser(updUser, id);
 

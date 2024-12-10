@@ -5,14 +5,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './lib/createUsers.dto';
 import { UpdatePassDto } from './lib/updatePass.dto';
 import { UserEntity } from './entity/users.entity';
-import { generatePassword, validPassword } from '../auth/utils/auth.utils';
+import { generatePassword, validPassword, visibleParamsOfUser } from '../auth/utils/auth.utils';
 
 @Injectable()
 export class UserRepository {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-  ) {}
+  ) { }
 
   async getUserById(searchValue: number): Promise<UserEntity> {
     return this.usersRepository.findOne({
@@ -39,9 +39,10 @@ export class UserRepository {
   async updateUser(
     params: Partial<UserEntity>,
     id: number,
-  ): Promise<UserEntity> {
+  ): Promise<Partial<UserEntity>> {
     const user = await this.getUserById(id);
-    return this.usersRepository.save({ ...user, ...params });
+    const updatedUser = await this.usersRepository.save({ ...user, ...params });
+    return visibleParamsOfUser(updatedUser);
   }
 
   async updateUserPass(params: UpdatePassDto, id: number): Promise<UserEntity> {

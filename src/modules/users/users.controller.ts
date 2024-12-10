@@ -31,7 +31,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private createTokensUtil: CreateTokensUtil,
-  ) {}
+  ) { }
 
   @Get('me')
   async getUser(@Req() req: ReqGetUserDto): Promise<getUserI> {
@@ -56,7 +56,7 @@ export class UsersController {
   updateUser(
     @Req() req: Partial<ReqGetUserDto>,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<UserEntity> {
+  ): Promise<Partial<UserEntity>> {
     return this.usersService.updateUser(updateUserDto, req.user.id);
   }
 
