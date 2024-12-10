@@ -87,8 +87,10 @@ export class AuthService {
       const payload = { sub: addedUserInDb.id, username: addedUserInDb.email };
       const { access_token, refresh_token } =
         await this.createTokensUtil.createTokens(payload);
+
+      const correctViewOfNewUserData = visibleParamsOfUser(addedUserInDb)
       return {
-        user: addedUserInDb,
+        user: correctViewOfNewUserData,
         access_token: access_token,
         refresh_token: refresh_token,
       };
