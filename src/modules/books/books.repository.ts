@@ -41,7 +41,7 @@ export class BooksRepository {
     private commentsRepository: Repository<CommentsEntity>,
 
     private userRepository: UserRepository,
-  ) {}
+  ) { }
 
   async createBookRepository(book: CreateBookDto): Promise<BookEntity> {
     const newBook = this.booksRepository.create(book);
@@ -236,30 +236,6 @@ export class BooksRepository {
 
     return { newArrayWithBookIds, books };
   }
-
-  // async getSearchedBooksRepository(search: {
-  //   search: string;
-  // }): Promise<IBooksAndArrOfIDBook> {
-  //   const searchedBooks = await this.booksRepository
-  //     .createQueryBuilder('book')
-  //     .leftJoinAndSelect('book.author', 'author')
-  //     .where('book.name ILIKE :search', { search: `%${search.search}%` })
-  //     .orWhere('author.text ILIKE :search', { search: `%${search.search}%` })
-  //     .getMany();
-
-  //   const newArrayWithBookIds = searchedBooks.map((book) => book.id);
-  //   let books: BookEntity[];
-
-  //   for (let id of newArrayWithBookIds) {
-  //     const book = await this.getBookRepository(id);
-  //     if (!books) {
-  //       books = [book];
-  //     } else {
-  //       books.push(book);
-  //     }
-  //   }
-  //   return { newArrayWithBookIds, books };
-  // }
 
   async updateBookCoverRepository(
     filename: string,

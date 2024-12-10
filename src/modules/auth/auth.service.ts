@@ -24,7 +24,7 @@ export class AuthService {
     private userRepository: UserRepository,
     private jwtService: JwtService,
     private createTokensUtil: CreateTokensUtil,
-  ) {}
+  ) { }
 
   async login(User: LoginUserDto) {
     try {
@@ -66,8 +66,13 @@ export class AuthService {
     try {
       const hashPass = generatePassword(password);
       password = hashPass.salt + '//' + hashPass.hash;
+      let code = '';
+      [1, 2, 3, 4, 5, 6].map(() => {
+        return code += Math.round(Math.random() * 10).toString()
+      })
+      const randomName = 'User' + code;
       const user = {
-        fullName: '',
+        fullName: randomName,
         email: email,
         password: password,
         avatar: 'defImg.png',
