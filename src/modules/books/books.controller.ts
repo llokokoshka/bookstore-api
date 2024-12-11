@@ -57,9 +57,9 @@ export class BooksController {
     return this.booksService.findAllBooksService(pageOptionsDto);
   }
 
-  @Get('recommended')
-  async getRecommended(): Promise<IBooksAndArrOfIDBook> {
-    return this.booksService.getRecommendedBooksService();
+  @Get(':bookId/recommended')
+  async getRecommended(@Param('bookId') bookId: number): Promise<IBooksAndArrOfIDBook> {
+    return this.booksService.getRecommendedBooksService(bookId);
   }
 
   @UseGuards(AuthGuard)

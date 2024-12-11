@@ -77,10 +77,10 @@ export class BooksService {
     }
   }
 
-  async getRecommendedBooksService(): Promise<IBooksAndArrOfIDBook> {
+  async getRecommendedBooksService(bookId: number): Promise<IBooksAndArrOfIDBook> {
     try {
       const recommendedBooks =
-        await this.booksRepository.getRecommendedBooksRepository();
+        await this.booksRepository.getRecommendedBooksRepository(bookId);
       return recommendedBooks;
     } catch (err) {
       this.logger.error(err);
