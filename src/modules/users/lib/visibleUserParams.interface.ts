@@ -1,8 +1,8 @@
-import { RateEntity } from 'src/modules/books/entity/rate.entity';
+type NormalizeRate = Record<number, number>;
 
 export interface IVisibleUserParams {
   fullName: string;
   email: string;
   avatar: string;
-  rating: RateEntity[];
+  rating: NormalizeRate;
 }

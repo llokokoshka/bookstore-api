@@ -4,12 +4,13 @@ import { UserEntity } from './entity/users.entity';
 import { UserRepository } from './users.repository';
 import { IVisibleUserParams } from './lib/visibleUserParams.interface';
 import { UpdatePassDto } from './lib/updatePass.dto';
+import { visibleParamsOfUser } from '../auth/utils/auth.utils';
 
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
-  constructor(private userRepository: UserRepository) { }
+  constructor(private userRepository: UserRepository) {}
 
   async getUser(id: number): Promise<IVisibleUserParams> {
     try {
@@ -21,14 +22,10 @@ export class UsersService {
           HttpStatus.UNPROCESSABLE_ENTITY,
         );
       }
-      const visibleParamsOfUser = {
-        fullName: user.fullName,
-        email: user.email,
-        avatar: user.avatar,
-        rating: user.rates,
-      };
 
-      return visibleParamsOfUser;
+      const correctFormOfUser = visibleParamsOfUser(user);
+
+      return correctFormOfUser;
     } catch (err) {
       this.logger.error(err);
     }
@@ -62,12 +59,9 @@ export class UsersService {
         );
       }
 
-      const visibleParamsOfUsers = users.map((user) => ({
-        fullName: user.fullName,
-        email: user.email,
-        avatar: user.avatar,
-        rating: user.rates,
-      }));
+      const visibleParamsOfUsers = users.map((user) =>
+        visibleParamsOfUser(user),
+      );
 
       return visibleParamsOfUsers;
     } catch (err) {

@@ -41,7 +41,7 @@ export class BooksRepository {
     private commentsRepository: Repository<CommentsEntity>,
 
     private userRepository: UserRepository,
-  ) { }
+  ) {}
 
   async createBookRepository(book: CreateBookDto): Promise<BookEntity> {
     const newBook = this.booksRepository.create(book);
@@ -215,13 +215,17 @@ export class BooksRepository {
     return new PageDto(entities, pageMetaDto);
   }
 
-  async getRecommendedBooksRepository(bookId: number): Promise<IBooksAndArrOfIDBook> {
+  async getRecommendedBooksRepository(
+    bookId: number,
+  ): Promise<IBooksAndArrOfIDBook> {
     const currentBook = await this.getBookRepository(bookId);
 
     let genreBooks = await this.booksRepository
       .createQueryBuilder('book')
       .leftJoin('book.bookGenres', 'bookGenre')
-      .where('bookGenre.genre.id = :genre', { genre: currentBook.bookGenres[0].genre.id })
+      .where('bookGenre.genre.id = :genre', {
+        genre: currentBook.bookGenres[0].genre.id,
+      })
       .andWhere('book.id != :bookId', { bookId })
       .orderBy('RANDOM()')
       .limit(4)
@@ -230,7 +234,9 @@ export class BooksRepository {
     if (genreBooks.length < 4) {
       const additionalBooks = await this.booksRepository
         .createQueryBuilder('book')
-        .where('book.id NOT IN (:...ids)', { ids: genreBooks.map(book => book.id).concat(bookId) })
+        .where('book.id NOT IN (:...ids)', {
+          ids: genreBooks.map((book) => book.id).concat(bookId),
+        })
         .orderBy('RANDOM()')
         .limit(4 - genreBooks.length)
         .getMany();
@@ -238,11 +244,6 @@ export class BooksRepository {
       genreBooks = [...genreBooks, ...additionalBooks];
     }
 
-    // const arrayWithBooks = await this.booksRepository
-    //   .createQueryBuilder('book')
-    //   .orderBy('RANDOM()')
-    //   .limit(4)
-    //   .getMany();
     const newArrayWithBookIds = genreBooks.map((book) => book.id);
 
     let books: BookEntity[];
@@ -304,7 +305,8 @@ export class BooksRepository {
     }
 
     existingRate.value = value;
-    return this.rateRepository.save(existingRate);
+    const newRate = await this.rateRepository.save(existingRate);
+    return newRate;
   }
 
   async getAverageRating(bookId: number): Promise<number> {

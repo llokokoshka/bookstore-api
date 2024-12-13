@@ -26,13 +26,14 @@ import { CreateBookDto } from './lib/create/createBook.dto';
 import { PageDto } from './lib/paginate/page.dto';
 import { CreateCommentDto } from './lib/createComment.dto';
 import { IBooksAndArrOfIDBook, IComments } from './lib/types';
+import { RateEntity } from './entity/rate.entity';
 
 @Controller('books')
 export class BooksController {
   constructor(
     private booksService: BooksService,
     private userService: UsersService,
-  ) { }
+  ) {}
 
   @Post()
   async createBook(@Body() book: CreateBookDto): Promise<BookEntity> {
@@ -58,7 +59,9 @@ export class BooksController {
   }
 
   @Get(':bookId/recommended')
-  async getRecommended(@Param('bookId') bookId: number): Promise<IBooksAndArrOfIDBook> {
+  async getRecommended(
+    @Param('bookId') bookId: number,
+  ): Promise<IBooksAndArrOfIDBook> {
     return this.booksService.getRecommendedBooksService(bookId);
   }
 
@@ -107,7 +110,7 @@ export class BooksController {
     @Req() req: ReqGetUserDto,
     @Param('bookId') bookId: number,
     @Body('rate') rate: number,
-  ) {
+  ): Promise<RateEntity> {
     const newUserRate = await this.booksService.addOrUpdateRate(
       bookId,
       req.user.id,

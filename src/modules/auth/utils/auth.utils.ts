@@ -21,12 +21,16 @@ export function validPassword(password: string, hash: string, salt: string) {
 }
 
 export function visibleParamsOfUser(user: UserEntity) {
+  const correctViewOfUserRates = {};
+  user.rates.forEach((value) => {
+    correctViewOfUserRates[value.book.id] = value.id;
+  });
   const visibleParamsOfUser = {
     id: user.id,
     fullName: user.fullName,
     email: user.email,
     avatar: user.avatar,
-    rating: user.rates,
+    rating: correctViewOfUserRates,
   };
   return visibleParamsOfUser;
 }

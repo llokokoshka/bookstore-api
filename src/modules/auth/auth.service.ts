@@ -24,16 +24,13 @@ export class AuthService {
     private userRepository: UserRepository,
     private jwtService: JwtService,
     private createTokensUtil: CreateTokensUtil,
-  ) { }
+  ) {}
 
   async login(User: LoginUserDto) {
     try {
       const user = await this.userRepository.getUserByEmail(User.email);
       if (!user) {
-        throw new HttpException(
-          'user not found',
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        throw new HttpException('User not found', HttpStatus.FORBIDDEN);
       }
 
       const [salt, userHashPassword] = user.password.split('//');
@@ -68,8 +65,8 @@ export class AuthService {
       password = hashPass.salt + '//' + hashPass.hash;
       let code = '';
       [1, 2, 3, 4, 5, 6].map(() => {
-        return code += Math.round(Math.random() * 10).toString()
-      })
+        return (code += Math.round(Math.random() * 10).toString());
+      });
       const randomName = 'User' + code;
       const user = {
         fullName: randomName,
@@ -78,23 +75,23 @@ export class AuthService {
         avatar: 'defImg.png',
       };
       const addedUserInDb = await this.userRepository.createUser(user);
-      if (!addedUserInDb) {
-        throw new HttpException(
-          'user not addited',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
+
       const payload = { sub: addedUserInDb.id, username: addedUserInDb.email };
       const { access_token, refresh_token } =
         await this.createTokensUtil.createTokens(payload);
 
-      const correctViewOfNewUserData = visibleParamsOfUser(addedUserInDb)
+      const correctViewOfNewUserData = visibleParamsOfUser(addedUserInDb);
       return {
         user: correctViewOfNewUserData,
         access_token: access_token,
         refresh_token: refresh_token,
       };
     } catch (err) {
+      //send to front
+      //throw  throw new HttpException(
+      //   'user not addited',
+      //   HttpStatus.INTERNAL_SERVER_ERROR,
+      // );
       this.logger.error(err);
     }
   }
