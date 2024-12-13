@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
+
 import config from '../config/configuration';
 
 export const dbConfig: DataSourceOptions = {
