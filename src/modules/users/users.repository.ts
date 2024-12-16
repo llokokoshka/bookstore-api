@@ -5,14 +5,18 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './lib/createUsers.dto';
 import { UpdatePassDto } from './lib/updatePass.dto';
 import { UserEntity } from './entity/users.entity';
-import { generatePassword, validPassword, visibleParamsOfUser } from '../auth/utils/auth.utils';
+import {
+  generatePassword,
+  validPassword,
+  visibleParamsOfUser,
+} from '../auth/utils/auth.utils';
 
 @Injectable()
 export class UserRepository {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-  ) { }
+  ) {}
 
   async getUserById(searchValue: number): Promise<UserEntity> {
     return this.usersRepository.findOne({
@@ -55,7 +59,7 @@ export class UserRepository {
     );
 
     if (isPasswordValid == false) {
-      throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Wrong password', HttpStatus.FORBIDDEN);
     }
     const hashPass = generatePassword(params.passwordNew);
 

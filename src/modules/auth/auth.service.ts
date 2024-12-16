@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  HttpException,
-  HttpStatus,
-  UnauthorizedException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import {
@@ -30,7 +24,7 @@ export class AuthService {
     try {
       const user = await this.userRepository.getUserByEmail(User.email);
       if (!user) {
-        throw new HttpException('User not found', HttpStatus.FORBIDDEN);
+        throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
       }
 
       const [salt, userHashPassword] = user.password.split('//');
@@ -56,6 +50,7 @@ export class AuthService {
       };
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(`${err.response}`, HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -87,18 +82,25 @@ export class AuthService {
         refresh_token: refresh_token,
       };
     } catch (err) {
-      //send to front
-      //throw  throw new HttpException(
-      //   'user not addited',
-      //   HttpStatus.INTERNAL_SERVER_ERROR,
-      // );
       this.logger.error(err);
+      if (
+        err
+          .toString()
+          .includes('duplicate key value violates unique constraint')
+      ) {
+        throw new HttpException(
+          'Email is already in use',
+          HttpStatus.BAD_REQUEST,
+        );
+      } else {
+        throw new HttpException('User not addited', HttpStatus.BAD_REQUEST);
+      }
     }
   }
 
   async refreshToken(rt: string) {
     if (!rt) {
-      throw new UnauthorizedException();
+      throw new HttpException('Token not found', HttpStatus.UNAUTHORIZED);
     }
     try {
       const payload = await this.jwtService.verifyAsync(rt, {
@@ -114,7 +116,7 @@ export class AuthService {
       };
     } catch (err) {
       this.logger.error(err);
-      throw new UnauthorizedException();
+      throw new HttpException('Can`t update token', HttpStatus.UNAUTHORIZED);
     }
   }
 }

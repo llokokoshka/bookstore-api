@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 
 import { BooksRepository } from './books.repository';
 import { AuthorEntity } from './entity/author.entity';
@@ -17,7 +17,7 @@ import { IBooksAndArrOfIDBook } from './lib/types';
 @Injectable()
 export class BooksService {
   private readonly logger = new Logger(BooksService.name);
-  constructor(private booksRepository: BooksRepository) { }
+  constructor(private booksRepository: BooksRepository) {}
 
   async createBookService(Book: CreateBookDto): Promise<BookEntity> {
     try {
@@ -25,6 +25,10 @@ export class BooksService {
       return book;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Unable to create book',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -34,6 +38,10 @@ export class BooksService {
       return genre;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Unable to create genre',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -43,6 +51,10 @@ export class BooksService {
       return author;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Unable to create author',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -53,17 +65,19 @@ export class BooksService {
       return Book;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException('Book not found', HttpStatus.NOT_FOUND);
     }
   }
 
-  async getAllBooksService(): Promise<BookEntity[]> {
-    try {
-      const Book = await this.booksRepository.getAllBooksRepository();
-      return Book;
-    } catch (err) {
-      this.logger.error(err);
-    }
-  }
+  // async getAllBooksService(): Promise<BookEntity[]> {
+  //   try {
+  //     const Book = await this.booksRepository.getAllBooksRepository();
+  //     return Book;
+  //   } catch (err) {
+  //     this.logger.error(err);
+  //     throw new HttpException('Books not found', HttpStatus.NOT_FOUND);
+  //   }
+  // }
 
   async findAllBooksService(
     pageOptionsDto: PageOptionsDto,
@@ -74,16 +88,23 @@ export class BooksService {
       return Book;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException('Books not found', HttpStatus.NOT_FOUND);
     }
   }
 
-  async getRecommendedBooksService(bookId: number): Promise<IBooksAndArrOfIDBook> {
+  async getRecommendedBooksService(
+    bookId: number,
+  ): Promise<IBooksAndArrOfIDBook> {
     try {
       const recommendedBooks =
         await this.booksRepository.getRecommendedBooksRepository(bookId);
       return recommendedBooks;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Recommended books not found',
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
 
@@ -96,6 +117,10 @@ export class BooksService {
       return book;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Book update error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -104,6 +129,10 @@ export class BooksService {
       return this.booksRepository.addOrUpdateRate(bookId, userId, value);
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Rate update error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -112,6 +141,10 @@ export class BooksService {
       return this.booksRepository.getAverageRating(bookId);
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Average rating error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -129,6 +162,10 @@ export class BooksService {
       return comment;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Unable to create comment',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -149,6 +186,10 @@ export class BooksService {
       return correctComments;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Can`t get comments',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

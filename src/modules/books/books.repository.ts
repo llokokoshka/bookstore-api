@@ -116,7 +116,7 @@ export class BooksRepository {
       .leftJoinAndSelect('book.comments', 'comments')
       .leftJoin('comments.user', 'user')
       .addSelect(['user.id', 'user.fullName', 'user.avatar'])
-      .leftJoinAndSelect('book.rates', 'rate');
+      .leftJoin('book.rates', 'rate');
 
     queryBuilder
       .groupBy('book.id')
@@ -125,8 +125,8 @@ export class BooksRepository {
       .addGroupBy('bookGenre.id')
       .addGroupBy('comments.id')
       .addGroupBy('genre.id')
-      .addGroupBy('user.id')
-      .addGroupBy('rate.id');
+      .addGroupBy('user.id');
+    // .addGroupBy('rate.id');
 
     queryBuilder.andWhere(
       new Brackets((qb) => {

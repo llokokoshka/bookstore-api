@@ -23,7 +23,7 @@ export function validPassword(password: string, hash: string, salt: string) {
 export function visibleParamsOfUser(user: UserEntity) {
   const correctViewOfUserRates = {};
   user.rates.forEach((value) => {
-    correctViewOfUserRates[value.book.id] = value.id;
+    correctViewOfUserRates[value.book.id] = value;
   });
   const visibleParamsOfUser = {
     id: user.id,

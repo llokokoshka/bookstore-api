@@ -17,10 +17,7 @@ export class UsersService {
       const user = await this.userRepository.getUserById(id);
 
       if (!user) {
-        throw new HttpException(
-          'user not found',
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
       const correctFormOfUser = visibleParamsOfUser(user);
@@ -28,6 +25,10 @@ export class UsersService {
       return correctFormOfUser;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Error while getting user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -36,15 +37,16 @@ export class UsersService {
       const user = await this.userRepository.getUserById(id);
 
       if (!user) {
-        throw new HttpException(
-          'user not found',
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
       return user;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Error while getting user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -53,10 +55,7 @@ export class UsersService {
       const users = await this.userRepository.findAll();
 
       if (!users || users.length === 0) {
-        throw new HttpException(
-          'users not found',
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
       const visibleParamsOfUsers = users.map((user) =>
@@ -66,6 +65,10 @@ export class UsersService {
       return visibleParamsOfUsers;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Error while getting users',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -73,14 +76,15 @@ export class UsersService {
     try {
       const user = await this.userRepository.getUserById(id);
       if (!user) {
-        throw new HttpException(
-          'users not found',
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
       await this.userRepository.deleteUser(user);
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'User not deleted',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -94,6 +98,10 @@ export class UsersService {
       return newUser;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Can`t update user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -106,6 +114,10 @@ export class UsersService {
       return newUser;
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Can`t update user password',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
