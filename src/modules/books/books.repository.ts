@@ -92,19 +92,6 @@ export class BooksRepository {
     return book;
   }
 
-  async getAllBooksRepository(): Promise<BookEntity[]> {
-    return this.booksRepository.find({
-      relations: [
-        'author',
-        'bookGenres',
-        'bookGenres.genre',
-        'cover',
-        'comments',
-        'rates',
-      ],
-    });
-  }
-
   async findAllPaginatedRepository(pageOptionsDto: PageOptionsDto) {
     const queryBuilder = this.booksRepository.createQueryBuilder('book');
 
@@ -126,7 +113,6 @@ export class BooksRepository {
       .addGroupBy('comments.id')
       .addGroupBy('genre.id')
       .addGroupBy('user.id');
-    // .addGroupBy('rate.id');
 
     queryBuilder.andWhere(
       new Brackets((qb) => {

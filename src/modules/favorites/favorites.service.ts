@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 
 import { BookEntity } from '../books/entity/books.entity';
 import { UserEntity } from '../users/entity/users.entity';
@@ -15,6 +15,7 @@ export class FavoritesService {
       return this.favRepository.getFavRepository(user);
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException('Unable get favorites', HttpStatus.NOT_FOUND);
     }
   }
 
@@ -23,6 +24,10 @@ export class FavoritesService {
       return this.favRepository.addItemInFavRepository(book, user);
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Unable add item in favorite',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -31,6 +36,10 @@ export class FavoritesService {
       return this.favRepository.deleteItemFromFavRepository(ItemId);
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Unable delete item in favorite',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

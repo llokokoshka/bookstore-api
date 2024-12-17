@@ -4,13 +4,16 @@ import { UserEntity } from './entity/users.entity';
 import { UserRepository } from './users.repository';
 import { IVisibleUserParams } from './lib/visibleUserParams.interface';
 import { UpdatePassDto } from './lib/updatePass.dto';
-import { visibleParamsOfUser } from '../auth/utils/auth.utils';
+import { AuthUtils } from '../auth/utils/auth.utils';
 
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    private userRepository: UserRepository,
+    private authUtils: AuthUtils,
+  ) {}
 
   async getUser(id: number): Promise<IVisibleUserParams> {
     try {
@@ -20,13 +23,13 @@ export class UsersService {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
-      const correctFormOfUser = visibleParamsOfUser(user);
+      const correctFormOfUser = this.authUtils.visibleParamsOfUser(user);
 
       return correctFormOfUser;
     } catch (err) {
       this.logger.error(err);
       throw new HttpException(
-        'Error while getting user',
+        'Unable getting user',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -44,7 +47,7 @@ export class UsersService {
     } catch (err) {
       this.logger.error(err);
       throw new HttpException(
-        'Error while getting user',
+        'Unable getting user',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -59,7 +62,7 @@ export class UsersService {
       }
 
       const visibleParamsOfUsers = users.map((user) =>
-        visibleParamsOfUser(user),
+        this.authUtils.visibleParamsOfUser(user),
       );
 
       return visibleParamsOfUsers;

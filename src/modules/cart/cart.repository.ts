@@ -6,7 +6,7 @@ import { CartEntity } from './entity/cart.entity';
 import { BookEntity } from '../books/entity/books.entity';
 import { UserEntity } from '../users/entity/users.entity';
 import { CartItemEntity } from './entity/cartItem.entity';
-import { checkBookAmount } from './utils/cart.utils';
+import { CartUtil } from './utils/cart.utils';
 
 @Injectable()
 export class CartRepository {
@@ -17,6 +17,8 @@ export class CartRepository {
 
     @InjectRepository(CartItemEntity)
     private cartItemRepository: Repository<CartItemEntity>,
+
+    private cartUtil: CartUtil,
   ) {}
 
   async getCartRepository(User: UserEntity): Promise<CartEntity> {
@@ -69,7 +71,7 @@ export class CartRepository {
       ],
     });
 
-    const isHardCover = checkBookAmount(book);
+    const isHardCover = this.cartUtil.checkBookAmount(book);
 
     let price: number;
 
@@ -93,7 +95,7 @@ export class CartRepository {
       relations: ['book', 'book.author'],
     });
     const book = bookInCart.book;
-    const isHardCover = checkBookAmount(book);
+    const isHardCover = this.cartUtil.checkBookAmount(book);
     const cart = await this.cartRepository.findOne({
       where: { user: { id: userId } },
       relations: [
@@ -127,7 +129,7 @@ export class CartRepository {
       relations: ['book', 'book.author'],
     });
     const book = bookInCart.book;
-    const isHardCover = checkBookAmount(book);
+    const isHardCover = this.cartUtil.checkBookAmount(book);
     const cart = await this.cartRepository.findOne({
       where: { user: { id: userId } },
       relations: [

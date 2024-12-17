@@ -5,17 +5,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './lib/createUsers.dto';
 import { UpdatePassDto } from './lib/updatePass.dto';
 import { UserEntity } from './entity/users.entity';
-import {
-  generatePassword,
-  validPassword,
-  visibleParamsOfUser,
-} from '../auth/utils/auth.utils';
+import { AuthUtils } from '../auth/utils/auth.utils';
 
 @Injectable()
 export class UserRepository {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
+    private authUtils: AuthUtils,
   ) {}
 
   async getUserById(searchValue: number): Promise<UserEntity> {
@@ -46,13 +43,13 @@ export class UserRepository {
   ): Promise<Partial<UserEntity>> {
     const user = await this.getUserById(id);
     const updatedUser = await this.usersRepository.save({ ...user, ...params });
-    return visibleParamsOfUser(updatedUser);
+    return this.authUtils.visibleParamsOfUser(updatedUser);
   }
 
   async updateUserPass(params: UpdatePassDto, id: number): Promise<UserEntity> {
     const user = await this.getUserById(id);
     const [salt, userHashPassword] = user.password.split('//');
-    const isPasswordValid = validPassword(
+    const isPasswordValid = this.authUtils.validPassword(
       params.password,
       userHashPassword,
       salt,
@@ -61,7 +58,7 @@ export class UserRepository {
     if (isPasswordValid == false) {
       throw new HttpException('Wrong password', HttpStatus.FORBIDDEN);
     }
-    const hashPass = generatePassword(params.passwordNew);
+    const hashPass = this.authUtils.generatePassword(params.passwordNew);
 
     const newPassword = `${hashPass.salt}//${hashPass.hash}`;
     user.password = newPassword;

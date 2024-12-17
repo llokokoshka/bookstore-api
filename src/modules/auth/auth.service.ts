@@ -1,11 +1,7 @@
 import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import {
-  generatePassword,
-  validPassword,
-  visibleParamsOfUser,
-} from './utils/auth.utils';
+import { AuthUtils } from './utils/auth.utils';
 import { UserRepository } from 'src/modules/users/users.repository';
 import { CreateTokensUtil } from './utils/token.utils';
 import { LoginUserDto } from 'src/modules/users/lib/loginUser.dto';
@@ -18,6 +14,7 @@ export class AuthService {
     private userRepository: UserRepository,
     private jwtService: JwtService,
     private createTokensUtil: CreateTokensUtil,
+    private authUtils: AuthUtils,
   ) {}
 
   async login(User: LoginUserDto) {
@@ -28,7 +25,7 @@ export class AuthService {
       }
 
       const [salt, userHashPassword] = user.password.split('//');
-      const isPasswordValid = validPassword(
+      const isPasswordValid = this.authUtils.validPassword(
         User.password,
         userHashPassword,
         salt,
@@ -40,7 +37,7 @@ export class AuthService {
 
       const payload = { sub: user.id, username: user.email };
 
-      const correctFormOfUser = visibleParamsOfUser(user);
+      const correctFormOfUser = this.authUtils.visibleParamsOfUser(user);
       const { access_token, refresh_token } =
         await this.createTokensUtil.createTokens(payload);
       return {
@@ -56,7 +53,7 @@ export class AuthService {
 
   async registration(email: string, password: string) {
     try {
-      const hashPass = generatePassword(password);
+      const hashPass = this.authUtils.generatePassword(password);
       password = hashPass.salt + '//' + hashPass.hash;
       let code = '';
       [1, 2, 3, 4, 5, 6].map(() => {
@@ -75,7 +72,8 @@ export class AuthService {
       const { access_token, refresh_token } =
         await this.createTokensUtil.createTokens(payload);
 
-      const correctViewOfNewUserData = visibleParamsOfUser(addedUserInDb);
+      const correctViewOfNewUserData =
+        this.authUtils.visibleParamsOfUser(addedUserInDb);
       return {
         user: correctViewOfNewUserData,
         access_token: access_token,

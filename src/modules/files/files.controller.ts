@@ -11,7 +11,7 @@ import {
 
 import * as fs from 'fs/promises';
 
-import { editFileName } from './utils/file.utils';
+import { FileUtils } from './utils/file.utils';
 import { UsersService } from '../users/users.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { BooksService } from 'src/modules/books/books.service';
@@ -22,7 +22,8 @@ export class FilesController {
   constructor(
     private userService: UsersService,
     private booksService: BooksService,
-  ) { }
+    private fileUtils: FileUtils,
+  ) {}
 
   @UseGuards(AuthGuard)
   @Post()
@@ -60,7 +61,9 @@ export class FilesController {
         uploadPath += 'others/';
       }
 
-      const filename: string = editFileName({ mimetype: mimeType });
+      const filename: string = this.fileUtils.editFileName({
+        mimetype: mimeType,
+      });
 
       const filePath = `${uploadPath}${filename}`;
       await fs.mkdir(uploadPath, { recursive: true });

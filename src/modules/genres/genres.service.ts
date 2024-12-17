@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { GenreEntity } from 'src/modules/books/entity/genre.entity';
 import { GenreRepository } from './genres.repository';
 
@@ -12,6 +12,10 @@ export class GenresService {
       return this.genreRepository.findAll();
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Unable get genres',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

@@ -10,6 +10,7 @@ import { BooksModule } from '../books/books.module';
 import { FavoriteRepository } from './favorites.repository';
 import { CreateTokensUtil } from '../auth/utils/token.utils';
 import { UserRepository } from '../users/users.repository';
+import { AuthUtils } from '../auth/utils/auth.utils';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserRepository } from '../users/users.repository';
     FavoriteRepository,
     CreateTokensUtil,
     UserRepository,
+    AuthUtils,
   ],
   controllers: [FavoritesController],
 })

@@ -14,6 +14,7 @@ import { UserRepository } from '../users/users.repository';
 import { UserEntity } from '../users/entity/users.entity';
 import { CommentsEntity } from './entity/comments.entity';
 import { UsersService } from '../users/users.service';
+import { AuthUtils } from '../auth/utils/auth.utils';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UsersService } from '../users/users.service';
     BooksService,
     UserRepository,
     UsersService,
+    AuthUtils,
   ],
   exports: [BooksService, TypeOrmModule, BooksRepository],
 })

@@ -10,6 +10,8 @@ import { BooksModule } from 'src/modules/books/books.module';
 import { CartRepository } from './cart.repository';
 import { CreateTokensUtil } from 'src/modules/auth/utils/token.utils';
 import { UserRepository } from 'src/modules/users/users.repository';
+import { AuthUtils } from '../auth/utils/auth.utils';
+import { CartUtil } from './utils/cart.utils';
 
 @Module({
   imports: [
@@ -17,7 +19,14 @@ import { UserRepository } from 'src/modules/users/users.repository';
     UsersModule,
     BooksModule,
   ],
-  providers: [CartService, CartRepository, CreateTokensUtil, UserRepository],
+  providers: [
+    CartService,
+    CartRepository,
+    CreateTokensUtil,
+    UserRepository,
+    AuthUtils,
+    CartUtil,
+  ],
   controllers: [CartController],
 })
 export class CartModule {}

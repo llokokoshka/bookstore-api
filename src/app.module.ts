@@ -18,6 +18,7 @@ import { GenresModule } from './modules/genres/genres.module';
 import { CartModule } from './modules/cart/cart.module';
 import { FavoritesModule } from './modules/favorites/favorites.module';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthUtils } from './modules/auth/utils/auth.utils';
 
 @Module({
   imports: [
@@ -38,6 +39,6 @@ import { JwtModule } from '@nestjs/jwt';
     FavoritesModule,
   ],
   controllers: [AppController, UsersController],
-  providers: [AppService, UserRepository, CreateTokensUtil],
+  providers: [AppService, UserRepository, CreateTokensUtil, AuthUtils],
 })
 export class AppModule {}

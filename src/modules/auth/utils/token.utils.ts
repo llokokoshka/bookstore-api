@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import { PayloadForTokensDto } from '../lib/payloadForTokens.dto';
 import { ITokens } from '../lib/tokens.interface';
 
-// @Global()
 @Injectable()
 export class CreateTokensUtil {
   constructor(

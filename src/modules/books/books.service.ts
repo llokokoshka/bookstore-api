@@ -69,16 +69,6 @@ export class BooksService {
     }
   }
 
-  // async getAllBooksService(): Promise<BookEntity[]> {
-  //   try {
-  //     const Book = await this.booksRepository.getAllBooksRepository();
-  //     return Book;
-  //   } catch (err) {
-  //     this.logger.error(err);
-  //     throw new HttpException('Books not found', HttpStatus.NOT_FOUND);
-  //   }
-  // }
-
   async findAllBooksService(
     pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<CreateBookDto>> {
@@ -118,7 +108,7 @@ export class BooksService {
     } catch (err) {
       this.logger.error(err);
       throw new HttpException(
-        'Book update error',
+        'Unable to update book',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -130,7 +120,7 @@ export class BooksService {
     } catch (err) {
       this.logger.error(err);
       throw new HttpException(
-        'Rate update error',
+        'Unable to update rate',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -142,7 +132,7 @@ export class BooksService {
     } catch (err) {
       this.logger.error(err);
       throw new HttpException(
-        'Average rating error',
+        'Unable to get average rating',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -187,7 +177,7 @@ export class BooksService {
     } catch (err) {
       this.logger.error(err);
       throw new HttpException(
-        'Can`t get comments',
+        'Unable to get comments',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

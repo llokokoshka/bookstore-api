@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 
 import { CartRepository } from './cart.repository';
 import { CartEntity } from './entity/cart.entity';
@@ -17,6 +17,7 @@ export class CartService {
       return this.cartRepository.getCartRepository(user);
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException('Unable get cart', HttpStatus.NOT_FOUND);
     }
   }
 
@@ -28,6 +29,10 @@ export class CartService {
       return this.cartRepository.addItemInCartRepository(book, user);
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Unable add item in cart',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   async upBookAmountSrvice(userId: number, ItemId: number) {
@@ -35,6 +40,10 @@ export class CartService {
       return this.cartRepository.upBookAmountRepository(userId, ItemId);
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Unable change amount item in cart',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   async downBookAmountSrvice(userId: number, ItemId: number) {
@@ -42,6 +51,10 @@ export class CartService {
       return this.cartRepository.downBookAmountRepository(userId, ItemId);
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Unable change amount item in cart',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -50,6 +63,10 @@ export class CartService {
       return this.cartRepository.deleteItemFromCartRepository(userId, ItemId);
     } catch (err) {
       this.logger.error(err);
+      throw new HttpException(
+        'Unable delete item in cart',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
