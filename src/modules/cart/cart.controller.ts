@@ -12,13 +12,11 @@ import {
 
 import { AuthGuard } from '../auth/auth.guard';
 import { CartService } from './cart.service';
-import { ReqGetUserDto } from 'src/modules/users/lib/reqGetUser.dto';
+import { ReqGetUserDto } from '../users/lib/reqGetUser.dto';
 import { CartEntity } from './entity/cart.entity';
 import { BookIdDTO } from './lib/ItemsCart.dto';
 import { BooksService } from '../books/books.service';
 import { UsersService } from '../users/users.service';
-import { DeepPartial } from 'typeorm';
-import { CartItemEntity } from './entity/cartItem.entity';
 
 @UseGuards(AuthGuard)
 @Controller('user/cart')

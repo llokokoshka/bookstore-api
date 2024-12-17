@@ -14,7 +14,7 @@ import * as fs from 'fs/promises';
 import { FileUtils } from './utils/file.utils';
 import { UsersService } from '../users/users.service';
 import { AuthGuard } from '../auth/auth.guard';
-import { BooksService } from 'src/modules/books/books.service';
+import { BooksService } from '../books/books.service';
 
 @Controller('files')
 export class FilesController {

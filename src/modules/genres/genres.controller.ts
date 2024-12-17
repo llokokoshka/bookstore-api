@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 
 import { GenresService } from './genres.service';
-import { GenreEntity } from 'src/modules/books/entity/genre.entity';
+import { GenreEntity } from '../books/entity/genre.entity';
 
 @Controller('genres')
 export class GenresController {

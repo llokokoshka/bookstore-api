@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { GenreEntity } from 'src/modules/books/entity/genre.entity';
+
+import { GenreEntity } from '../books/entity/genre.entity';
 import { GenreRepository } from './genres.repository';
 
 @Injectable()

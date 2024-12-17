@@ -15,9 +15,9 @@ import { UpdateUserDto } from './lib/updateUser.dto';
 import { IVisibleUserParams } from './lib/visibleUserParams.interface';
 import { ReqGetUserDto } from './lib/reqGetUser.dto';
 import { UserEntity } from './entity/users.entity';
-import { AuthGuard } from 'src/modules/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { UpdatePassDto } from './lib/updatePass.dto';
-import { CreateTokensUtil } from 'src/modules/auth/utils/token.utils';
+import { CreateTokensUtil } from '../auth/utils/token.utils';
 
 interface getUserI {
   user: UserEntity;
@@ -31,7 +31,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private createTokensUtil: CreateTokensUtil,
-  ) { }
+  ) {}
 
   @Get('me')
   async getUser(@Req() req: ReqGetUserDto): Promise<getUserI> {

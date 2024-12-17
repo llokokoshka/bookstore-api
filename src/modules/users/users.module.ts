@@ -5,7 +5,7 @@ import { UsersService } from './users.service';
 import { UserRepository } from './users.repository';
 import { UserEntity } from './entity/users.entity';
 import { UsersController } from './users.controller';
-import { CreateTokensUtil } from 'src/modules/auth/utils/token.utils';
+import { CreateTokensUtil } from '../auth/utils/token.utils';
 import { AuthUtils } from '../auth/utils/auth.utils';
 
 @Module({

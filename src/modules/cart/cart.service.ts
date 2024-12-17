@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 
 import { CartRepository } from './cart.repository';
 import { CartEntity } from './entity/cart.entity';
-import { BookEntity } from 'src/modules/books/entity/books.entity';
-import { UserEntity } from 'src/modules/users/entity/users.entity';
+import { BookEntity } from '../books/entity/books.entity';
+import { UserEntity } from '../users/entity/users.entity';
 import { CartItemEntity } from './entity/cartItem.entity';
 import { DeepPartial } from 'typeorm';
 
