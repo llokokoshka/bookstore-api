@@ -62,8 +62,9 @@ export class UserRepository {
 
     const newPassword = `${hashPass.salt}//${hashPass.hash}`;
     user.password = newPassword;
-
-    return this.usersRepository.save(user);
+    const newUserData = await this.usersRepository.save(user);
+    delete newUserData.password;
+    return newUserData;
   }
 
   async createUser(user: CreateUserDto): Promise<UserEntity> {
