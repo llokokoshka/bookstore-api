@@ -15,7 +15,7 @@ import { BookIdDTO } from '../cart/lib/ItemsCart.dto';
 import { ReqGetUserDto } from '../users/lib/reqGetUser.dto';
 import { UsersService } from '../users/users.service';
 import { FavoritesService } from './favorites.service';
-import { FavoritesEntity } from './entity/favorites.entity';
+import { BookEntity } from '../books/entity/books.entity';
 
 @UseGuards(AuthGuard)
 @Controller('user/favorites')
@@ -27,9 +27,11 @@ export class FavoritesController {
   ) {}
 
   @Get()
-  async getFav(
-    @Req() req: ReqGetUserDto,
-  ): Promise<{ id: number; booksIdsInFavorites: number[] }> {
+  async getFav(@Req() req: ReqGetUserDto): Promise<{
+    id: number;
+    booksIdsInFavorites: number[];
+    favoriteBooks: BookEntity[];
+  }> {
     const user = req.user;
     return this.favService.getFavService(user);
   }

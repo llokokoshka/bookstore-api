@@ -9,9 +9,11 @@ export class FavoritesService {
   private readonly logger = new Logger(FavoritesService.name);
   constructor(private favRepository: FavoriteRepository) {}
 
-  async getFavService(
-    user: UserEntity,
-  ): Promise<{ id: number; booksIdsInFavorites: number[] }> {
+  async getFavService(user: UserEntity): Promise<{
+    id: number;
+    booksIdsInFavorites: number[];
+    favoriteBooks: BookEntity[];
+  }> {
     try {
       return this.favRepository.getFavRepository(user);
     } catch (err) {

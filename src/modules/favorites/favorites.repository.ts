@@ -18,9 +18,11 @@ export class FavoriteRepository {
     private favItemRepository: Repository<FavoritesItemEntity>,
   ) {}
 
-  async getFavRepository(
-    User: UserEntity,
-  ): Promise<{ id: number; booksIdsInFavorites: number[] }> {
+  async getFavRepository(User: UserEntity): Promise<{
+    id: number;
+    booksIdsInFavorites: number[];
+    favoriteBooks: BookEntity[];
+  }> {
     let fav = await this.favRepository.findOne({
       where: { user: { id: User.id } },
       relations: [
@@ -36,10 +38,13 @@ export class FavoriteRepository {
       });
       fav = await this.favRepository.save(newUserFav);
     }
-    const arr = fav.favoritesItems?.map((item) => item.book.id);
+    const arrWithIds = fav.favoritesItems?.map((item) => item.book.id);
+    const arrWithBooks = fav.favoritesItems?.map((item) => item.book);
+
     const correctFormOfFav = {
       id: fav.id,
-      booksIdsInFavorites: arr || [],
+      booksIdsInFavorites: arrWithIds || [],
+      favoriteBooks: arrWithBooks,
     };
     return correctFormOfFav;
   }
