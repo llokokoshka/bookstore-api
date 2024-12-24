@@ -18,7 +18,9 @@ export class FavoriteRepository {
     private favItemRepository: Repository<FavoritesItemEntity>,
   ) {}
 
-  async getFavRepository(User: UserEntity): Promise<FavoritesEntity> {
+  async getFavRepository(
+    User: UserEntity,
+  ): Promise<{ id: number; booksIdsInFavorites: number[] }> {
     let fav = await this.favRepository.findOne({
       where: { user: { id: User.id } },
       relations: [
@@ -34,13 +36,17 @@ export class FavoriteRepository {
       });
       fav = await this.favRepository.save(newUserFav);
     }
-
-    return fav;
+    const arr = fav.favoritesItems?.map((item) => item.book.id);
+    const correctFormOfFav = {
+      id: fav.id,
+      booksIdsInFavorites: arr || [],
+    };
+    return correctFormOfFav;
   }
 
   async addItemInFavRepository(book: BookEntity, User: UserEntity) {
     let favItemRec: FavoritesItemEntity;
-    const fav = await this.favRepository.findOne({
+    let fav = await this.favRepository.findOne({
       where: { user: { id: User.id } },
       relations: [
         'favoritesItems',
@@ -49,15 +55,34 @@ export class FavoriteRepository {
         'favoritesItems.book.rates',
       ],
     });
+    if (!fav) {
+      const newUserFav = this.favRepository.create({
+        user: User,
+      });
+      fav = await this.favRepository.save(newUserFav);
+    }
+    const bookInFav = await this.favRepository.findOne({
+      where: { favoritesItems: { book: { id: book.id } } },
+    });
+    if (bookInFav) {
+      const newFav = await this.getFavRepository(User);
+      return newFav;
+    }
     const dataForItem = { book, favorite: fav };
     favItemRec = this.favItemRepository.create(dataForItem);
-    const newFav = await this.favItemRepository.save(favItemRec);
+    await this.favItemRepository.save(favItemRec);
+    const newFav = await this.getFavRepository(User);
     return newFav;
   }
 
-  async deleteItemFromFavRepository(ItemId: number) {
-    const bookInFav = await this.favItemRepository.findOneBy({ id: ItemId });
-    await this.favItemRepository.remove(bookInFav);
-    return ItemId;
+  async deleteItemFromFavRepository(BookId: number, User: UserEntity) {
+    const bookInFav = await this.favItemRepository.findOne({
+      where: { book: { id: BookId } },
+    });
+    const a = await this.favItemRepository.remove(bookInFav);
+    await this.favItemRepository.save(a);
+
+    const fav = await this.getFavRepository(User);
+    return fav;
   }
 }

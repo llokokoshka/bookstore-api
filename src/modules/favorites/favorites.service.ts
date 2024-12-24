@@ -3,14 +3,15 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { BookEntity } from '../books/entity/books.entity';
 import { UserEntity } from '../users/entity/users.entity';
 import { FavoriteRepository } from './favorites.repository';
-import { FavoritesEntity } from './entity/favorites.entity';
 
 @Injectable()
 export class FavoritesService {
   private readonly logger = new Logger(FavoritesService.name);
   constructor(private favRepository: FavoriteRepository) {}
 
-  async getFavService(user: UserEntity): Promise<FavoritesEntity> {
+  async getFavService(
+    user: UserEntity,
+  ): Promise<{ id: number; booksIdsInFavorites: number[] }> {
     try {
       return this.favRepository.getFavRepository(user);
     } catch (err) {
@@ -31,9 +32,9 @@ export class FavoritesService {
     }
   }
 
-  async deleteItemFromFavSrvice(ItemId: number) {
+  async deleteItemFromFavSrvice(BookId: number, user: UserEntity) {
     try {
-      return this.favRepository.deleteItemFromFavRepository(ItemId);
+      return this.favRepository.deleteItemFromFavRepository(BookId, user);
     } catch (err) {
       this.logger.error(err);
       throw new HttpException(

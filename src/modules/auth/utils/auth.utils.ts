@@ -27,9 +27,11 @@ export class AuthUtils {
 
   visibleParamsOfUser = (user: UserEntity) => {
     const correctViewOfUserRates = {};
-    user.rates.forEach((value) => {
-      correctViewOfUserRates[value.book.id] = value;
-    });
+    if (user.rates) {
+      user.rates.forEach((value) => {
+        correctViewOfUserRates[value.book.id] = value;
+      });
+    }
     const visibleParamsOfUser = {
       id: user.id,
       fullName: user.fullName,

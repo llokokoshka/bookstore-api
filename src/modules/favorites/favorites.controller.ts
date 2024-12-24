@@ -27,7 +27,9 @@ export class FavoritesController {
   ) {}
 
   @Get()
-  async getFav(@Req() req: ReqGetUserDto): Promise<FavoritesEntity> {
+  async getFav(
+    @Req() req: ReqGetUserDto,
+  ): Promise<{ id: number; booksIdsInFavorites: number[] }> {
     const user = req.user;
     return this.favService.getFavService(user);
   }
@@ -37,15 +39,15 @@ export class FavoritesController {
     const user = await this.userService.getUserForServer(req.user.id);
     const book = await this.bookService.getBookService(dto.bookId);
     const fav = await this.favService.addItemInFavService(book, user);
-    const correctFav = {
-      id: fav.id,
-      book: fav.book,
-    };
-    return correctFav;
+    return fav;
   }
 
-  @Delete('item/:itemId')
-  async deleteItemFromCart(@Param('itemId') itemId: number) {
-    return this.favService.deleteItemFromFavSrvice(itemId);
+  @Delete('item/:bookId')
+  async deleteItemFromCart(
+    @Req() req: ReqGetUserDto,
+    @Param('bookId') bookId: number,
+  ) {
+    const user = await this.userService.getUserForServer(req.user.id);
+    return this.favService.deleteItemFromFavSrvice(bookId, user);
   }
 }
