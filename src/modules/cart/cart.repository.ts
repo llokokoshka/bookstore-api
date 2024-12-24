@@ -51,7 +51,11 @@ export class CartRepository {
       cart.total_price = totalPrice;
       cart = await this.cartRepository.save(cart);
     }
-
+    cart.cartItems.map((cartItem) => {
+      !cartItem.book.img.includes(`http://localhost:4000/uploads/books/`)
+        ? (cartItem.book.img = `http://localhost:4000/uploads/books/${cartItem.book.img}`)
+        : cartItem.book.img;
+    });
     return cart;
   }
 
