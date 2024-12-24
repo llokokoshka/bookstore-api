@@ -24,7 +24,6 @@ export class UsersService {
       }
 
       const correctFormOfUser = this.authUtils.visibleParamsOfUser(user);
-
       return correctFormOfUser;
     } catch (err) {
       this.logger.error(err);
@@ -97,7 +96,6 @@ export class UsersService {
   ): Promise<Partial<UserEntity>> {
     try {
       const newUser = await this.userRepository.updateUser(updUser, id);
-
       return newUser;
     } catch (err) {
       this.logger.error(err);
@@ -114,6 +112,7 @@ export class UsersService {
   ): Promise<UserEntity> {
     try {
       const newUser = await this.userRepository.updateUserPass(updUser, id);
+
       return newUser;
     } catch (err) {
       this.logger.error(err);

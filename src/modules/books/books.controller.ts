@@ -83,6 +83,7 @@ export class BooksController {
       bookId,
       correctFormOfUser,
     );
+    newCommentInfo.user.avatar = `http://localhost:4000/uploads/avatars/${newCommentInfo.user.avatar}`;
     const correctFormOfCommentInfo = {
       text: newCommentInfo.text,
       user: newCommentInfo.user,

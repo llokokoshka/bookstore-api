@@ -32,6 +32,9 @@ export class AuthUtils {
         correctViewOfUserRates[value.book.id] = value;
       });
     }
+    if (!user.avatar.includes('http://localhost:4000/uploads/avatars/')) {
+      user.avatar = `http://localhost:4000/uploads/avatars/${user.avatar}`;
+    }
     const visibleParamsOfUser = {
       id: user.id,
       fullName: user.fullName,

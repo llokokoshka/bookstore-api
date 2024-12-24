@@ -73,9 +73,20 @@ export class BooksService {
     pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<CreateBookDto>> {
     try {
-      const Book =
+      const Books =
         await this.booksRepository.findAllPaginatedRepository(pageOptionsDto);
-      return Book;
+      Books.data.map((book) => {
+        book.img = `http://localhost:4000/uploads/books/${book.img}`;
+        book.comments.map((comment) =>
+          !comment.user.avatar.includes(
+            'http://localhost:4000/uploads/avatars/',
+          )
+            ? (comment.user.avatar = `http://localhost:4000/uploads/avatars/${comment.user.avatar}`)
+            : (comment.user.avatar = comment.user.avatar),
+        );
+      });
+
+      return Books;
     } catch (err) {
       this.logger.error(err);
       throw new HttpException('Books not found', HttpStatus.NOT_FOUND);
@@ -88,6 +99,12 @@ export class BooksService {
     try {
       const recommendedBooks =
         await this.booksRepository.getRecommendedBooksRepository(bookId);
+
+      recommendedBooks.books.map((book) => {
+        !book.img.includes('http://localhost:4000/uploads/books/')
+          ? (book.img = `http://localhost:4000/uploads/books/${book.img}`)
+          : (book.img = book.img);
+      });
       return recommendedBooks;
     } catch (err) {
       this.logger.error(err);
@@ -170,7 +187,7 @@ export class BooksService {
         user: {
           id: comment.user.id,
           fullName: comment.user.fullName,
-          avatar: comment.user.avatar,
+          avatar: `http://localhost:4000/uploads/avatars/${comment.user.avatar}`,
         },
       }));
       return correctComments;

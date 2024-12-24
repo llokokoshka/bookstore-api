@@ -64,6 +64,7 @@ export class UserRepository {
     user.password = newPassword;
     const newUserData = await this.usersRepository.save(user);
     delete newUserData.password;
+    newUserData.avatar = `http://localhost:4000/uploads/avatars/${newUserData.avatar}`;
     return newUserData;
   }
 

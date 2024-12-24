@@ -88,7 +88,12 @@ export class BooksRepository {
       .leftJoinAndSelect('book.rates', 'rate')
       .where('book.id = :id', { id })
       .getOne();
-
+    book.img = `http://localhost:4000/uploads/books/${book.img}`;
+    book.comments?.map((comment) =>
+      !comment.user.avatar.includes('http://localhost:4000/uploads/avatars/')
+        ? (comment.user.avatar = `http://localhost:4000/uploads/avatars/${comment.user.avatar}`)
+        : (comment.user.avatar = comment.user.avatar),
+    );
     return book;
   }
 
