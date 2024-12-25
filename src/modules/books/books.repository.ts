@@ -208,6 +208,7 @@ export class BooksRepository {
 
   async getRecommendedBooksRepository(
     bookId: number,
+    numberOfItems: number,
   ): Promise<IBooksAndArrOfIDBook> {
     const currentBook = await this.getBookRepository(bookId);
 
@@ -219,17 +220,17 @@ export class BooksRepository {
       })
       .andWhere('book.id != :bookId', { bookId })
       .orderBy('RANDOM()')
-      .limit(4)
+      .limit(numberOfItems)
       .getMany();
 
-    if (genreBooks.length < 4) {
+    if (genreBooks.length < numberOfItems) {
       const additionalBooks = await this.booksRepository
         .createQueryBuilder('book')
         .where('book.id NOT IN (:...ids)', {
           ids: genreBooks.map((book) => book.id).concat(bookId),
         })
         .orderBy('RANDOM()')
-        .limit(4 - genreBooks.length)
+        .limit(numberOfItems - genreBooks.length)
         .getMany();
 
       genreBooks = [...genreBooks, ...additionalBooks];

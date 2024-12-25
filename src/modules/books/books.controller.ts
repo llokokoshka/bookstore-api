@@ -27,6 +27,7 @@ import { PageDto } from './lib/paginate/page.dto';
 import { CreateCommentDto } from './lib/createComment.dto';
 import { IBooksAndArrOfIDBook, IComments } from './lib/types';
 import { RateEntity } from './entity/rate.entity';
+import { GetRecommendedDto } from './lib/getRecommended.dto';
 
 @Controller('books')
 export class BooksController {
@@ -61,8 +62,12 @@ export class BooksController {
   @Get(':bookId/recommended')
   async getRecommended(
     @Param('bookId') bookId: number,
+    @Body() dto: GetRecommendedDto,
   ): Promise<IBooksAndArrOfIDBook> {
-    return this.booksService.getRecommendedBooksService(bookId);
+    return this.booksService.getRecommendedBooksService(
+      bookId,
+      dto.numberOfItems,
+    );
   }
 
   @UseGuards(AuthGuard)

@@ -95,10 +95,14 @@ export class BooksService {
 
   async getRecommendedBooksService(
     bookId: number,
+    numberOfItems: number,
   ): Promise<IBooksAndArrOfIDBook> {
     try {
       const recommendedBooks =
-        await this.booksRepository.getRecommendedBooksRepository(bookId);
+        await this.booksRepository.getRecommendedBooksRepository(
+          bookId,
+          numberOfItems,
+        );
 
       recommendedBooks.books.map((book) => {
         !book.img.includes('http://localhost:4000/uploads/books/')
