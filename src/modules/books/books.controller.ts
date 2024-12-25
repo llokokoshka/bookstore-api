@@ -59,15 +59,12 @@ export class BooksController {
     return this.booksService.findAllBooksService(pageOptionsDto);
   }
 
-  @Get(':bookId/recommended')
+  @Get(':bookId/recommended/:numberOfItems')
   async getRecommended(
     @Param('bookId') bookId: number,
-    @Body() dto: GetRecommendedDto,
+    @Param('numberOfItems') numberOfItems: number,
   ): Promise<IBooksAndArrOfIDBook> {
-    return this.booksService.getRecommendedBooksService(
-      bookId,
-      dto.numberOfItems,
-    );
+    return this.booksService.getRecommendedBooksService(bookId, numberOfItems);
   }
 
   @UseGuards(AuthGuard)
