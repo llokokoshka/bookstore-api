@@ -191,7 +191,7 @@ export class BooksRepository {
         sortField = 'book.dateOfIssue';
         break;
       default:
-        sortField = 'book.name';
+        sortField = 'sort_field_price';
     }
 
     queryBuilder
