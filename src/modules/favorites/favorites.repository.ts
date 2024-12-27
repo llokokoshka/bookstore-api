@@ -46,7 +46,7 @@ export class FavoriteRepository {
       booksIdsInFavorites: arrWithIds || [],
       favoriteBooks: arrWithBooks,
     };
-    correctFormOfFav.favoriteBooks.map((book) => {
+    correctFormOfFav.favoriteBooks?.map((book) => {
       !book.img.includes(`http://localhost:4000/uploads/books/`)
         ? (book.img = `http://localhost:4000/uploads/books/${book.img}`)
         : book.img;
