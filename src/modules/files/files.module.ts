@@ -8,9 +8,10 @@ import { BooksService } from '../books/books.service';
 import { BooksModule } from '../books/books.module';
 import { AuthUtils } from '../auth/utils/auth.utils';
 import { FileUtils } from './utils/file.utils';
+import { EventsModule } from '../events/events.module';
 
 @Module({
-  imports: [UsersModule, BooksModule],
+  imports: [UsersModule, BooksModule, EventsModule],
   controllers: [FilesController],
   providers: [UsersService, UserRepository, BooksService, AuthUtils, FileUtils],
 })

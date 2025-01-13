@@ -15,6 +15,8 @@ import { UserEntity } from '../users/entity/users.entity';
 import { CommentsEntity } from './entity/comments.entity';
 import { UsersService } from '../users/users.service';
 import { AuthUtils } from '../auth/utils/auth.utils';
+import { EventsGateway } from '../events/events.gateway';
+import { EventsModule } from '../events/events.module';
 
 @Module({
   imports: [
@@ -28,12 +30,12 @@ import { AuthUtils } from '../auth/utils/auth.utils';
       RateEntity,
       UserEntity,
     ]),
+    EventsModule,
   ],
   controllers: [BooksController],
   providers: [
     BooksService,
     BooksRepository,
-    BooksService,
     UserRepository,
     UsersService,
     AuthUtils,

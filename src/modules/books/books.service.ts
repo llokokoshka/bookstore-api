@@ -13,11 +13,17 @@ import { CreateCommentDto } from './lib/createComment.dto';
 import { UserEntity } from '../users/entity/users.entity';
 import { CommentsEntity } from './entity/comments.entity';
 import { IBooksAndArrOfIDBook } from './lib/types';
+import { userConnetionRepository } from '../events/userConnection.repository';
+import { EventsGateway } from '../events/events.gateway';
 
 @Injectable()
 export class BooksService {
   private readonly logger = new Logger(BooksService.name);
-  constructor(private booksRepository: BooksRepository) {}
+  constructor(
+    private booksRepository: BooksRepository,
+    private userConnetionRepository: userConnetionRepository,
+    private eventsGateway: EventsGateway,
+  ) {}
 
   async createBookService(Book: CreateBookDto): Promise<BookEntity> {
     try {
@@ -170,6 +176,13 @@ export class BooksService {
         user,
         bookId,
       );
+      const book = await this.booksRepository.getBookRepository(Number(bookId));
+
+      const connections = await this.userConnetionRepository.getUserSocketId();
+      if (connections) {
+        const ids = connections.map((connect) => connect.userSocketId);
+        this.eventsGateway.sendData(ids, book?.comments, 'newComment');
+      }
       return comment;
     } catch (err) {
       this.logger.error(err);

@@ -26,7 +26,7 @@ async function bootstrap() {
   app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
   await app.listen(config.port ?? 4000, function () {
-    console.log('Сервер ожидает подключения...');
+    console.log(`Server is ready!`);
   });
 }
 bootstrap();
